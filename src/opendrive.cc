@@ -2,4 +2,4 @@
 
 namespace opendrive {
 
-}  // namespace opendrive
+} // namespace opendrive

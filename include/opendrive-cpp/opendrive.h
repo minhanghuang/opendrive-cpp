@@ -5,4 +5,4 @@ namespace opendrive {
 
 } // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_H_
+#endif // OPENDRIVE_CPP_H_
