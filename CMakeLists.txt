@@ -9,6 +9,13 @@ set(TARGET_NAME ${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(BUILD_SHARED_LIBS "Build opendrive-cpp shared library" ON)
+
+set(opendrive-cpp-type SHARED)
+if (NOT BUILD_SHARED_LIBS)
+  set(opendrive-cpp-type STATIC)
+endif()
+
 include(CMakePackageConfigHelpers)
 include(cmake/package.cmake)
 include(GNUInstallDirs)
@@ -17,11 +24,13 @@ include_directories(
   include
 )
 
-file(GLOB HDMAP_ENGINE_SRCS
+file(GLOB OPENDRIVE_CPP_SRCS
   "src/*.cc"
 )
 
-add_library(${TARGET_NAME} SHARED ${HDMAP_ENGINE_SRCS})
+add_library(${TARGET_NAME} ${opendrive-cpp-type}
+  ${OPENDRIVE_CPP_SRCS}
+)
 
 # #################################################################################
 # config
