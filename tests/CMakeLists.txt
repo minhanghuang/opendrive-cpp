@@ -7,13 +7,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(Gtest REQUIRED gtest)
+pkg_check_modules(Tinyxml2 REQUIRED tinyxml2)
 
 include_directories(
   ${Gtest_INCLUDE_DIRS}
+  ${Tinyxml2_INCLUDE_DIRS}
 )
 
 link_directories (
   ${Gtest_LIBRARY_DIRS}
+  ${Tinyxml2_LIBRARY_DIRS}
 )
 
 SET(TEST_SOURCES
@@ -24,6 +27,7 @@ FOREACH(test_src ${TEST_SOURCES})
   add_executable(${test_src} ${test_src}.cc)
   target_link_libraries(${test_src}
     ${Gtest_LIBRARIES}
+    ${Tinyxml2_LIBRARIES}
     opendrive-cpp
     gtest
   )

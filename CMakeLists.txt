@@ -21,8 +21,16 @@ include(CMakePackageConfigHelpers)
 include(cmake/package.cmake)
 include(GNUInstallDirs)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(Tinyxml2 REQUIRED tinyxml2)
+
 include_directories(
   include
+  ${Tinyxml2_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${Tinyxml2_LIBRARY_DIRS}
 )
 
 file(GLOB OPENDRIVE_CPP_SRCS
@@ -31,6 +39,10 @@ file(GLOB OPENDRIVE_CPP_SRCS
 
 add_library(${TARGET_NAME} ${opendrive-cpp-type}
   ${OPENDRIVE_CPP_SRCS}
+)
+
+target_link_libraries(${TARGET_NAME}
+  ${Tinyxml2_LIBRARIES}
 )
 
 if(BUILD_OPENDRIVECPP_TEST)
