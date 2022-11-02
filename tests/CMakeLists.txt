@@ -33,3 +33,10 @@ FOREACH(test_src ${TEST_SOURCES})
   )
 ENDFOREACH(test_src)
 
+# #################################################################################
+# config
+# #################################################################################
+file(COPY
+  "data/"
+  DESTINATION "${PROJECT_BINARY_DIR}/data"
+)
