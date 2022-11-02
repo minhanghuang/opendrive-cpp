@@ -15,6 +15,21 @@ typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
 
+typedef struct Header HeaderTypedef;
+struct Header {
+  typedef std::shared_ptr<HeaderTypedef> Ptr;
+  std::string rev_major;
+  std::string rev_minor;
+  std::string name;
+  std::string version;
+  std::string date;
+  double north;
+  double south;
+  double west;
+  double east;
+  std::string vendor;
+};
+
 struct Point {
   double x = 0.;
   double y = 0.;
@@ -243,7 +258,9 @@ struct RoadPlanView {
   std::vector<std::unique_ptr<GeometryAttributes>> geometrys;
 };
 
+typedef struct Road RoadTypedef;
 struct Road {
+  typedef std::shared_ptr<RoadTypedef> Ptr;
   RoadAttributes attributes;
   RoadLink link;
   std::vector<RoadTypeInfo> type_info;
