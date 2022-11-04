@@ -13,7 +13,7 @@ opendrive::Status Parser::Header(const tinyxml2::XMLElement* xml_node,
 
 opendrive::Status Parser::Road(const tinyxml2::XMLElement* xml_node,
                                core::Road::Ptr road_ptr) {
-  return opendrive::Status(opendrive::ErrorCode::OK, "ok");
+  return road_parser_->Parse(xml_node, road_ptr);
 }
 
 }  // namespace opendrive

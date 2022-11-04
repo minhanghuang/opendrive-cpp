@@ -8,6 +8,7 @@
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/core/types.hpp"
 #include "opendrive-cpp/parser/header_xml_parser.h"
+#include "opendrive-cpp/parser/road_xml_parser.h"
 
 namespace opendrive {
 
@@ -22,6 +23,7 @@ class Parser {
 
  private:
   std::shared_ptr<parser::HeaderXmlParser> header_parser_;
+  std::shared_ptr<parser::RoadXmlParser> road_parser_;
 };
 
 }  // namespace opendrive

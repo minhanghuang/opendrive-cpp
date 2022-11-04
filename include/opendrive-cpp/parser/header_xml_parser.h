@@ -10,8 +10,14 @@ namespace parser {
 
 class HeaderXmlParser : public XmlParser {
  public:
-  opendrive::Status Parse(const tinyxml2::XMLElement* header_node,
+  opendrive::Status Parse(const tinyxml2::XMLElement* header_ele,
                           core::Header::Ptr header_ptr);
+
+ private:
+  virtual void Init() override;
+  HeaderXmlParser& ParseAttributes();
+  const tinyxml2::XMLElement* header_ele_;
+  core::Header::Ptr header_ptr_;
 };
 
 }  // namespace parser

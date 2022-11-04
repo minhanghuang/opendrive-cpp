@@ -9,6 +9,8 @@ enum class ErrorCode {
   OK = 0,
   /// xml parser status
   XML_HEADER_ELEMENT_ERROR = 10000,
+  XML_ROAD_ELEMENT_ERROR = 10001,
+  XML_LANES_ELEMENT_ERROR = 10002,
 };
 
 struct Status {

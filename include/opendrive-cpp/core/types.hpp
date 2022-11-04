@@ -15,6 +15,8 @@ typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
 
+enum class Boolean { NONE = -1, FALSE = 0, TRUE = 1 };
+
 typedef struct Header HeaderTypedef;
 struct Header {
   typedef std::shared_ptr<HeaderTypedef> Ptr;
@@ -46,20 +48,20 @@ struct GeometryAttributes {
     POLY3 = 4,
     PARAMPOLY3 = 5
   };
-  Type type = Type::NONE;        // geometry type
-  double length = 0.;            // length of the road section [meters]
-  double start_position = 0.;    // s-offset [meters]
-  double heading = 0.;           // start orientation [radians]
-  double start_position_x = 0.;  // [meters]
-  double start_position_y = 0.;  // [meters]
-  double start_position_z = 0.;
+  double s = 0.;  // s-offset [meters]
+  double x = 0.;  // [meters]
+  double y = 0.;  // [meters]
+  double z = 0.;
+  double hdg = 0.;         // start orientation [radians]
+  double length = 0.;      // length of the road section [meters]
+  Type type = Type::NONE;  // geometry type
 };
+
+struct GeometryAttributesLine : public GeometryAttributes {};
 
 struct GeometryAttributesArc : public GeometryAttributes {
   double curvature = 0.;
 };
-
-struct GeometryAttributesLine : public GeometryAttributes {};
 
 struct GeometryAttributesSpiral : public GeometryAttributes {
   double curve_start = 0.;
@@ -74,7 +76,8 @@ struct GeometryAttributesPoly3 : public GeometryAttributes {
 };
 
 struct GeometryAttributesParamPoly3 : public GeometryAttributes {
-  std::string p_range = "arcLength";
+  enum class PRange : std::uint8_t { NONE = 0, ARCLENGTH = 1, NORMALIZED = 2 };
+  PRange p_range = PRange::NONE;
   double aU = 0.;
   double bU = 0.;
   double cU = 0.;
@@ -87,41 +90,48 @@ struct GeometryAttributesParamPoly3 : public GeometryAttributes {
 
 struct LaneAttributes {
   enum class Type : std::uint8_t {
-    NONE = 0,
-    DRIVING = 1,
-    STOP = 2,
-    SHOULDER = 3,
-    BIKING = 4,
-    SIDEWALK = 5,
-    BORDER = 6,
-    RESTRICTED = 7,
-    PARKING = 8,
-    BIDIRECTIONAL = 9,
-    MEDIAN = 10,
-    SPECIAL1 = 11,
-    SPECIAL2 = 12,
-    SPECIAL3 = 13,
-    ROADWORKS = 14,
-    TRAM = 15,
-    RAIL = 16,
-    ENTRY = 17,
-    EXIT = 18,
-    OFFRAMP = 19,
-    ONRAMP = 20
+    SHOULDER = 0,
+    BORDER = 1,
+    DRIVING = 2,
+    STOP = 3,
+    NONE = 4,
+    RESTRICTED = 5,
+    PARKING = 6,
+    MEDIAN = 7,
+    BIKING = 8,
+    SIDEWALK = 9,
+    CURB = 10,
+    EXIT = 11,
+    ENTRY = 12,
+    ONRAMP = 13,
+    OFFRAMP = 14,
+    CONNECTINGRAMP = 15,
+    BIDIRECTIONAL = 16,
+    SPECIAL1 = 17,
+    SPECIAL2 = 18,
+    SPECIAL3 = 19,
+    ROADWORKS = 20,
+    TRAM = 21,
+    RAIL = 22,
+    BUS = 23,
+    TAXI = 24,
+    HOV = 25,
+    MWYENTRY = 26,
+    MWYEXIT = 27
   };
 
   Id id = -1;
   Type type = Type::NONE;
-  bool level = false;
+  Boolean level = Boolean::NONE;
 };
 
 struct OffsetPoly3 {
   // f(s) = a + b*s + c*s*s + d*s*s*s
-  double start_offset = 0.;  // start position (s - start_offset)[meters]]
-  double a = 0.;             // a - polynomial value at start_offset=0
-  double b = 0.;             // b
-  double c = 0.;             // c
-  double d = 0.;             // d
+  double s = 0.;  // start position (s - start_offset)[meters]]
+  double a = 0.;  // a - polynomial value at start_offset=0
+  double b = 0.;  // b
+  double c = 0.;  // c
+  double d = 0.;  // d
 };
 
 struct RoadMark {
@@ -140,33 +150,36 @@ struct RoadMark {
     EDGE = 11
   };
   enum class Color : std::uint8_t {
-    STANDARD = 0,
-    BLUE = 1,
-    GREEN = 2,
-    RED = 3,
-    WHITE = 4,
-    YELLOW = 5,
-    ORANGE = 6
+    NONE = 0,
+    STANDARD = 1,
+    BLUE = 2,
+    GREEN = 3,
+    RED = 4,
+    WHITE = 5,
+    YELLOW = 6,
+    ORANGE = 7
   };
-  enum class Weight : std::uint8_t { STANDARD = 0, BOLD = 1 };
+  enum class Weight : std::uint8_t { NONE = 0, STANDARD = 1, BOLD = 2 };
   enum class LaneChange : std::uint8_t {
-    INCREASE = 0,
-    DECREASE = 1,
-    BOTH = 2,
-    NONE = 3
+    NONE = 0,
+    INCREASE = 1,
+    DECREASE = 2,
+    BOTH = 3,
   };
 
-  double start_offset = 0.;
+  double s = 0.;
   Type type = Type::NONE;
-  Color color = Color::STANDARD;
+  Color color = Color::NONE;
+  Weight weigth = Weight::NONE;
   double width = 0.;
   double height = 0.;
-  Weight weigth = Weight::STANDARD;
   std::string material = "standard";
   LaneChange lane_change = LaneChange::NONE;
 };
 
 struct LaneWidth : public OffsetPoly3 {};
+
+struct LaneBorder : public OffsetPoly3 {};
 
 struct LaneLink {
   Id predecessor = -1;
@@ -176,48 +189,48 @@ struct LaneLink {
 struct Lane {
   LaneAttributes attributes;
   LaneLink link;
-  std::vector<LaneWidth> width;
-  RoadMark road_mark;
+  std::vector<LaneWidth> widths;
+  std::vector<LaneBorder> borders;
+  std::vector<RoadMark> road_marks;
 };
 
-struct LaneInfo {
+struct LanesInfo {
   std::vector<Lane> lanes;
 };
 
 struct LaneOffset : public OffsetPoly3 {};
 
 struct LaneSection {
-  double start_position = 0.;
-  LaneInfo left, center, right;
+  double s = 0.;
+  LanesInfo left, center, right;
 };
 
+typedef struct Lanes LanesTypedef;
 struct Lanes {
-  LaneOffset lane_offset;
+  typedef std::shared_ptr<LanesTypedef> Ptr;
+  std::vector<LaneOffset> lane_offsets;
   std::vector<LaneSection> lane_sections;
 };
 
 struct RoadAttributes {
-  enum class Rule {
-    RHT = 0,
-    LHT = 1,
-  };
+  enum class Rule { NONE = 0, RHT = 1, LHT = 2 };
   Name name;
   double length;
   Id id = -1;
   Id junction = -1;
-  Rule rule = Rule::LHT;
+  Rule rule = Rule::NONE;
 };
 
 struct RoadLinkInfo {
-  enum class Type { ROAD = 0, JUNCTION = 1 };
-  enum class Point { START = 0, END = 1 };
-  enum class Dir { PLUS = 0, MINUS = 1 };
+  enum class Type { NONE = 0, ROAD = 1, JUNCTION = 2 };
+  enum class Point { NONE = 0, START = 1, END = 2 };
+  enum class Dir { NONE = 0, PLUS = 1, MINUS = 2 };
 
-  Type type = Type::ROAD;
+  Type type = Type::NONE;
   Id id = -1;
-  Point point = Point::START;
+  Point point = Point::NONE;
   double s = 0.;
-  Dir dir = Dir::PLUS;
+  Dir dir = Dir::NONE;
 };
 
 struct RoadLink {
@@ -243,19 +256,20 @@ struct RoadTypeInfo {
     TOWNPLAYSTREET = 13
   };
   enum class SpeedUnit {
-    MS = 0,   // m/s
-    MPH = 1,  // mph
-    KMH = 2   // km/h
+    NONE = 0,
+    MS = 1,   // m/s
+    MPH = 2,  // mph
+    KMH = 3   // km/h
   };
   double s = 0.;
   Type type = Type::UNKNOWN;
   std::string country;
   double max_speed = 0.;
-  SpeedUnit speed_unit = SpeedUnit::KMH;
+  SpeedUnit speed_unit = SpeedUnit::NONE;
 };
 
 struct RoadPlanView {
-  std::vector<std::unique_ptr<GeometryAttributes>> geometrys;
+  std::vector<std::shared_ptr<GeometryAttributes>> geometrys;
 };
 
 typedef struct Road RoadTypedef;
@@ -265,7 +279,14 @@ struct Road {
   RoadLink link;
   std::vector<RoadTypeInfo> type_info;
   RoadPlanView plan_view;
-  Lanes lanes;
+  Lanes::Ptr lanes;
+};
+
+typedef struct Map MapTypedef;
+struct Map {
+  typedef std::shared_ptr<MapTypedef> Ptr;
+  Header::Ptr header;
+  std::vector<Road::Ptr> roads;
 };
 
 }  // namespace core

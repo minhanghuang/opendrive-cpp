@@ -5,12 +5,23 @@
 namespace opendrive {
 namespace parser {
 
-opendrive::Status HeaderXmlParser::Parse(
-    const tinyxml2::XMLElement* header_node, core::Header::Ptr header_ptr) {
-  if (!header_node) {
-    return opendrive::Status(opendrive::ErrorCode::XML_HEADER_ELEMENT_ERROR,
-                             "Xml Header Is nullptr.");
+opendrive::Status HeaderXmlParser::Parse(const tinyxml2::XMLElement* header_ele,
+                                         core::Header::Ptr header_ptr) {
+  header_ele_ = header_ele;
+  header_ptr_ = header_ptr;
+  Init();
+  this->ParseAttributes();
+  return status();
+}
+
+void HeaderXmlParser::Init() {
+  if (!header_ele_ || !header_ptr_) {
+    set_status(ErrorCode::XML_HEADER_ELEMENT_ERROR, "Input is null.");
   }
+}
+
+HeaderXmlParser& HeaderXmlParser::ParseAttributes() {
+  if (!IsValid()) return *this;
   std::string rev_major;
   std::string rev_minor;
   std::string name;
@@ -21,35 +32,27 @@ opendrive::Status HeaderXmlParser::Parse(
   double south = 0.0;
   double west = 0.0;
   double east = 0.0;
-  int checker = tinyxml2::XMLError::XML_SUCCESS;
-
-  checker += XmlQueryStringAttribute(header_node, "revMajor", rev_major);
-  checker += XmlQueryStringAttribute(header_node, "revMinor", rev_minor);
-  checker += XmlQueryStringAttribute(header_node, "name", name);
-  checker += XmlQueryStringAttribute(header_node, "version", version);
-  checker += XmlQueryStringAttribute(header_node, "vendor", vendor);
-  checker += XmlQueryStringAttribute(header_node, "date", date);
-  checker += XmlQueryDoubleAttribute(header_node, "north", north);
-  checker += XmlQueryDoubleAttribute(header_node, "south", south);
-  checker += XmlQueryDoubleAttribute(header_node, "west", west);
-  checker += XmlQueryDoubleAttribute(header_node, "east", east);
-
-  if (tinyxml2::XMLError::XML_SUCCESS != checker) {
-    return opendrive::Status(opendrive::ErrorCode::XML_HEADER_ELEMENT_ERROR,
-                             "Parser Header Exception");
-  }
-
-  header_ptr->rev_major = rev_major;
-  header_ptr->rev_minor = rev_minor;
-  header_ptr->name = name;
-  header_ptr->version = version;
-  header_ptr->vendor = vendor;
-  header_ptr->date = date;
-  header_ptr->north = north;
-  header_ptr->south = south;
-  header_ptr->west = west;
-  header_ptr->east = east;
-  return opendrive::Status(opendrive::ErrorCode::OK, "ok");
+  XmlQueryStringAttribute(header_ele_, "revMajor", rev_major);
+  XmlQueryStringAttribute(header_ele_, "revMinor", rev_minor);
+  XmlQueryStringAttribute(header_ele_, "name", name);
+  XmlQueryStringAttribute(header_ele_, "version", version);
+  XmlQueryStringAttribute(header_ele_, "vendor", vendor);
+  XmlQueryStringAttribute(header_ele_, "date", date);
+  XmlQueryDoubleAttribute(header_ele_, "north", north);
+  XmlQueryDoubleAttribute(header_ele_, "south", south);
+  XmlQueryDoubleAttribute(header_ele_, "west", west);
+  XmlQueryDoubleAttribute(header_ele_, "east", east);
+  header_ptr_->rev_major = rev_major;
+  header_ptr_->rev_minor = rev_minor;
+  header_ptr_->name = name;
+  header_ptr_->version = version;
+  header_ptr_->vendor = vendor;
+  header_ptr_->date = date;
+  header_ptr_->north = north;
+  header_ptr_->south = south;
+  header_ptr_->west = west;
+  header_ptr_->east = east;
+  return *this;
 }
 
 }  // namespace parser
