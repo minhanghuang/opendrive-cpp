@@ -6,7 +6,7 @@ project(opendrive-cpp VERSION 1.0.0)
 # PATCH: 补丁版本; 内部函数的修改而不影响API接口 
 
 set(TARGET_NAME ${PROJECT_NAME})
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_SHARED_LIBS "Build opendrive-cpp shared library" ON)

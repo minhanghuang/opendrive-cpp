@@ -36,7 +36,7 @@ class TestOpenDrive : public testing::Test {
   static std::string xml_file_path;
 };
 
-std::string TestOpenDrive::xml_file_path = "./tests/data/Town01.xodr";
+std::string TestOpenDrive::xml_file_path = "./tests/data/only-unittest.xodr";
 
 void TestOpenDrive::SetUpTestCase() {}
 void TestOpenDrive::TearDownTestCase() {}
