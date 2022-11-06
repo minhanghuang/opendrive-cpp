@@ -45,22 +45,6 @@ void TestOpenDrive::SetUp() {}
 
 TEST_F(TestOpenDrive, TestDemo) {}
 
-TEST_F(TestOpenDrive, TestCommon) {
-  auto parser = GetParser();
-  const tinyxml2::XMLElement* xml = GetXml()->RootElement();
-  auto header_node = xml->FirstChildElement("header");
-  ASSERT_TRUE(header_node != nullptr);
-  std::string name;
-  int revMinor;
-  double north;
-  opendrive::XmlQueryStringAttribute(header_node, "name", name);
-  opendrive::XmlQueryIntAttribute(header_node, "revMinor", revMinor);
-  opendrive::XmlQueryDoubleAttribute(header_node, "north", north);
-  ASSERT_TRUE(4 == revMinor);
-  ASSERT_TRUE("zhichun Rd" == name);
-  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, north);
-}
-
 TEST_F(TestOpenDrive, TestParseHeader) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();

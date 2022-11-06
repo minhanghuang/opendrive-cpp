@@ -20,7 +20,8 @@ link_directories (
 )
 
 SET(TEST_SOURCES
-  opendrive_test 
+  opendrive_test
+  common_test
 )
 
 FOREACH(test_src ${TEST_SOURCES})
