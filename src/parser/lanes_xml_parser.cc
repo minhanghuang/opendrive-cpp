@@ -46,7 +46,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneOffsetEle() {
     lane_offset.c = lane_offset_c;
     lane_offset.d = lane_offset_d;
     lanes_ptr_->lane_offsets.emplace_back(lane_offset);
-    XmlNextSiblingElement(lane_offset_ele);
+    lane_offset_ele = XmlNextSiblingElement(lane_offset_ele);
   }
   return *this;
 }
@@ -61,7 +61,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionEle() {
     XmlQueryDoubleAttribute(lane_section_ele, "s", lane_section_s);
     lane_section.s = lane_section_s;
     ParseLaneSectionLanesEle(lane_section_ele, lane_section);
-    XmlNextSiblingElement(lane_section_ele);
+    lane_section_ele = XmlNextSiblingElement(lane_section_ele);
   }
   return *this;
 }
@@ -89,7 +89,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionLanesEle(
       } else if ("right" == type) {
         lane_section.right.lanes.emplace_back(lane);
       }
-      XmlNextSiblingElement(lane_ele);
+      lane_ele = XmlNextSiblingElement(lane_ele);
     }
   }
 
@@ -232,7 +232,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneWidthEle(
     lane_width.c = c;
     lane_width.d = d;
     lane.widths.emplace_back(lane_width);
-    XmlNextSiblingElement(lane_width_ele);
+    lane_width_ele = XmlNextSiblingElement(lane_width_ele);
   }
   return *this;
 }
@@ -260,7 +260,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneBorderEle(
     lane_border.c = c;
     lane_border.d = d;
     lane.borders.emplace_back(lane_border);
-    XmlNextSiblingElement(curr_lane_border_ele);
+    curr_lane_border_ele = XmlNextSiblingElement(curr_lane_border_ele);
   }
   return *this;
 }
@@ -350,7 +350,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneRoadMarkEle(
     road_mark.height = mark_height;
     road_mark.material = mark_material;
     lane.road_marks.emplace_back(road_mark);
-    XmlNextSiblingElement(curr_lane_mark_ele);
+    curr_lane_mark_ele = XmlNextSiblingElement(curr_lane_mark_ele);
   }
 
   return *this;

@@ -44,7 +44,24 @@ void TestOpenDrive::TearDown() {}
 void TestOpenDrive::SetUp() {}
 
 TEST_F(TestOpenDrive, TestDemo) {}
-TEST_F(TestOpenDrive, TestParserHeader) {
+
+TEST_F(TestOpenDrive, TestCommon) {
+  auto parser = GetParser();
+  const tinyxml2::XMLElement* xml = GetXml()->RootElement();
+  auto header_node = xml->FirstChildElement("header");
+  ASSERT_TRUE(header_node != nullptr);
+  std::string name;
+  int revMinor;
+  double north;
+  opendrive::XmlQueryStringAttribute(header_node, "name", name);
+  opendrive::XmlQueryIntAttribute(header_node, "revMinor", revMinor);
+  opendrive::XmlQueryDoubleAttribute(header_node, "north", north);
+  ASSERT_TRUE(4 == revMinor);
+  ASSERT_TRUE("zhichun Rd" == name);
+  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, north);
+}
+
+TEST_F(TestOpenDrive, TestParseHeader) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* header_node = xml->FirstChildElement("header");
@@ -53,16 +70,26 @@ TEST_F(TestOpenDrive, TestParserHeader) {
       std::make_shared<opendrive::core::Header>();
   auto ret = parser->Header(header_node, header_ptr);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+  ASSERT_TRUE("1" == header_ptr->rev_major);
+  ASSERT_TRUE("4" == header_ptr->rev_minor);
+  ASSERT_TRUE("1" == header_ptr->version);
+  ASSERT_TRUE("2019-04-06T10:38:28" == header_ptr->date);
+  ASSERT_TRUE("zhichun Rd" == header_ptr->name);
+  ASSERT_TRUE("VectorZero" == header_ptr->vendor);
+  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header_ptr->north);
+  ASSERT_DOUBLE_EQ(-3.5690998535156251e+2, header_ptr->south);
+  ASSERT_DOUBLE_EQ(-2.8359911988457576e+1, header_ptr->west);
+  ASSERT_DOUBLE_EQ(4.2268105762411665e+2, header_ptr->east);
+}
 
-  std::cout << "rev_major:" << header_ptr->rev_major << std::endl;
-  std::cout << "rev_minor:" << header_ptr->rev_minor << std::endl;
-  std::cout << "version:" << header_ptr->version << std::endl;
-  std::cout << "date:" << header_ptr->date << std::endl;
-  std::cout << "name:" << header_ptr->name << std::endl;
-  std::cout << "north:" << header_ptr->north << std::endl;
-  std::cout << "south:" << header_ptr->south << std::endl;
-  std::cout << "west:" << header_ptr->east << std::endl;
-  std::cout << "east:" << header_ptr->west << std::endl;
+TEST_F(TestOpenDrive, TestParseRoad) {
+  auto parser = GetParser();
+  const tinyxml2::XMLElement* xml = GetXml()->RootElement();
+  const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
+  ASSERT_TRUE(curr_road_ele != nullptr);
+  auto road_ptr = std::make_shared<opendrive::core::Road>();
+  opendrive::parser::RoadXmlParser road_parser;
+  road_parser.Parse(curr_road_ele, road_ptr);
 }
 
 int main(int argc, char* argv[]) {

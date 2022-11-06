@@ -16,9 +16,10 @@ opendrive::Status RoadXmlParser::Parse(const tinyxml2::XMLElement* road_ele,
   Init();
   ParseAttributes()
       .ParseLinkEle()
-      .ParseTypeEle()
+      // .ParseTypeEle()
       .ParsePlanViewEle()
-      .ParseLanesEle();
+      // .ParseLanesEle();
+      ;
   return status();
 }
 
@@ -176,7 +177,7 @@ RoadXmlParser& RoadXmlParser::ParseTypeEle() {
       road_type_info.type = core::RoadTypeInfo::Type::TOWNPLAYSTREET;
     }
     road_ptr_->type_info.emplace_back(road_type_info);
-    XmlNextSiblingElement(type_ele);
+    type_ele = XmlNextSiblingElement(type_ele);
   }
   return *this;
 }
@@ -186,11 +187,11 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
   const tinyxml2::XMLElement* planview_ele =
       road_ele_->FirstChildElement("planView");
   if (planview_ele) {
-    const tinyxml2::XMLElement* geometry_ele =
+    const tinyxml2::XMLElement* curr_geometry_ele =
         planview_ele->FirstChildElement("geometry");
-    while (geometry_ele) {
+    while (curr_geometry_ele) {
       const tinyxml2::XMLElement* geometry_type_ele =
-          planview_ele->FirstChildElement("line");
+          curr_geometry_ele->FirstChildElement("line");
       std::shared_ptr<core::GeometryAttributes> geometry_attributes_ptr;
       if (geometry_type_ele) {
         std::shared_ptr<core::GeometryAttributesLine> geometry_ptr =
@@ -278,6 +279,12 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
         geometry_ptr->type = core::GeometryAttributes::Type::PARAMPOLY3;
         geometry_attributes_ptr =
             std::dynamic_pointer_cast<core::GeometryAttributes>(geometry_ptr);
+        std::cout << "type: paramPoly3" << std::endl;
+      }
+      if (!geometry_attributes_ptr) {
+        set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR,
+                   "Parse <geometry> Element Exception.");
+        return *this;
       }
       double geometry_s;
       double geometry_x;
@@ -285,12 +292,12 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
       double geometry_z;
       double geometry_hdg;
       double geometry_length;
-      XmlQueryDoubleAttribute(geometry_ele, "s", geometry_s);
-      XmlQueryDoubleAttribute(geometry_ele, "x", geometry_x);
-      XmlQueryDoubleAttribute(geometry_ele, "y", geometry_y);
-      XmlQueryDoubleAttribute(geometry_ele, "z", geometry_z);
-      XmlQueryDoubleAttribute(geometry_ele, "hdg", geometry_hdg);
-      XmlQueryDoubleAttribute(geometry_ele, "length", geometry_length);
+      XmlQueryDoubleAttribute(curr_geometry_ele, "s", geometry_s);
+      XmlQueryDoubleAttribute(curr_geometry_ele, "x", geometry_x);
+      XmlQueryDoubleAttribute(curr_geometry_ele, "y", geometry_y);
+      XmlQueryDoubleAttribute(curr_geometry_ele, "z", geometry_z);
+      XmlQueryDoubleAttribute(curr_geometry_ele, "hdg", geometry_hdg);
+      XmlQueryDoubleAttribute(curr_geometry_ele, "length", geometry_length);
       geometry_attributes_ptr->s = geometry_s;
       geometry_attributes_ptr->x = geometry_x;
       geometry_attributes_ptr->y = geometry_y;
@@ -298,7 +305,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
       geometry_attributes_ptr->hdg = geometry_hdg;
       geometry_attributes_ptr->length = geometry_length;
       road_ptr_->plan_view.geometrys.emplace_back(geometry_attributes_ptr);
-      XmlNextSiblingElement(geometry_ele);
+      curr_geometry_ele = XmlNextSiblingElement(curr_geometry_ele);
     }
   }
   return *this;
