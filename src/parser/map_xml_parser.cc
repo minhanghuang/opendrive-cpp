@@ -42,7 +42,7 @@ MapXmlParser& MapXmlParser::ParseRoadEle() {
     map_ptr_->roads.emplace_back(road_ptr);
     RoadXmlParser road_parser;
     road_parser.Parse(curr_road_ele, road_ptr);
-    XmlNextSiblingElement(curr_road_ele);
+    common::XmlNextSiblingElement(curr_road_ele);
   }
   return *this;
 }
