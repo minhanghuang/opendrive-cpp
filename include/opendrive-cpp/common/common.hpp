@@ -33,22 +33,36 @@ static tinyxml2::XMLError XmlQueryStringAttribute(
 }
 
 static tinyxml2::XMLError XmlQueryIntAttribute(
-    const tinyxml2::XMLElement* xml_node, const std::string& name, int& value) {
+    const tinyxml2::XMLElement* xml_node, const std::string& name, int& value,
+    bool enable_exit = false) {
   value = xml_node->Int64Attribute(name.c_str());
+  const char* val = xml_node->Attribute(name.c_str());
+  if (val == nullptr) {
+    if (enable_exit) {
+      Assert(false, "xml query int attribute fault.");
+    }
+    return tinyxml2::XML_NO_ATTRIBUTE;
+  }
   return tinyxml2::XML_SUCCESS;
 }
 
 static tinyxml2::XMLError XmlQueryDoubleAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name,
-    double& value) {
+    double& value, bool enable_exit = false) {
   value = xml_node->DoubleAttribute(name.c_str());
+  const char* val = xml_node->Attribute(name.c_str());
+  if (val == nullptr) {
+    if (enable_exit) {
+      Assert(false, "xml query double attribute fault.");
+    }
+    return tinyxml2::XML_NO_ATTRIBUTE;
+  }
   return tinyxml2::XML_SUCCESS;
 }
 
 static const tinyxml2::XMLElement* XmlNextSiblingElement(
     const tinyxml2::XMLElement* element) {
-  element = element->NextSiblingElement(element->Name());
-  return element;
+  return element->NextSiblingElement(element->Name());
 }
 
 static std::string StrToUpper(const std::string& s) {
