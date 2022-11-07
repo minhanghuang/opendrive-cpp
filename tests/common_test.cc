@@ -4,10 +4,15 @@
 #include <tinyxml2.h>
 
 #include <cassert>
+#include <map>
 #include <memory>
 #include <string>
+#include <utility>
 
+#include "opendrive-cpp/core/types.hpp"
 #include "opendrive-cpp/opendrive.h"
+
+using namespace opendrive;
 
 class TestCommon : public testing::Test {
  public:
@@ -66,26 +71,51 @@ TEST_F(TestCommon, TestXml) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   auto header_node = xml->FirstChildElement("header");
+  auto header_ptr = std::make_shared<opendrive::core::Header>();
   ASSERT_TRUE(header_node != nullptr);
-  std::string name;
-  int revMinor;
-  double north;
-  bool b = false;
-  opendrive::common::XmlQueryStringAttribute(header_node, "name", name);
-  opendrive::common::XmlQueryIntAttribute(header_node, "revMinor", revMinor);
-  opendrive::common::XmlQueryDoubleAttribute(header_node, "north", north);
-  ASSERT_TRUE(4 == revMinor);
-  ASSERT_TRUE("zhichun Rd" == name);
-  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, north);
-  ASSERT_EQ(opendrive::common::XmlQueryIntAttribute(header_node, "revMinor___",
-                                                    revMinor),
+  opendrive::common::XmlQueryStringAttribute(header_node, "name",
+                                             header_ptr->name);
+  opendrive::common::XmlQueryStringAttribute(header_node, "revMinor",
+                                             header_ptr->rev_minor);
+  opendrive::common::XmlQueryDoubleAttribute(header_node, "north",
+                                             header_ptr->north);
+  ASSERT_TRUE("4" == header_ptr->rev_minor);
+  ASSERT_TRUE("zhichun Rd" == header_ptr->name);
+  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header_ptr->north);
+
+  /// not found
+  ASSERT_EQ(opendrive::common::XmlQueryStringAttribute(header_node, "aaa",
+                                                       header_ptr->rev_minor),
             tinyxml2::XMLError::XML_NO_ATTRIBUTE);
-  ASSERT_EQ(
-      opendrive::common::XmlQueryBoolAttribute(header_node, "revMinor___", b),
-      tinyxml2::XMLError::XML_NO_ATTRIBUTE);
-  ASSERT_EQ(opendrive::common::XmlQueryDoubleAttribute(header_node,
-                                                       "revMinor___", north),
-            tinyxml2::XMLError::XML_NO_ATTRIBUTE);
+
+  /// default
+  header_ptr->rev_minor = "99";
+  header_ptr->name = "qwert";
+  header_ptr->north = -99.99;
+  opendrive::common::XmlQueryStringAttribute(header_node, "name__",
+                                             header_ptr->name);
+  opendrive::common::XmlQueryStringAttribute(header_node, "revMinor___",
+                                             header_ptr->rev_minor);
+  opendrive::common::XmlQueryDoubleAttribute(header_node, "north___",
+                                             header_ptr->north);
+  ASSERT_TRUE("99" == header_ptr->rev_minor);
+  ASSERT_TRUE("qwert" == header_ptr->name);
+  ASSERT_DOUBLE_EQ(-99.99, header_ptr->north);
+}
+
+TEST_F(TestCommon, TestXml2) {
+  auto parser = GetParser();
+  const tinyxml2::XMLElement* xml = GetXml()->RootElement();
+  auto road_ele = xml->FirstChildElement("road");
+  auto road_ptr = std::make_shared<opendrive::core::Road>();
+  ASSERT_TRUE(road_ele != nullptr);
+  ASSERT_TRUE(road_ptr->attributes.rule == core::RoadAttributes::Rule::UNKNOWN);
+  auto ret = opendrive::common::XmlQueryEnumAttribute(
+      road_ele, "rule", road_ptr->attributes.rule,
+      std::map<std::string, core::RoadAttributes::Rule>{
+          std::make_pair("LHT", core::RoadAttributes::Rule::LHT),
+          std::make_pair("RHT", core::RoadAttributes::Rule::RHT)});
+  ASSERT_TRUE(road_ptr->attributes.rule == core::RoadAttributes::Rule::RHT);
 }
 
 int main(int argc, char* argv[]) {

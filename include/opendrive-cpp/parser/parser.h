@@ -14,7 +14,7 @@ namespace parser {
 
 class XmlParser {
  public:
-  XmlParser();
+  XmlParser() = default;
   virtual bool IsValid() final;
   virtual opendrive::Status status() final;
   virtual void set_status(ErrorCode code, const std::string& msg) final;

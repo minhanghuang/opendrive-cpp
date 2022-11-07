@@ -5,8 +5,6 @@
 namespace opendrive {
 namespace parser {
 
-XmlParser::XmlParser() {}
-
 bool XmlParser::IsValid() {
   if (ErrorCode::OK != status_.error_code) {
     return false;

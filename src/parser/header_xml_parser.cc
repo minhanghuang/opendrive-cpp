@@ -1,6 +1,7 @@
 #include "opendrive-cpp/parser/header_xml_parser.h"
 
 #include "opendrive-cpp/common/common.hpp"
+#include "opendrive-cpp/parser/parser.h"
 
 namespace opendrive {
 namespace parser {
@@ -22,36 +23,18 @@ void HeaderXmlParser::Init() {
 
 HeaderXmlParser& HeaderXmlParser::ParseAttributes() {
   if (!IsValid()) return *this;
-  std::string rev_major;
-  std::string rev_minor;
-  std::string name;
-  std::string version;
-  std::string date;
-  std::string vendor;
-  double north = 0.0;
-  double south = 0.0;
-  double west = 0.0;
-  double east = 0.0;
-  common::XmlQueryStringAttribute(header_ele_, "revMajor", rev_major);
-  common::XmlQueryStringAttribute(header_ele_, "revMinor", rev_minor);
-  common::XmlQueryStringAttribute(header_ele_, "name", name);
-  common::XmlQueryStringAttribute(header_ele_, "version", version);
-  common::XmlQueryStringAttribute(header_ele_, "vendor", vendor);
-  common::XmlQueryStringAttribute(header_ele_, "date", date);
-  common::XmlQueryDoubleAttribute(header_ele_, "north", north);
-  common::XmlQueryDoubleAttribute(header_ele_, "south", south);
-  common::XmlQueryDoubleAttribute(header_ele_, "west", west);
-  common::XmlQueryDoubleAttribute(header_ele_, "east", east);
-  header_ptr_->rev_major = rev_major;
-  header_ptr_->rev_minor = rev_minor;
-  header_ptr_->name = name;
-  header_ptr_->version = version;
-  header_ptr_->vendor = vendor;
-  header_ptr_->date = date;
-  header_ptr_->north = north;
-  header_ptr_->south = south;
-  header_ptr_->west = west;
-  header_ptr_->east = east;
+  common::XmlQueryStringAttribute(header_ele_, "revMajor",
+                                  header_ptr_->rev_major);
+  common::XmlQueryStringAttribute(header_ele_, "revMinor",
+                                  header_ptr_->rev_minor);
+  common::XmlQueryStringAttribute(header_ele_, "name", header_ptr_->name);
+  common::XmlQueryStringAttribute(header_ele_, "version", header_ptr_->version);
+  common::XmlQueryStringAttribute(header_ele_, "vendor", header_ptr_->vendor);
+  common::XmlQueryStringAttribute(header_ele_, "date", header_ptr_->date);
+  common::XmlQueryDoubleAttribute(header_ele_, "north", header_ptr_->north);
+  common::XmlQueryDoubleAttribute(header_ele_, "south", header_ptr_->south);
+  common::XmlQueryDoubleAttribute(header_ele_, "west", header_ptr_->west);
+  common::XmlQueryDoubleAttribute(header_ele_, "east", header_ptr_->east);
   return *this;
 }
 

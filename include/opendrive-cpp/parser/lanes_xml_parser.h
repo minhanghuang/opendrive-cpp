@@ -11,6 +11,7 @@ namespace parser {
 
 class LanesXmlParser : public XmlParser {
  public:
+  LanesXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* lanes_ele,
                           core::Lanes::Ptr lanes_ptr);
 

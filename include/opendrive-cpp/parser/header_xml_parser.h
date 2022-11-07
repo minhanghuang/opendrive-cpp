@@ -3,6 +3,7 @@
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
+#include "opendrive-cpp/core/types.hpp"
 #include "parser.h"
 
 namespace opendrive {
@@ -10,6 +11,7 @@ namespace parser {
 
 class HeaderXmlParser : public XmlParser {
  public:
+  HeaderXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* header_ele,
                           core::Header::Ptr header_ptr);
 

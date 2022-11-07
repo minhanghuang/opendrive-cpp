@@ -12,6 +12,7 @@ namespace parser {
 
 class RoadXmlParser : public XmlParser {
  public:
+  RoadXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* road_ele,
                           core::Road::Ptr road_ptr);
 

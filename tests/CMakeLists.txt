@@ -22,6 +22,7 @@ link_directories (
 SET(TEST_SOURCES
   opendrive_test
   common_test
+  header_parser_test
 )
 
 FOREACH(test_src ${TEST_SOURCES})

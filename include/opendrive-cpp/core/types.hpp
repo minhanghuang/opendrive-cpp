@@ -15,7 +15,7 @@ typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
 
-enum class Boolean { UNKNOWN = -1, FALSE = 0, TRUE = 1 };
+enum class Boolean : std::uint8_t { FALSE = 0, TRUE = 1, UNKNOWN = 2 };
 
 typedef struct Header HeaderTypedef;
 struct Header {
@@ -40,6 +40,7 @@ struct Point {
 
 /// Geometry Attributes
 struct GeometryAttributes {
+  virtual ~GeometryAttributes() = default;
   enum class Type : std::uint8_t {
     UNKNOWN = 0,
     ARC = 1,
@@ -250,17 +251,16 @@ struct RoadTypeInfo {
     UNKNOWN = 0,
     RURAL = 1,
     MOTORWAY = 2,
-    TURAL = 3,
-    TOWN = 4,
-    LOWSPEED = 5,
-    PEDESTRIAN = 6,
-    BICYCLE = 7,
-    TOWNEXPRESSWAY = 8,
-    TOWNCOLLECTOR = 9,
-    TOWNARTERIAL = 10,
-    TOWNPRIVATE = 11,
-    TOWNLOCAL = 12,
-    TOWNPLAYSTREET = 13
+    TOWN = 3,
+    LOWSPEED = 4,
+    PEDESTRIAN = 5,
+    BICYCLE = 6,
+    TOWNEXPRESSWAY = 7,
+    TOWNCOLLECTOR = 8,
+    TOWNARTERIAL = 9,
+    TOWNPRIVATE = 10,
+    TOWNLOCAL = 11,
+    TOWNPLAYSTREET = 12
   };
   enum class SpeedUnit {
     UNKNOWN = 0,
