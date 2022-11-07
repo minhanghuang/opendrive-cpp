@@ -7,12 +7,12 @@ Parser::Parser()
     : header_parser_(std::make_shared<parser::HeaderXmlParser>()) {}
 
 opendrive::Status Parser::Header(const tinyxml2::XMLElement* xml_node,
-                                 core::Header::Ptr header_ptr) {
+                                 base::Header::Ptr header_ptr) {
   return header_parser_->Parse(xml_node, header_ptr);
 }
 
 opendrive::Status Parser::Road(const tinyxml2::XMLElement* xml_node,
-                               core::Road::Ptr road_ptr) {
+                               base::Road::Ptr road_ptr) {
   return road_parser_->Parse(xml_node, road_ptr);
 }
 

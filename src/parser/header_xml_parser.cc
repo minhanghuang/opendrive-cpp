@@ -7,7 +7,7 @@ namespace opendrive {
 namespace parser {
 
 opendrive::Status HeaderXmlParser::Parse(const tinyxml2::XMLElement* header_ele,
-                                         core::Header::Ptr header_ptr) {
+                                         base::Header::Ptr header_ptr) {
   header_ele_ = header_ele;
   header_ptr_ = header_ptr;
   Init();

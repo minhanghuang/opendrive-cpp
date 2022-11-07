@@ -71,7 +71,7 @@ TEST_F(TestCommon, TestXml) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   auto header_node = xml->FirstChildElement("header");
-  auto header_ptr = std::make_shared<opendrive::core::Header>();
+  auto header_ptr = std::make_shared<opendrive::base::Header>();
   ASSERT_TRUE(header_node != nullptr);
   opendrive::common::XmlQueryStringAttribute(header_node, "name",
                                              header_ptr->name);
@@ -107,15 +107,15 @@ TEST_F(TestCommon, TestXml2) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   auto road_ele = xml->FirstChildElement("road");
-  auto road_ptr = std::make_shared<opendrive::core::Road>();
+  auto road_ptr = std::make_shared<opendrive::base::Road>();
   ASSERT_TRUE(road_ele != nullptr);
-  ASSERT_TRUE(road_ptr->attributes.rule == core::RoadAttributes::Rule::UNKNOWN);
+  ASSERT_TRUE(road_ptr->attributes.rule == base::RoadAttributes::Rule::UNKNOWN);
   auto ret = opendrive::common::XmlQueryEnumAttribute(
       road_ele, "rule", road_ptr->attributes.rule,
-      std::map<std::string, core::RoadAttributes::Rule>{
-          std::make_pair("LHT", core::RoadAttributes::Rule::LHT),
-          std::make_pair("RHT", core::RoadAttributes::Rule::RHT)});
-  ASSERT_TRUE(road_ptr->attributes.rule == core::RoadAttributes::Rule::RHT);
+      std::map<std::string, base::RoadAttributes::Rule>{
+          std::make_pair("LHT", base::RoadAttributes::Rule::LHT),
+          std::make_pair("RHT", base::RoadAttributes::Rule::RHT)});
+  ASSERT_TRUE(road_ptr->attributes.rule == base::RoadAttributes::Rule::RHT);
 }
 
 int main(int argc, char* argv[]) {

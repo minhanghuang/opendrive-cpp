@@ -12,14 +12,14 @@ namespace parser {
 class MapXmlParser : public XmlParser {
  public:
   opendrive::Status Parse(const tinyxml2::XMLElement* map_ele,
-                          core::Map::Ptr map_ptr);
+                          base::Map::Ptr map_ptr);
 
  private:
   virtual void Init() override;
   MapXmlParser& ParseHeaderEle();
   MapXmlParser& ParseRoadEle();
   const tinyxml2::XMLElement* map_ele_;
-  core::Map::Ptr map_ptr_;
+  base::Map::Ptr map_ptr_;
 };
 
 }  // namespace parser

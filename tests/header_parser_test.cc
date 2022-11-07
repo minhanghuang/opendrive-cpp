@@ -52,8 +52,8 @@ TEST_F(TestHeaderParser, TestHeader) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* header_node = xml->FirstChildElement("header");
   ASSERT_TRUE(header_node != nullptr);
-  opendrive::core::Header::Ptr header_ptr =
-      std::make_shared<opendrive::core::Header>();
+  opendrive::base::Header::Ptr header_ptr =
+      std::make_shared<opendrive::base::Header>();
   auto ret = parser->Header(header_node, header_ptr);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
   ASSERT_TRUE("1" == header_ptr->rev_major);

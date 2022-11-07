@@ -52,7 +52,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
   ASSERT_TRUE(curr_road_ele != nullptr);
-  auto road_ptr = std::make_shared<opendrive::core::Road>();
+  auto road_ptr = std::make_shared<opendrive::base::Road>();
   opendrive::parser::RoadXmlParser road_parser;
   road_parser.Parse(curr_road_ele, road_ptr);
 
@@ -61,53 +61,53 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(3.6360177306314796e+1, road_ptr->attributes.length);
   ASSERT_EQ(0, road_ptr->attributes.id);
   ASSERT_EQ(-1, road_ptr->attributes.junction);
-  ASSERT_EQ(opendrive::core::RoadAttributes::Rule::RHT,
+  ASSERT_EQ(opendrive::base::RoadAttributes::Rule::RHT,
             road_ptr->attributes.rule);
 
   /// road link
-  ASSERT_EQ(core::RoadLinkInfo::Type::ROAD, road_ptr->link.predecessor.type);
+  ASSERT_EQ(base::RoadLinkInfo::Type::ROAD, road_ptr->link.predecessor.type);
   ASSERT_EQ(11, road_ptr->link.predecessor.id);
-  ASSERT_EQ(core::RoadLinkInfo::PointType::START,
+  ASSERT_EQ(base::RoadLinkInfo::PointType::START,
             road_ptr->link.predecessor.point_type);
   ASSERT_EQ(0, road_ptr->link.predecessor.s);
-  ASSERT_EQ(core::RoadLinkInfo::Dir::UNKNOWN, road_ptr->link.predecessor.dir);
+  ASSERT_EQ(base::RoadLinkInfo::Dir::UNKNOWN, road_ptr->link.predecessor.dir);
 
-  ASSERT_EQ(core::RoadLinkInfo::Type::JUNCTION, road_ptr->link.successor.type);
+  ASSERT_EQ(base::RoadLinkInfo::Type::JUNCTION, road_ptr->link.successor.type);
   ASSERT_EQ(43, road_ptr->link.successor.id);
-  ASSERT_EQ(core::RoadLinkInfo::PointType::UNKNOWN,
+  ASSERT_EQ(base::RoadLinkInfo::PointType::UNKNOWN,
             road_ptr->link.successor.point_type);
   ASSERT_EQ(0, road_ptr->link.successor.s);
-  ASSERT_EQ(core::RoadLinkInfo::Dir::UNKNOWN, road_ptr->link.successor.dir);
+  ASSERT_EQ(base::RoadLinkInfo::Dir::UNKNOWN, road_ptr->link.successor.dir);
 
   /// road type
   ASSERT_EQ(2, road_ptr->type_info.size());
   auto type_info1 = road_ptr->type_info.front();
   auto type_info2 = road_ptr->type_info.back();
   ASSERT_EQ(0, type_info1.s);
-  ASSERT_EQ(core::RoadTypeInfo::Type::TOWN, type_info1.type);
+  ASSERT_EQ(base::RoadTypeInfo::Type::TOWN, type_info1.type);
   ASSERT_EQ("", type_info1.country);
   ASSERT_EQ(25, type_info1.max_speed);
-  ASSERT_EQ(core::RoadTypeInfo::SpeedUnit::MPH, type_info1.speed_unit);
+  ASSERT_EQ(base::RoadTypeInfo::SpeedUnit::MPH, type_info1.speed_unit);
 
   ASSERT_DOUBLE_EQ(2.0601003600277540e+01, type_info2.s);
-  ASSERT_EQ(core::RoadTypeInfo::Type::TOWN, type_info2.type);
+  ASSERT_EQ(base::RoadTypeInfo::Type::TOWN, type_info2.type);
   ASSERT_EQ("DE", type_info2.country);
   ASSERT_EQ(25, type_info2.max_speed);
-  ASSERT_EQ(core::RoadTypeInfo::SpeedUnit::KMH, type_info2.speed_unit);
+  ASSERT_EQ(base::RoadTypeInfo::SpeedUnit::KMH, type_info2.speed_unit);
 
   /// road planView
   ASSERT_EQ(5, road_ptr->plan_view.geometrys.size());
   auto geometry_info1 = road_ptr->plan_view.geometrys.at(0);
   auto geometry_info2 =
-      std::dynamic_pointer_cast<core::GeometryAttributesSpiral>(
+      std::dynamic_pointer_cast<base::GeometryAttributesSpiral>(
           road_ptr->plan_view.geometrys.at(1));
-  auto geometry_info3 = std::dynamic_pointer_cast<core::GeometryAttributesArc>(
+  auto geometry_info3 = std::dynamic_pointer_cast<base::GeometryAttributesArc>(
       road_ptr->plan_view.geometrys.at(2));
   auto geometry_info4 =
-      std::dynamic_pointer_cast<core::GeometryAttributesPoly3>(
+      std::dynamic_pointer_cast<base::GeometryAttributesPoly3>(
           road_ptr->plan_view.geometrys.at(3));
   auto geometry_info5 =
-      std::dynamic_pointer_cast<core::GeometryAttributesParamPoly3>(
+      std::dynamic_pointer_cast<base::GeometryAttributesParamPoly3>(
           road_ptr->plan_view.geometrys.at(4));
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s);
   ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x);
@@ -115,7 +115,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(0, geometry_info1->z);
   ASSERT_DOUBLE_EQ(3.1415926535848282e+00, geometry_info1->hdg);
   ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info1->length);
-  ASSERT_EQ(core::GeometryAttributes::Type::LINE, geometry_info1->type);
+  ASSERT_EQ(base::GeometryAttributes::Type::LINE, geometry_info1->type);
 
   ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info2->s);
   ASSERT_DOUBLE_EQ(1.5085270356448223e+02, geometry_info2->x);
@@ -123,7 +123,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(0, geometry_info2->z);
   ASSERT_DOUBLE_EQ(3.1415926535798597e+00, geometry_info2->hdg);
   ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info2->length);
-  ASSERT_EQ(core::GeometryAttributes::Type::SPIRAL, geometry_info2->type);
+  ASSERT_EQ(base::GeometryAttributes::Type::SPIRAL, geometry_info2->type);
   ASSERT_DOUBLE_EQ(-0.0000000000000000e+00, geometry_info2->curve_start);
   ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info2->curve_end);
 
@@ -133,7 +133,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(0, geometry_info3->z);
   ASSERT_DOUBLE_EQ(3.0547870980255456e+00, geometry_info3->hdg);
   ASSERT_DOUBLE_EQ(1.1186223687745517e+01, geometry_info3->length);
-  ASSERT_EQ(core::GeometryAttributes::Type::ARC, geometry_info3->type);
+  ASSERT_EQ(base::GeometryAttributes::Type::ARC, geometry_info3->type);
   ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info3->curvature);
 
   ASSERT_DOUBLE_EQ(1.8430053456596493e+01, geometry_info4->s);
@@ -142,7 +142,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(0, geometry_info4->z);
   ASSERT_DOUBLE_EQ(-3.8812339311141031e-02, geometry_info4->hdg);
   ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info4->length);
-  ASSERT_EQ(core::GeometryAttributes::Type::POLY3, geometry_info4->type);
+  ASSERT_EQ(base::GeometryAttributes::Type::POLY3, geometry_info4->type);
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->a);
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->b);
   ASSERT_DOUBLE_EQ(7.8270095403552599e-03, geometry_info4->c);
@@ -154,8 +154,8 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(0, geometry_info5->z);
   ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg);
   ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length);
-  ASSERT_EQ(core::GeometryAttributes::Type::PARAMPOLY3, geometry_info5->type);
-  ASSERT_EQ(core::GeometryAttributesParamPoly3::PRange::ARCLENGTH,
+  ASSERT_EQ(base::GeometryAttributes::Type::PARAMPOLY3, geometry_info5->type);
+  ASSERT_EQ(base::GeometryAttributesParamPoly3::PRange::ARCLENGTH,
             geometry_info5->p_range);
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->aU);
   ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bU);
@@ -193,9 +193,11 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   auto lane_section1_left2 = lane_section1.left.lanes.at(1);
   auto lane_section1_left3 = lane_section1.left.lanes.at(2);
   ASSERT_EQ(3, lane_section1_left1.attributes.id);
-  ASSERT_EQ(core::LaneAttributes::Type::SIDEWALK,
+  ASSERT_EQ(2, lane_section1_left2.attributes.id);
+  ASSERT_EQ(1, lane_section1_left3.attributes.id);
+  ASSERT_EQ(base::LaneAttributes::Type::SIDEWALK,
             lane_section1_left1.attributes.type);
-  ASSERT_EQ(core::Boolean::FALSE, lane_section1_left1.attributes.level);
+  ASSERT_EQ(base::Boolean::FALSE, lane_section1_left1.attributes.level);
   ASSERT_EQ(-3, lane_section1_left1.link.predecessor);
   ASSERT_EQ(1, lane_section1_left1.widths.size());
   auto lane_section1_width1 = lane_section1_left1.widths.front();
@@ -216,10 +218,10 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_EQ(1, lane_section1_left1.road_marks.size());
   auto lane_section1_roadmarks1 = lane_section1_left1.road_marks.front();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_roadmarks1.s);
-  ASSERT_EQ(core::RoadMark::Type::NONE, lane_section1_roadmarks1.type);
-  ASSERT_EQ(core::RoadMark::Color::WHITE, lane_section1_roadmarks1.color);
-  ASSERT_EQ(core::RoadMark::Weight::UNKNOWN, lane_section1_roadmarks1.weigth);
-  ASSERT_EQ(core::RoadMark::LaneChange::NONE,
+  ASSERT_EQ(base::RoadMark::Type::NONE, lane_section1_roadmarks1.type);
+  ASSERT_EQ(base::RoadMark::Color::WHITE, lane_section1_roadmarks1.color);
+  ASSERT_EQ(base::RoadMark::Weight::UNKNOWN, lane_section1_roadmarks1.weigth);
+  ASSERT_EQ(base::RoadMark::LaneChange::NONE,
             lane_section1_roadmarks1.lane_change);
   ASSERT_EQ("standard", lane_section1_roadmarks1.material);
   ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_roadmarks1.width);
@@ -228,27 +230,64 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   /// road lanes sections center
   auto lane_section1_center = lane_section1.center.lanes.at(0);
   ASSERT_EQ(0, lane_section1_center.attributes.id);
-  ASSERT_EQ(core::LaneAttributes::Type::NONE,
+  ASSERT_EQ(base::LaneAttributes::Type::NONE,
             lane_section1_center.attributes.type);
-  ASSERT_EQ(core::Boolean::FALSE, lane_section1_center.attributes.level);
+  ASSERT_EQ(base::Boolean::FALSE, lane_section1_center.attributes.level);
 
   ASSERT_EQ(1, lane_section1_center.road_marks.size());
   auto lane_section1_center_roadmarks1 =
       lane_section1_center.road_marks.front();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_center_roadmarks1.s);
-  ASSERT_EQ(core::RoadMark::Type::BROKEN, lane_section1_center_roadmarks1.type);
-  ASSERT_EQ(core::RoadMark::Color::YELLOW,
+  ASSERT_EQ(base::RoadMark::Type::BROKEN, lane_section1_center_roadmarks1.type);
+  ASSERT_EQ(base::RoadMark::Color::YELLOW,
             lane_section1_center_roadmarks1.color);
-  ASSERT_EQ(core::RoadMark::Weight::UNKNOWN,
+  ASSERT_EQ(base::RoadMark::Weight::UNKNOWN,
             lane_section1_center_roadmarks1.weigth);
-  ASSERT_EQ(core::RoadMark::LaneChange::NONE,
+  ASSERT_EQ(base::RoadMark::LaneChange::NONE,
             lane_section1_center_roadmarks1.lane_change);
   ASSERT_EQ("standard", lane_section1_center_roadmarks1.material);
   ASSERT_DOUBLE_EQ(1.2500000000000000e-1,
                    lane_section1_center_roadmarks1.width);
-  // ASSERT_DOUBLE_EQ(-1, lane_section1_center_roadmarks1.height);
+  ASSERT_DOUBLE_EQ(0., lane_section1_center_roadmarks1.height);
 
   /// road lanes sections right
+  auto lane_section1_right1 = lane_section1.right.lanes.at(0);
+  auto lane_section1_right2 = lane_section1.right.lanes.at(1);
+  auto lane_section1_right3 = lane_section1.right.lanes.at(2);
+  ASSERT_EQ(-1, lane_section1_right1.attributes.id);
+  ASSERT_EQ(-2, lane_section1_right2.attributes.id);
+  ASSERT_EQ(-3, lane_section1_right3.attributes.id);
+  ASSERT_EQ(base::LaneAttributes::Type::DRIVING,
+            lane_section1_right1.attributes.type);
+  ASSERT_EQ(base::Boolean::FALSE, lane_section1_right1.attributes.level);
+  ASSERT_EQ(1, lane_section1_right1.link.predecessor);
+  ASSERT_EQ(1, lane_section1_right1.widths.size());
+  auto lane_section1_width21 = lane_section1_right1.widths.front();
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width21.s);
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.a);
+  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width21.b);
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_width21.c);
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.d);
+
+  ASSERT_EQ(1, lane_section1_left1.borders.size());
+  auto lane_section1_border21 = lane_section1_right1.borders.front();
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border21.s);
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.a);
+  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border21.b);
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_border21.c);
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.d);
+
+  ASSERT_EQ(1, lane_section1_right1.road_marks.size());
+  auto lane_section1_roadmarks21 = lane_section1_right1.road_marks.front();
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_roadmarks21.s);
+  ASSERT_EQ(base::RoadMark::Type::NONE, lane_section1_roadmarks21.type);
+  ASSERT_EQ(base::RoadMark::Color::WHITE, lane_section1_roadmarks21.color);
+  ASSERT_EQ(base::RoadMark::Weight::UNKNOWN, lane_section1_roadmarks21.weigth);
+  ASSERT_EQ(base::RoadMark::LaneChange::NONE,
+            lane_section1_roadmarks21.lane_change);
+  ASSERT_EQ("standard", lane_section1_roadmarks21.material);
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_roadmarks21.width);
+  ASSERT_DOUBLE_EQ(4.0000000000000000e+0, lane_section1_roadmarks21.height);
 }
 
 int main(int argc, char* argv[]) {

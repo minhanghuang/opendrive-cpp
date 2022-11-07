@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace opendrive {
-namespace core {
+namespace base {
 
 typedef int Id;
 typedef std::vector<Id> Ids;
@@ -30,12 +30,6 @@ struct Header {
   double west;
   double east;
   std::string vendor;
-};
-
-struct Point {
-  double x = 0.;
-  double y = 0.;
-  double z = 0.;
 };
 
 /// Geometry Attributes
@@ -296,7 +290,7 @@ struct Map {
   std::vector<Road::Ptr> roads;
 };
 
-}  // namespace core
+}  // namespace base
 }  // namespace opendrive
 
 #endif  // OPENDRIVE_CPP_TYPES_HPP_

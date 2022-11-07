@@ -13,7 +13,7 @@ class LanesXmlParser : public XmlParser {
  public:
   LanesXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* lanes_ele,
-                          core::Lanes::Ptr lanes_ptr);
+                          base::Lanes::Ptr lanes_ptr);
 
  private:
   virtual void Init() override;
@@ -21,23 +21,23 @@ class LanesXmlParser : public XmlParser {
   LanesXmlParser& ParseLaneSectionEle();
   LanesXmlParser& ParseLaneSectionLanesEle(
       const tinyxml2::XMLElement* sections_ele,
-      core::LaneSection& lane_section);
+      base::LaneSection& lane_section);
 
   LanesXmlParser& ParseLaneEle(const tinyxml2::XMLElement* lane_ele,
-                               core::Lane& lane);
+                               base::Lane& lane);
   LanesXmlParser& ParseLaneAttribute(const tinyxml2::XMLElement* lane_ele,
-                                     core::Lane& lane);
+                                     base::Lane& lane);
   LanesXmlParser& ParseLaneLinkEle(const tinyxml2::XMLElement* lane_ele,
-                                   core::Lane& lane);
+                                   base::Lane& lane);
   LanesXmlParser& ParseLaneWidthEle(const tinyxml2::XMLElement* lane_ele,
-                                    core::Lane& lane);
+                                    base::Lane& lane);
   LanesXmlParser& ParseLaneBorderEle(const tinyxml2::XMLElement* lane_ele,
-                                     core::Lane& lane);
+                                     base::Lane& lane);
   LanesXmlParser& ParseLaneRoadMarkEle(const tinyxml2::XMLElement* lane_ele,
-                                       core::Lane& lane);
+                                       base::Lane& lane);
 
   const tinyxml2::XMLElement* lanes_ele_;
-  core::Lanes::Ptr lanes_ptr_;
+  base::Lanes::Ptr lanes_ptr_;
 };
 }  // namespace parser
 }  // namespace opendrive
