@@ -14,9 +14,10 @@ namespace opendrive {
 namespace core {
 
 struct LaneBoundary {
-  base::RoadMark::Type type = base::RoadMark::Type::UNKNOWN;
-  base::RoadMark::Color color = base::RoadMark::Color::UNKNOWN;
   double length = 0.;
+  Line line;
+  RoadMarkType type = RoadMarkType::UNKNOWN;
+  RoadMarkColor color = RoadMarkColor::UNKNOWN;
 };
 
 }  // namespace core

@@ -3,6 +3,7 @@
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
+#include "opendrive-cpp/core/base.h"
 #include "opendrive-cpp/core/types.h"
 #include "parser.h"
 
