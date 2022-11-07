@@ -6,7 +6,7 @@
             <vectorScene program="RoadRunner" version="2019.0.0 (build 739aef7bb)"/>
         </userData>
     </header>
-    <road name="Road 0" length="3.6360177306314796e+1" id="0" junction="-1">
+    <road name="Road 0" length="3.6360177306314796e+1" id="0" junction="-1" rule="RHT">
         <link>
             <predecessor elementType="road" elementId="11" contactPoint="start"/>
             <successor elementType="junction" elementId="43"/>
@@ -14,24 +14,41 @@
         <type s="0.0000000000000000e+0" type="town">
             <speed max="25" unit="mph"/>
         </type>
+        <type s="2.0601003600277540e+01" country="DE" type="town">
+            <speed max="25" unit="km/h"/>
+        </type>
         <planView>
-            <geometry s="0.0000000000000000e+0" x="3.8458999633789063e+2" y="-1.9999999552965164e-2" hdg="3.1410614169049995e+0" length="3.6360177306314796e+1">
-                <line/>
-            </geometry>
+          <geometry s="0.0000000000000000e+00" x="1.5601319999999987e+02" y="1.1999995231614086e+02" hdg="3.1415926535848282e+00" length="5.1604964355176435e+00">
+              <line/>
+          </geometry>
+          <geometry s="5.1604964355176435e+00" x="1.5085270356448223e+02" y="1.1999995231616649e+02" hdg="3.1415926535798597e+00" length="2.0833333333333330e+00">
+              <spiral curvStart="-0.0000000000000000e+00" curvEnd="-8.3333333333333329e-02"/>
+          </geometry>
+          <geometry s="7.2438297688509765e+00" x="1.4877093951784059e+02" y="1.2006020151444957e+02" hdg="3.0547870980255456e+00" length="1.1186223687745517e+01">
+              <arc curvature="-8.3333333333333329e-02"/>
+          </geometry>
+          <geometry s="1.8430053456596493e+01" x="4.9416434943455940e+01" y="7.9753610549006124e+00" hdg="-3.8812339311141031e-02" length="2.0833333333333330e+00">
+              <poly3 a="0.0000000000000000e+00" b="0.0000000000000000e+00" c="7.8270095403552599e-03" d="-1.2981379520556725e-04"/>
+          </geometry>
+          <geometry s="2.0513386789929825e+01" x="1.3860498286986785e+02" y="1.2755802030419328e+02" hdg="2.0357962351612984e+00" length="8.7616810347544899e-02">
+              <paramPoly3 pRange="arcLength" aU="0.0000000000000000e+00" bU="1.0000000000000000e+00" cU="4.1336980395811755e-04" dU="-2.5462421774261008e-04" aV="0.0000000000000000e+00" bV="0.0000000000000000e+00" cV="-1.2079506903095295e-02" dV="-6.1084906856370778e-04"/>
+          </geometry>
         </planView>
         <elevationProfile>
             <elevation s="0.0000000000000000e+0" a="0.0000000000000000e+0" b="0.0000000000000000e+0" c="0.0000000000000000e+0" d="0.0000000000000000e+0"/>
         </elevationProfile>
         <lanes>
             <laneOffset s="0.0000000000000000e+0" a="0.0000000000000000e+0" b="0.0000000000000000e+0" c="0.0000000000000000e+0" d="0.0000000000000000e+0"/>
-            <laneSection s="0.0000000000000000e+0">
+            <laneOffset s="7.5000000000000000e+01" a="3.2500000000000000e+00" b="0.0000000000000000e+00" c="0.0000000000000000e+00" d="0.0000000000000000e+00"/>
+            <laneSection s="1.0000000000000000e+0">
                 <left>
                     <lane id="3" type="sidewalk" level="false">
                         <link>
                             <predecessor id="-3"/>
                         </link>
-                        <width sOffset="0.0000000000000000e+0" a="4.0000000000000009e+0" b="0.0000000000000000e+0" c="0.0000000000000000e+0" d="0.0000000000000000e+0"/>
-                        <roadMark sOffset="0.0000000000000000e+0" type="none" material="standard" color="white" laneChange="none"/>
+                        <width sOffset="1.0000000000000000e+0" a="4.0000000000000009e+0" b="2.0000000000000000e+0" c="3.0000000000000000e+0" d="4.0000000000000000e+0"/>
+                        <border sOffset="1.0000000000000000e+0" a="4.0000000000000009e+0" b="2.0000000000000000e+0" c="3.0000000000000000e+0" d="4.0000000000000000e+0"/>
+                        <roadMark sOffset="1.0000000000000000e+0" type="none" material="standard" color="white" laneChange="none" width="3.0000000000000000e+0" height="4.0000000000000000e+0"/>
                         <userData>
                             <vectorLane travelDir="undirected"/>
                         </userData>
@@ -59,7 +76,7 @@
                 </left>
                 <center>
                     <lane id="0" type="none" level="false">
-                        <roadMark sOffset="0.0000000000000000e+0" type="broken" material="standard" color="yellow" width="1.2500000000000000e-1" laneChange="none"/>
+                        <roadMark sOffset="1.0000000000000000e+0" type="broken" material="standard" color="yellow" width="1.2500000000000000e-1" laneChange="none"/>
                     </lane>
                 </center>
                 <right>
