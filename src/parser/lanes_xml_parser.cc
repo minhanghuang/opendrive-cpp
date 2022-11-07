@@ -1,10 +1,5 @@
 #include "opendrive-cpp/parser/lanes_xml_parser.h"
 
-#include <utility>
-#include <vector>
-
-#include "opendrive-cpp/common/common.hpp"
-#include "opendrive-cpp/core/types.hpp"
 
 namespace opendrive {
 namespace parser {

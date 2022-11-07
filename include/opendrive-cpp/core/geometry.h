@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "opendrive-cpp/core/types.hpp"
+#include "opendrive-cpp/core/types.h"
 
 namespace opendrive {
 namespace core {

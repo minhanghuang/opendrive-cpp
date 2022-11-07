@@ -1,5 +1,5 @@
-#ifndef OPENDRIVE_CPP_TYPES_HPP_
-#define OPENDRIVE_CPP_TYPES_HPP_
+#ifndef OPENDRIVE_CPP_TYPES_H_
+#define OPENDRIVE_CPP_TYPES_H_
 
 #include <cstdint>
 #include <map>
@@ -293,4 +293,4 @@ struct Map {
 }  // namespace base
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_TYPES_HPP_
+#endif  // OPENDRIVE_CPP_TYPES_H_

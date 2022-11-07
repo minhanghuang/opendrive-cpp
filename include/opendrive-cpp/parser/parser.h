@@ -7,7 +7,7 @@
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/core/types.hpp"
+#include "opendrive-cpp/core/types.h"
 
 namespace opendrive {
 namespace parser {

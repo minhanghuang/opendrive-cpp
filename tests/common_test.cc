@@ -9,7 +9,7 @@
 #include <string>
 #include <utility>
 
-#include "opendrive-cpp/core/types.hpp"
+#include "opendrive-cpp/core/types.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;

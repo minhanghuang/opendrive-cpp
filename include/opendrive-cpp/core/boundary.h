@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "geometry.h"
-#include "opendrive-cpp/core/types.hpp"
+#include "opendrive-cpp/core/types.h"
 
 namespace opendrive {
 namespace core {

@@ -9,7 +9,7 @@
 
 #include "boundary.h"
 #include "geometry.h"
-#include "opendrive-cpp/core/types.hpp"
+#include "opendrive-cpp/core/types.h"
 
 namespace opendrive {
 namespace core {
