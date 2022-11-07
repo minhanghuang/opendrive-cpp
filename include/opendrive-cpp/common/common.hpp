@@ -5,6 +5,7 @@
 
 #include <climits>
 #include <iostream>
+#include <map>
 #include <set>
 #include <string>
 #include <type_traits>
@@ -17,6 +18,27 @@ static void Assert(bool r, const std::string& msg = "fault") {
     std::cout << "assert msg: " << msg << std::endl;
     assert(false);
   }
+}
+
+static std::string StrToUpper(const std::string& s) {
+  std::string ret = s;
+  std::transform(s.begin(), s.end(), ret.begin(),
+                 [](unsigned char c) { return std::toupper(c); });
+  return ret;
+}
+
+static std::string StrToLower(const std::string& s) {
+  std::string ret = s;
+  std::transform(s.begin(), s.end(), ret.begin(),
+                 [](unsigned char c) { return std::tolower(c); });
+  return ret;
+}
+
+static bool StrEquals(const std::string& a, const std::string& b) {
+  if (a.size() == b.size() && StrToUpper(a) == StrToUpper(b)) {
+    return true;
+  }
+  return false;
 }
 
 static tinyxml2::XMLError XmlQueryBoolAttribute(
@@ -73,30 +95,33 @@ static tinyxml2::XMLError XmlQueryDoubleAttribute(
   return ret;
 }
 
+template <typename T>
+static tinyxml2::XMLError XmlQueryEnumAttribute(
+    const tinyxml2::XMLElement* xml_node, const std::string& name, T& value,
+    const std::map<std::string, T>& items, bool enable_exit = false) {
+  std::string var;
+  tinyxml2::XMLError ret =
+      XmlQueryStringAttribute(xml_node, name, var, enable_exit);
+  if (tinyxml2::XMLError::XML_SUCCESS != ret) {
+    if (enable_exit) {
+      Assert(false, "xml query enum attribute fault.");
+    }
+    return ret;
+  }
+  ret = tinyxml2::XMLError::XML_ERROR_PARSING_TEXT;
+  for (const auto& item : items) {
+    if (StrEquals(item.first, var)) {
+      value = item.second;
+      ret = tinyxml2::XMLError::XML_SUCCESS;
+      break;
+    }
+  }
+  return ret;
+}
+
 static const tinyxml2::XMLElement* XmlNextSiblingElement(
     const tinyxml2::XMLElement* element) {
   return element->NextSiblingElement(element->Name());
-}
-
-static std::string StrToUpper(const std::string& s) {
-  std::string ret = s;
-  std::transform(s.begin(), s.end(), ret.begin(),
-                 [](unsigned char c) { return std::toupper(c); });
-  return ret;
-}
-
-static std::string StrToLower(const std::string& s) {
-  std::string ret = s;
-  std::transform(s.begin(), s.end(), ret.begin(),
-                 [](unsigned char c) { return std::tolower(c); });
-  return ret;
-}
-
-static bool StrEquals(const std::string& a, const std::string& b) {
-  if (a.size() == b.size() && StrToUpper(a) == StrToUpper(b)) {
-    return true;
-  }
-  return false;
 }
 
 }  // namespace common
