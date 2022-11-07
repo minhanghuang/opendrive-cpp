@@ -109,13 +109,12 @@ TEST_F(TestCommon, TestXml2) {
   auto road_ele = xml->FirstChildElement("road");
   auto road_ptr = std::make_shared<opendrive::base::Road>();
   ASSERT_TRUE(road_ele != nullptr);
-  ASSERT_TRUE(road_ptr->attributes.rule == base::RoadAttributes::Rule::UNKNOWN);
+  ASSERT_TRUE(road_ptr->attributes.rule == RoadRule::UNKNOWN);
   auto ret = opendrive::common::XmlQueryEnumAttribute(
       road_ele, "rule", road_ptr->attributes.rule,
-      std::map<std::string, base::RoadAttributes::Rule>{
-          std::make_pair("LHT", base::RoadAttributes::Rule::LHT),
-          std::make_pair("RHT", base::RoadAttributes::Rule::RHT)});
-  ASSERT_TRUE(road_ptr->attributes.rule == base::RoadAttributes::Rule::RHT);
+      std::map<std::string, RoadRule>{std::make_pair("LHT", RoadRule::LHT),
+                                      std::make_pair("RHT", RoadRule::RHT)});
+  ASSERT_TRUE(road_ptr->attributes.rule == RoadRule::RHT);
 }
 
 int main(int argc, char* argv[]) {

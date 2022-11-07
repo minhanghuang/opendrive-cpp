@@ -18,6 +18,9 @@ struct Lane {
   Id id;
   double length = 0.;
   double speed_limit = 0.;
+  LaneType type = LaneType::UNKNOWN;
+
+  Line line;
 
   Ids predecessors;
   Ids successor;

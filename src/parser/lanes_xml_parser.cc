@@ -1,5 +1,6 @@
 #include "opendrive-cpp/parser/lanes_xml_parser.h"
 
+#include "opendrive-cpp/core/types.h"
 
 namespace opendrive {
 namespace parser {
@@ -103,42 +104,39 @@ LanesXmlParser& LanesXmlParser::ParseLaneAttribute(
   common::XmlQueryStringAttribute(lane_ele, "level", lane_level);
   common::XmlQueryEnumAttribute(
       lane_ele, "type", lane.attributes.type,
-      std::map<std::string, base::LaneAttributes::Type>{
-          std::make_pair("shoulder", base::LaneAttributes::Type::SHOULDER),
-          std::make_pair("border", base::LaneAttributes::Type::BORDER),
-          std::make_pair("driving", base::LaneAttributes::Type::DRIVING),
-          std::make_pair("stop", base::LaneAttributes::Type::STOP),
-          std::make_pair("none", base::LaneAttributes::Type::NONE),
-          std::make_pair("restricted", base::LaneAttributes::Type::RESTRICTED),
-          std::make_pair("parking", base::LaneAttributes::Type::PARKING),
-          std::make_pair("median", base::LaneAttributes::Type::MEDIAN),
-          std::make_pair("biking", base::LaneAttributes::Type::BIKING),
-          std::make_pair("sidewalk", base::LaneAttributes::Type::SIDEWALK),
-          std::make_pair("curb", base::LaneAttributes::Type::CURB),
-          std::make_pair("exit", base::LaneAttributes::Type::EXIT),
-          std::make_pair("entry", base::LaneAttributes::Type::ENTRY),
-          std::make_pair("onRamp", base::LaneAttributes::Type::ONRAMP),
-          std::make_pair("offRamp", base::LaneAttributes::Type::OFFRAMP),
-          std::make_pair("connectingRamp",
-                         base::LaneAttributes::Type::CONNECTINGRAMP),
-          std::make_pair("bidirectional",
-                         base::LaneAttributes::Type::BIDIRECTIONAL),
-          std::make_pair("special1", base::LaneAttributes::Type::SPECIAL1),
-          std::make_pair("special2", base::LaneAttributes::Type::SPECIAL2),
-          std::make_pair("special3", base::LaneAttributes::Type::SPECIAL3),
-          std::make_pair("roadWorks", base::LaneAttributes::Type::ROADWORKS),
-          std::make_pair("tram", base::LaneAttributes::Type::TRAM),
-          std::make_pair("bus", base::LaneAttributes::Type::BUS),
-          std::make_pair("taxi", base::LaneAttributes::Type::TAXI),
-          std::make_pair("HOV", base::LaneAttributes::Type::HOV),
-          std::make_pair("mwyEntry", base::LaneAttributes::Type::MWYENTRY),
-          std::make_pair("mwyExit", base::LaneAttributes::Type::MWYEXIT)});
-  common::XmlQueryEnumAttribute(
-      lane_ele, "level", lane.attributes.level,
-      std::map<std::string, base::Boolean>{
-          std::make_pair("false", base::Boolean::FALSE),
-          std::make_pair("true", base::Boolean::TRUE),
-      });
+      std::map<std::string, LaneType>{
+          std::make_pair("shoulder", LaneType::SHOULDER),
+          std::make_pair("border", LaneType::BORDER),
+          std::make_pair("driving", LaneType::DRIVING),
+          std::make_pair("stop", LaneType::STOP),
+          std::make_pair("none", LaneType::NONE),
+          std::make_pair("restricted", LaneType::RESTRICTED),
+          std::make_pair("parking", LaneType::PARKING),
+          std::make_pair("median", LaneType::MEDIAN),
+          std::make_pair("biking", LaneType::BIKING),
+          std::make_pair("sidewalk", LaneType::SIDEWALK),
+          std::make_pair("curb", LaneType::CURB),
+          std::make_pair("exit", LaneType::EXIT),
+          std::make_pair("entry", LaneType::ENTRY),
+          std::make_pair("onRamp", LaneType::ONRAMP),
+          std::make_pair("offRamp", LaneType::OFFRAMP),
+          std::make_pair("connectingRamp", LaneType::CONNECTINGRAMP),
+          std::make_pair("bidirectional", LaneType::BIDIRECTIONAL),
+          std::make_pair("special1", LaneType::SPECIAL1),
+          std::make_pair("special2", LaneType::SPECIAL2),
+          std::make_pair("special3", LaneType::SPECIAL3),
+          std::make_pair("roadWorks", LaneType::ROADWORKS),
+          std::make_pair("tram", LaneType::TRAM),
+          std::make_pair("bus", LaneType::BUS),
+          std::make_pair("taxi", LaneType::TAXI),
+          std::make_pair("HOV", LaneType::HOV),
+          std::make_pair("mwyEntry", LaneType::MWYENTRY),
+          std::make_pair("mwyExit", LaneType::MWYEXIT)});
+  common::XmlQueryEnumAttribute(lane_ele, "level", lane.attributes.level,
+                                std::map<std::string, Boolean>{
+                                    std::make_pair("false", Boolean::FALSE),
+                                    std::make_pair("true", Boolean::TRUE),
+                                });
   return *this;
 }
 
@@ -221,41 +219,41 @@ LanesXmlParser& LanesXmlParser::ParseLaneRoadMarkEle(
                                     road_mark.material);
     common::XmlQueryEnumAttribute(
         curr_lane_mark_ele, "type", road_mark.type,
-        std::map<std::string, base::RoadMark::Type>{
-            std::make_pair("none", base::RoadMark::Type::NONE),
-            std::make_pair("solid", base::RoadMark::Type::SOLID),
-            std::make_pair("broken", base::RoadMark::Type::BROKEN),
-            std::make_pair("solid solid", base::RoadMark::Type::SOLIDSOLID),
-            std::make_pair("solid broken", base::RoadMark::Type::SOLIDBROKEN),
-            std::make_pair("broken solid", base::RoadMark::Type::BROKENSOLID),
-            std::make_pair("broken broken", base::RoadMark::Type::BROKENBROKEN),
-            std::make_pair("botts dots", base::RoadMark::Type::BOTTSDOTS),
-            std::make_pair("grass", base::RoadMark::Type::GRASS),
-            std::make_pair("curb", base::RoadMark::Type::CURB),
-            std::make_pair("custom", base::RoadMark::Type::CUSTOM),
-            std::make_pair("edge", base::RoadMark::Type::EDGE)});
+        std::map<std::string, RoadMarkType>{
+            std::make_pair("none", RoadMarkType::NONE),
+            std::make_pair("solid", RoadMarkType::SOLID),
+            std::make_pair("broken", RoadMarkType::BROKEN),
+            std::make_pair("solid solid", RoadMarkType::SOLIDSOLID),
+            std::make_pair("solid broken", RoadMarkType::SOLIDBROKEN),
+            std::make_pair("broken solid", RoadMarkType::BROKENSOLID),
+            std::make_pair("broken broken", RoadMarkType::BROKENBROKEN),
+            std::make_pair("botts dots", RoadMarkType::BOTTSDOTS),
+            std::make_pair("grass", RoadMarkType::GRASS),
+            std::make_pair("curb", RoadMarkType::CURB),
+            std::make_pair("custom", RoadMarkType::CUSTOM),
+            std::make_pair("edge", RoadMarkType::EDGE)});
     common::XmlQueryEnumAttribute(
         curr_lane_mark_ele, "color", road_mark.color,
-        std::map<std::string, base::RoadMark::Color>{
-            std::make_pair("standard", base::RoadMark::Color::STANDARD),
-            std::make_pair("blue", base::RoadMark::Color::BLUE),
-            std::make_pair("green", base::RoadMark::Color::GREEN),
-            std::make_pair("red", base::RoadMark::Color::RED),
-            std::make_pair("white", base::RoadMark::Color::WHITE),
-            std::make_pair("yellow", base::RoadMark::Color::YELLOW),
-            std::make_pair("orange", base::RoadMark::Color::ORANGE)});
+        std::map<std::string, RoadMarkColor>{
+            std::make_pair("standard", RoadMarkColor::STANDARD),
+            std::make_pair("blue", RoadMarkColor::BLUE),
+            std::make_pair("green", RoadMarkColor::GREEN),
+            std::make_pair("red", RoadMarkColor::RED),
+            std::make_pair("white", RoadMarkColor::WHITE),
+            std::make_pair("yellow", RoadMarkColor::YELLOW),
+            std::make_pair("orange", RoadMarkColor::ORANGE)});
     common::XmlQueryEnumAttribute(
         curr_lane_mark_ele, "weight", road_mark.weigth,
-        std::map<std::string, base::RoadMark::Weight>{
-            std::make_pair("bold", base::RoadMark::Weight::BOLD),
-            std::make_pair("standard", base::RoadMark::Weight::STANDARD)});
+        std::map<std::string, RoadMarkWeight>{
+            std::make_pair("bold", RoadMarkWeight::BOLD),
+            std::make_pair("standard", RoadMarkWeight::STANDARD)});
     common::XmlQueryEnumAttribute(
         curr_lane_mark_ele, "laneChange", road_mark.lane_change,
-        std::map<std::string, base::RoadMark::LaneChange>{
-            std::make_pair("increase", base::RoadMark::LaneChange::INCREASE),
-            std::make_pair("decrease", base::RoadMark::LaneChange::DECREASE),
-            std::make_pair("both", base::RoadMark::LaneChange::BOTH),
-            std::make_pair("none", base::RoadMark::LaneChange::NONE)});
+        std::map<std::string, RoadMarkLaneChange>{
+            std::make_pair("increase", RoadMarkLaneChange::INCREASE),
+            std::make_pair("decrease", RoadMarkLaneChange::DECREASE),
+            std::make_pair("both", RoadMarkLaneChange::BOTH),
+            std::make_pair("none", RoadMarkLaneChange::NONE)});
     lane.road_marks.emplace_back(road_mark);
     curr_lane_mark_ele = common::XmlNextSiblingElement(curr_lane_mark_ele);
   }

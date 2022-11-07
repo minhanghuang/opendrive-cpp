@@ -28,7 +28,7 @@ struct PointXD : public Point3D {
   double hdg = 0.;
 };
 
-struct Polygon {
+struct Line {
   std::vector<PointXD> points;
 };
 

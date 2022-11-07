@@ -1,5 +1,6 @@
 #include "opendrive-cpp/parser/road_xml_parser.h"
 
+#include "opendrive-cpp/core/types.h"
 
 namespace opendrive {
 namespace parser {
@@ -30,9 +31,8 @@ RoadXmlParser& RoadXmlParser::ParseAttributes() {
                                   road_ptr_->attributes.name);
   common::XmlQueryEnumAttribute(
       road_ele_, "rule", road_ptr_->attributes.rule,
-      std::map<std::string, base::RoadAttributes::Rule>{
-          std::make_pair("LHT", base::RoadAttributes::Rule::LHT),
-          std::make_pair("RHT", base::RoadAttributes::Rule::RHT)});
+      std::map<std::string, RoadRule>{std::make_pair("LHT", RoadRule::LHT),
+                                      std::make_pair("RHT", RoadRule::RHT)});
   common::XmlQueryDoubleAttribute(road_ele_, "length",
                                   road_ptr_->attributes.length);
   common::XmlQueryIntAttribute(road_ele_, "id", road_ptr_->attributes.id);
@@ -110,24 +110,19 @@ RoadXmlParser& RoadXmlParser::ParseTypeEle() {
     common::XmlQueryDoubleAttribute(curr_type_ele, "s", road_type_info.s);
     common::XmlQueryEnumAttribute(
         curr_type_ele, "type", road_type_info.type,
-        std::map<std::string, base::RoadTypeInfo::Type>{
-            std::make_pair("unknown", base::RoadTypeInfo::Type::UNKNOWN),
-            std::make_pair("rural", base::RoadTypeInfo::Type::RURAL),
-            std::make_pair("motorway", base::RoadTypeInfo::Type::MOTORWAY),
-            std::make_pair("town", base::RoadTypeInfo::Type::TOWN),
-            std::make_pair("pedestrian", base::RoadTypeInfo::Type::PEDESTRIAN),
-            std::make_pair("bicycle", base::RoadTypeInfo::Type::BICYCLE),
-            std::make_pair("townExpressway",
-                           base::RoadTypeInfo::Type::TOWNEXPRESSWAY),
-            std::make_pair("townCollector",
-                           base::RoadTypeInfo::Type::TOWNCOLLECTOR),
-            std::make_pair("townArterial",
-                           base::RoadTypeInfo::Type::TOWNARTERIAL),
-            std::make_pair("townPrivate",
-                           base::RoadTypeInfo::Type::TOWNPRIVATE),
-            std::make_pair("townLocal", base::RoadTypeInfo::Type::TOWNLOCAL),
-            std::make_pair("townPlayStreet",
-                           base::RoadTypeInfo::Type::TOWNPLAYSTREET)});
+        std::map<std::string, RoadType>{
+            std::make_pair("unknown", RoadType::UNKNOWN),
+            std::make_pair("rural", RoadType::RURAL),
+            std::make_pair("motorway", RoadType::MOTORWAY),
+            std::make_pair("town", RoadType::TOWN),
+            std::make_pair("pedestrian", RoadType::PEDESTRIAN),
+            std::make_pair("bicycle", RoadType::BICYCLE),
+            std::make_pair("townExpressway", RoadType::TOWNEXPRESSWAY),
+            std::make_pair("townCollector", RoadType::TOWNCOLLECTOR),
+            std::make_pair("townArterial", RoadType::TOWNARTERIAL),
+            std::make_pair("townPrivate", RoadType::TOWNPRIVATE),
+            std::make_pair("townLocal", RoadType::TOWNLOCAL),
+            std::make_pair("townPlayStreet", RoadType::TOWNPLAYSTREET)});
     common::XmlQueryStringAttribute(curr_type_ele, "country",
                                     road_type_info.country);
     const tinyxml2::XMLElement* speed_ele =
@@ -137,10 +132,10 @@ RoadXmlParser& RoadXmlParser::ParseTypeEle() {
                                       road_type_info.max_speed);
       common::XmlQueryEnumAttribute(
           speed_ele, "unit", road_type_info.speed_unit,
-          std::map<std::string, base::RoadTypeInfo::SpeedUnit>{
-              std::make_pair("m/s", base::RoadTypeInfo::SpeedUnit::MS),
-              std::make_pair("mph", base::RoadTypeInfo::SpeedUnit::MPH),
-              std::make_pair("km/h", base::RoadTypeInfo::SpeedUnit::KMH),
+          std::map<std::string, RoadSpeedUnit>{
+              std::make_pair("m/s", RoadSpeedUnit::MS),
+              std::make_pair("mph", RoadSpeedUnit::MPH),
+              std::make_pair("km/h", RoadSpeedUnit::KMH),
           });
     }
     road_ptr_->type_info.emplace_back(road_type_info);
@@ -163,7 +158,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
       if (geometry_type_ele) {
         std::shared_ptr<base::GeometryAttributesLine> geometry_ptr =
             std::make_shared<base::GeometryAttributesLine>();
-        geometry_ptr->type = base::GeometryAttributes::Type::LINE;
+        geometry_ptr->type = GeometryType::LINE;
         geometry_base_ptr =
             std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
       }
@@ -173,7 +168,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
             std::make_shared<base::GeometryAttributesArc>();
         common::XmlQueryDoubleAttribute(geometry_type_ele, "curvature",
                                         geometry_ptr->curvature);
-        geometry_ptr->type = base::GeometryAttributes::Type::ARC;
+        geometry_ptr->type = GeometryType::ARC;
         geometry_base_ptr =
             std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
       }
@@ -185,7 +180,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
                                         geometry_ptr->curve_start);
         common::XmlQueryDoubleAttribute(geometry_type_ele, "curvEnd",
                                         geometry_ptr->curve_end);
-        geometry_ptr->type = base::GeometryAttributes::Type::SPIRAL;
+        geometry_ptr->type = GeometryType::SPIRAL;
         geometry_base_ptr =
             std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
       }
@@ -201,7 +196,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
                                         geometry_ptr->c);
         common::XmlQueryDoubleAttribute(geometry_type_ele, "d",
                                         geometry_ptr->d);
-        geometry_ptr->type = base::GeometryAttributes::Type::POLY3;
+        geometry_ptr->type = GeometryType::POLY3;
         geometry_base_ptr =
             std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
       }
@@ -235,7 +230,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
                                         geometry_ptr->cV);
         common::XmlQueryDoubleAttribute(geometry_type_ele, "dV",
                                         geometry_ptr->dV);
-        geometry_ptr->type = base::GeometryAttributes::Type::PARAMPOLY3;
+        geometry_ptr->type = GeometryType::PARAMPOLY3;
         geometry_base_ptr =
             std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
       }
