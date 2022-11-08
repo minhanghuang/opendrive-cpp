@@ -36,6 +36,7 @@ link_directories(
 file(GLOB OPENDRIVE_CPP_SRCS
   "src/*.cc"
   "src/parser/*.cc"
+  "src/adapter/*.cc"
 )
 
 add_library(${TARGET_NAME} ${opendrive-cpp-type}

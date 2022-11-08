@@ -4,8 +4,8 @@
 #include "lanes_xml_parser.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/core/types.h"
 #include "opendrive-cpp/core/base.h"
+#include "opendrive-cpp/core/types.h"
 #include "parser.h"
 
 namespace opendrive {
@@ -15,7 +15,7 @@ class RoadXmlParser : public XmlParser {
  public:
   RoadXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* road_ele,
-                          base::Road::Ptr road_ptr);
+                          base::Road* road_ptr);
 
  private:
   virtual void Init() override;
@@ -25,7 +25,7 @@ class RoadXmlParser : public XmlParser {
   RoadXmlParser& ParsePlanViewEle();
   RoadXmlParser& ParseLanesEle();
   const tinyxml2::XMLElement* road_ele_;
-  base::Road::Ptr road_ptr_;
+  base::Road* road_;
 };
 
 }  // namespace parser

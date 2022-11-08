@@ -14,7 +14,7 @@ class LanesXmlParser : public XmlParser {
  public:
   LanesXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* lanes_ele,
-                          base::Lanes::Ptr lanes_ptr);
+                          base::Lanes* lanes);
 
  private:
   virtual void Init() override;
@@ -38,7 +38,7 @@ class LanesXmlParser : public XmlParser {
                                        base::Lane& lane);
 
   const tinyxml2::XMLElement* lanes_ele_;
-  base::Lanes::Ptr lanes_ptr_;
+  base::Lanes* lanes_;
 };
 }  // namespace parser
 }  // namespace opendrive

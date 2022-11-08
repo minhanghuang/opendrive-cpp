@@ -32,4 +32,4 @@ struct Lane {
 }  // namespace core
 }  // namespace opendrive
 
-#endif  //   OPENDRIVE_CPP_CORE_LANE_H_
+#endif  // OPENDRIVE_CPP_CORE_LANE_H_

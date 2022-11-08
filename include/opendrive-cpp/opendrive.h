@@ -4,8 +4,11 @@
 
 #include <memory>
 
+#include "opendrive-cpp/adapter/section_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
+#include "opendrive-cpp/core/base.h"
+#include "opendrive-cpp/core/section.h"
 #include "opendrive-cpp/core/types.h"
 #include "opendrive-cpp/parser/header_xml_parser.h"
 #include "opendrive-cpp/parser/road_xml_parser.h"
@@ -17,13 +20,24 @@ class Parser {
   ~Parser();
   Parser();
   opendrive::Status Header(const tinyxml2::XMLElement* xml_node,
-                           base::Header::Ptr header_ptr);
+                           base::Header* header);
   opendrive::Status Road(const tinyxml2::XMLElement* xml_node,
-                         base::Road::Ptr road_ptr);
+                         base::Road* road);
 
  private:
   std::shared_ptr<parser::HeaderXmlParser> header_parser_;
   std::shared_ptr<parser::RoadXmlParser> road_parser_;
+};
+
+class Adapter {
+ public:
+  ~Adapter();
+  Adapter();
+  opendrive::Status LaneSection(const base::LaneSection* odr_section,
+                                core::Section::Ptr section_ptr);
+
+ private:
+  std::shared_ptr<adapter::SectionAdapter> section_adapter_;
 };
 
 }  // namespace opendrive

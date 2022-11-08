@@ -24,12 +24,12 @@ void MapXmlParser::Init() {
 
 MapXmlParser& MapXmlParser::ParseHeaderEle() {
   if (!IsValid()) return *this;
-  base::Header::Ptr header_ptr = std::make_shared<base::Header>();
-  map_ptr_->header = header_ptr;
+  base::Header header;
+  map_ptr_->header = header;
   HeaderXmlParser header_parser;
   const tinyxml2::XMLElement* header_ele =
       map_ele_->FirstChildElement("header");
-  header_parser.Parse(header_ele, header_ptr);
+  header_parser.Parse(header_ele, &header);
   return *this;
 }
 
@@ -38,10 +38,10 @@ MapXmlParser& MapXmlParser::ParseRoadEle() {
   const tinyxml2::XMLElement* curr_road_ele =
       map_ele_->FirstChildElement("road");
   while (curr_road_ele) {
-    base::Road::Ptr road_ptr = std::make_shared<base::Road>();
-    map_ptr_->roads.emplace_back(road_ptr);
+    base::Road road;
+    map_ptr_->roads.emplace_back(road);
     RoadXmlParser road_parser;
-    road_parser.Parse(curr_road_ele, road_ptr);
+    road_parser.Parse(curr_road_ele, &road);
     common::XmlNextSiblingElement(curr_road_ele);
   }
   return *this;

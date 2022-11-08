@@ -17,9 +17,7 @@ typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
 
-typedef struct Header HeaderTypedef;
 struct Header {
-  typedef std::shared_ptr<HeaderTypedef> Ptr;
   std::string rev_major;
   std::string rev_minor;
   std::string name;
@@ -133,9 +131,7 @@ struct LaneSection {
   LanesInfo left, center, right;
 };
 
-typedef struct Lanes LanesTypedef;
 struct Lanes {
-  typedef std::shared_ptr<LanesTypedef> Ptr;
   std::vector<LaneOffset> lane_offsets;
   std::vector<LaneSection> lane_sections;
 };
@@ -176,21 +172,19 @@ struct RoadPlanView {
   std::vector<std::shared_ptr<GeometryAttributes>> geometrys;
 };
 
-typedef struct Road RoadTypedef;
 struct Road {
-  typedef std::shared_ptr<RoadTypedef> Ptr;
   RoadAttributes attributes;
   RoadLink link;
   std::vector<RoadTypeInfo> type_info;
   RoadPlanView plan_view;
-  Lanes::Ptr lanes;
+  Lanes lanes;
 };
 
-typedef struct Map MapTypedef;
+typedef struct Map MapType;
 struct Map {
-  typedef std::shared_ptr<MapTypedef> Ptr;
-  Header::Ptr header;
-  std::vector<Road::Ptr> roads;
+  typedef std::shared_ptr<MapType> Ptr;
+  Header header;
+  std::vector<Road> roads;
 };
 
 }  // namespace base

@@ -3,8 +3,8 @@
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/core/types.h"
 #include "opendrive-cpp/core/base.h"
+#include "opendrive-cpp/core/types.h"
 #include "parser.h"
 
 namespace opendrive {
@@ -14,13 +14,13 @@ class HeaderXmlParser : public XmlParser {
  public:
   HeaderXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* header_ele,
-                          base::Header::Ptr header_ptr);
+                          base::Header* header);
 
  private:
   virtual void Init() override;
   HeaderXmlParser& ParseAttributes();
   const tinyxml2::XMLElement* header_ele_;
-  base::Header::Ptr header_ptr_;
+  base::Header* header_;
 };
 
 }  // namespace parser

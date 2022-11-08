@@ -6,16 +6,16 @@ namespace opendrive {
 namespace parser {
 
 opendrive::Status LanesXmlParser::Parse(const tinyxml2::XMLElement* lanes_ele,
-                                        base::Lanes::Ptr lanes_ptr) {
+                                        base::Lanes* lanes) {
   lanes_ele_ = lanes_ele;
-  lanes_ptr_ = lanes_ptr;
+  lanes_ = lanes;
   Init();
   this->ParseLaneOffsetEle().ParseLaneSectionEle();
   return status();
 }
 
 void LanesXmlParser::Init() {
-  if (!lanes_ele_ || !lanes_ptr_) {
+  if (!lanes_ele_ || !lanes_) {
     set_status(ErrorCode::XML_LANES_ELEMENT_ERROR, "Input is null.");
   }
 }
@@ -30,7 +30,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneOffsetEle() {
     common::XmlQueryDoubleAttribute(lane_offset_ele, "b", lane_offset.b);
     common::XmlQueryDoubleAttribute(lane_offset_ele, "c", lane_offset.c);
     common::XmlQueryDoubleAttribute(lane_offset_ele, "d", lane_offset.d);
-    lanes_ptr_->lane_offsets.emplace_back(lane_offset);
+    lanes_->lane_offsets.emplace_back(lane_offset);
     lane_offset_ele = common::XmlNextSiblingElement(lane_offset_ele);
   }
   return *this;
@@ -44,7 +44,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionEle() {
     base::LaneSection lane_section;
     common::XmlQueryDoubleAttribute(curr_lane_section_ele, "s", lane_section.s);
     ParseLaneSectionLanesEle(curr_lane_section_ele, lane_section);
-    lanes_ptr_->lane_sections.emplace_back(lane_section);
+    lanes_->lane_sections.emplace_back(lane_section);
     curr_lane_section_ele =
         common::XmlNextSiblingElement(curr_lane_section_ele);
   }
