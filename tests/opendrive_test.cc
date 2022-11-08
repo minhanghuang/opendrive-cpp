@@ -5,7 +5,7 @@
 #include <cassert>
 #include <memory>
 
-#include "opendrive-cpp/core/types.h"
+#include "opendrive-cpp/geometry/types.h"
 
 using namespace opendrive;
 
@@ -54,8 +54,8 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
   ASSERT_TRUE(curr_road_ele != nullptr);
-  // auto road_ptr = std::make_shared<opendrive::base::Road>();
-  opendrive::base::Road road;
+  // auto road_ptr = std::make_shared<opendrive::g::Road>();
+  opendrive::g::Road road;
   opendrive::parser::RoadXmlParser road_parser;
   road_parser.Parse(curr_road_ele, &road);
 
@@ -67,19 +67,19 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_EQ(opendrive::RoadRule::RHT, road.attributes.rule);
 
   /// road link
-  ASSERT_EQ(base::RoadLinkInfo::Type::ROAD, road.link.predecessor.type);
+  ASSERT_EQ(g::RoadLinkInfo::Type::ROAD, road.link.predecessor.type);
   ASSERT_EQ(11, road.link.predecessor.id);
-  ASSERT_EQ(base::RoadLinkInfo::PointType::START,
+  ASSERT_EQ(g::RoadLinkInfo::PointType::START,
             road.link.predecessor.point_type);
   ASSERT_EQ(0, road.link.predecessor.s);
-  ASSERT_EQ(base::RoadLinkInfo::Dir::UNKNOWN, road.link.predecessor.dir);
+  ASSERT_EQ(g::RoadLinkInfo::Dir::UNKNOWN, road.link.predecessor.dir);
 
-  ASSERT_EQ(base::RoadLinkInfo::Type::JUNCTION, road.link.successor.type);
+  ASSERT_EQ(g::RoadLinkInfo::Type::JUNCTION, road.link.successor.type);
   ASSERT_EQ(43, road.link.successor.id);
-  ASSERT_EQ(base::RoadLinkInfo::PointType::UNKNOWN,
+  ASSERT_EQ(g::RoadLinkInfo::PointType::UNKNOWN,
             road.link.successor.point_type);
   ASSERT_EQ(0, road.link.successor.s);
-  ASSERT_EQ(base::RoadLinkInfo::Dir::UNKNOWN, road.link.successor.dir);
+  ASSERT_EQ(g::RoadLinkInfo::Dir::UNKNOWN, road.link.successor.dir);
 
   /// road type
   ASSERT_EQ(2, road.type_info.size());
@@ -100,16 +100,14 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   /// road planView
   ASSERT_EQ(5, road.plan_view.geometrys.size());
   auto geometry_info1 = road.plan_view.geometrys.at(0);
-  auto geometry_info2 =
-      std::dynamic_pointer_cast<base::GeometryAttributesSpiral>(
-          road.plan_view.geometrys.at(1));
-  auto geometry_info3 = std::dynamic_pointer_cast<base::GeometryAttributesArc>(
+  auto geometry_info2 = std::dynamic_pointer_cast<g::GeometryAttributesSpiral>(
+      road.plan_view.geometrys.at(1));
+  auto geometry_info3 = std::dynamic_pointer_cast<g::GeometryAttributesArc>(
       road.plan_view.geometrys.at(2));
-  auto geometry_info4 =
-      std::dynamic_pointer_cast<base::GeometryAttributesPoly3>(
-          road.plan_view.geometrys.at(3));
+  auto geometry_info4 = std::dynamic_pointer_cast<g::GeometryAttributesPoly3>(
+      road.plan_view.geometrys.at(3));
   auto geometry_info5 =
-      std::dynamic_pointer_cast<base::GeometryAttributesParamPoly3>(
+      std::dynamic_pointer_cast<g::GeometryAttributesParamPoly3>(
           road.plan_view.geometrys.at(4));
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s);
   ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x);
@@ -157,7 +155,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg);
   ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length);
   ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type);
-  ASSERT_EQ(base::GeometryAttributesParamPoly3::PRange::ARCLENGTH,
+  ASSERT_EQ(g::GeometryAttributesParamPoly3::PRange::ARCLENGTH,
             geometry_info5->p_range);
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->aU);
   ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bU);

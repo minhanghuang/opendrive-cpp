@@ -1,23 +1,23 @@
 #ifndef OPENDRIVE_CPP_ADAPTER_SECTION_H_
 #define OPENDRIVE_CPP_ADAPTER_SECTION_H_
 
-#include "opendrive-cpp/adapter/adapter.h"
 #include "opendrive-cpp/adapter/lane_adapter.h"
+#include "opendrive-cpp/adapter/util_adapter.h"
+#include "opendrive-cpp/geometry/core.h"
 
 namespace opendrive {
 namespace adapter {
 
-class SectionAdapter : public AdapterBase {
+class SectionAdapter : public UtilAdapter {
  public:
   SectionAdapter();
-  opendrive::Status Run(const base::LaneSection* odr_section,
+  opendrive::Status Run(const g::LaneSection* odr_section,
                         core::Section::Ptr section_ptr);
 
  private:
   virtual void Init() override;
-  SectionAdapter& ParseLane();
-  SectionAdapter& Parse();
-  const base::LaneSection* odr_section_;
+  SectionAdapter& TransformLane();
+  const g::LaneSection* odr_section_;
   core::Section::Ptr section_ptr_;
 };
 

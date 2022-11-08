@@ -1,20 +1,20 @@
-#include "opendrive-cpp/adapter/adapter.h"
+#include "opendrive-cpp/adapter/util_adapter.h"
 
 namespace opendrive {
 namespace adapter {
 
-AdapterBase::AdapterBase() {}
+UtilAdapter::UtilAdapter() {}
 
-bool AdapterBase::IsValid() {
+bool UtilAdapter::IsValid() {
   if (ErrorCode::OK != status_.error_code) {
     return false;
   }
   return true;
 }
 
-opendrive::Status AdapterBase::status() { return status_; }
+opendrive::Status UtilAdapter::status() { return status_; }
 
-void AdapterBase::set_status(ErrorCode code, const std::string& msg) {
+void UtilAdapter::set_status(ErrorCode code, const std::string& msg) {
   std::unique_lock<std::mutex> lock(mutex_);
   status_.error_code = code;
   status_.msg = msg;

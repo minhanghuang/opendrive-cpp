@@ -1,6 +1,4 @@
-#include "opendrive-cpp/parser/parser.h"
-
-#include <mutex>
+#include "opendrive-cpp/parser/util_xml_parser.h"
 
 namespace opendrive {
 namespace parser {

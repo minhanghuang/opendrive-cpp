@@ -1,5 +1,5 @@
-#ifndef OPENDRIVE_CPP_BASE_H_
-#define OPENDRIVE_CPP_BASE_H_
+#ifndef OPENDRIVE_CPP_TYPES_H_
+#define OPENDRIVE_CPP_TYPES_H_
 
 #include <cstdint>
 #include <map>
@@ -7,10 +7,10 @@
 #include <string>
 #include <vector>
 
-#include "types.h"
+#include "enums.h"
 
 namespace opendrive {
-namespace base {
+namespace g {
 
 typedef int Id;
 typedef std::vector<Id> Ids;
@@ -187,7 +187,7 @@ struct Map {
   std::vector<Road> roads;
 };
 
-}  // namespace base
+}  // namespace g
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_BASE_H_
+#endif  // OPENDRIVE_CPP_TYPES_H_

@@ -1,12 +1,10 @@
 #include "opendrive-cpp/parser/road_xml_parser.h"
 
-#include "opendrive-cpp/core/types.h"
-
 namespace opendrive {
 namespace parser {
 
 opendrive::Status RoadXmlParser::Parse(const tinyxml2::XMLElement* road_ele,
-                                       base::Road* road) {
+                                       g::Road* road) {
   road_ele_ = road_ele;
   road_ = road;
   Init();
@@ -56,20 +54,19 @@ RoadXmlParser& RoadXmlParser::ParseLinkEle() {
                                           road_->link.predecessor.s);
           common::XmlQueryEnumAttribute(
               link_type_ele, "elementType", road_->link.predecessor.type,
-              std::map<std::string, base::RoadLinkInfo::Type>{
-                  std::make_pair("road", base::RoadLinkInfo::Type::ROAD),
-                  std::make_pair("junction",
-                                 base::RoadLinkInfo::Type::JUNCTION)});
+              std::map<std::string, g::RoadLinkInfo::Type>{
+                  std::make_pair("road", g::RoadLinkInfo::Type::ROAD),
+                  std::make_pair("junction", g::RoadLinkInfo::Type::JUNCTION)});
           common::XmlQueryEnumAttribute(
               link_type_ele, "contactPoint", road_->link.predecessor.point_type,
-              std::map<std::string, base::RoadLinkInfo::PointType>{
-                  std::make_pair("start", base::RoadLinkInfo::PointType::START),
-                  std::make_pair("end", base::RoadLinkInfo::PointType::END)});
+              std::map<std::string, g::RoadLinkInfo::PointType>{
+                  std::make_pair("start", g::RoadLinkInfo::PointType::START),
+                  std::make_pair("end", g::RoadLinkInfo::PointType::END)});
           common::XmlQueryEnumAttribute(
               link_type_ele, "elementDir", road_->link.predecessor.dir,
-              std::map<std::string, base::RoadLinkInfo::Dir>{
-                  std::make_pair("+", base::RoadLinkInfo::Dir::PLUS),
-                  std::make_pair("-", base::RoadLinkInfo::Dir::MINUS)});
+              std::map<std::string, g::RoadLinkInfo::Dir>{
+                  std::make_pair("+", g::RoadLinkInfo::Dir::PLUS),
+                  std::make_pair("-", g::RoadLinkInfo::Dir::MINUS)});
         } else if ("successor" == link_element) {
           common::XmlQueryIntAttribute(link_type_ele, "elementId",
                                        road_->link.successor.id);
@@ -77,20 +74,19 @@ RoadXmlParser& RoadXmlParser::ParseLinkEle() {
                                           road_->link.successor.s);
           common::XmlQueryEnumAttribute(
               link_type_ele, "elementType", road_->link.successor.type,
-              std::map<std::string, base::RoadLinkInfo::Type>{
-                  std::make_pair("road", base::RoadLinkInfo::Type::ROAD),
-                  std::make_pair("junction",
-                                 base::RoadLinkInfo::Type::JUNCTION)});
+              std::map<std::string, g::RoadLinkInfo::Type>{
+                  std::make_pair("road", g::RoadLinkInfo::Type::ROAD),
+                  std::make_pair("junction", g::RoadLinkInfo::Type::JUNCTION)});
           common::XmlQueryEnumAttribute(
               link_type_ele, "contactPoint", road_->link.successor.point_type,
-              std::map<std::string, base::RoadLinkInfo::PointType>{
-                  std::make_pair("start", base::RoadLinkInfo::PointType::START),
-                  std::make_pair("end", base::RoadLinkInfo::PointType::END)});
+              std::map<std::string, g::RoadLinkInfo::PointType>{
+                  std::make_pair("start", g::RoadLinkInfo::PointType::START),
+                  std::make_pair("end", g::RoadLinkInfo::PointType::END)});
           common::XmlQueryEnumAttribute(
               link_type_ele, "elementDir", road_->link.predecessor.dir,
-              std::map<std::string, base::RoadLinkInfo::Dir>{
-                  std::make_pair("+", base::RoadLinkInfo::Dir::PLUS),
-                  std::make_pair("-", base::RoadLinkInfo::Dir::MINUS)});
+              std::map<std::string, g::RoadLinkInfo::Dir>{
+                  std::make_pair("+", g::RoadLinkInfo::Dir::PLUS),
+                  std::make_pair("-", g::RoadLinkInfo::Dir::MINUS)});
         }
       }
     }
@@ -103,7 +99,7 @@ RoadXmlParser& RoadXmlParser::ParseTypeEle() {
   const tinyxml2::XMLElement* curr_type_ele =
       road_ele_->FirstChildElement("type");
   while (curr_type_ele) {
-    base::RoadTypeInfo road_type_info;
+    g::RoadTypeInfo road_type_info;
     common::XmlQueryDoubleAttribute(curr_type_ele, "s", road_type_info.s);
     common::XmlQueryEnumAttribute(
         curr_type_ele, "type", road_type_info.type,
@@ -151,40 +147,40 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
     while (curr_geometry_ele) {
       const tinyxml2::XMLElement* geometry_type_ele =
           curr_geometry_ele->FirstChildElement("line");
-      std::shared_ptr<base::GeometryAttributes> geometry_base_ptr;
+      std::shared_ptr<g::GeometryAttributes> geometry_base_ptr;
       if (geometry_type_ele) {
-        std::shared_ptr<base::GeometryAttributesLine> geometry_ptr =
-            std::make_shared<base::GeometryAttributesLine>();
+        std::shared_ptr<g::GeometryAttributesLine> geometry_ptr =
+            std::make_shared<g::GeometryAttributesLine>();
         geometry_ptr->type = GeometryType::LINE;
         geometry_base_ptr =
-            std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
+            std::dynamic_pointer_cast<g::GeometryAttributes>(geometry_ptr);
       }
       geometry_type_ele = curr_geometry_ele->FirstChildElement("arc");
       if (geometry_type_ele) {
-        std::shared_ptr<base::GeometryAttributesArc> geometry_ptr =
-            std::make_shared<base::GeometryAttributesArc>();
+        std::shared_ptr<g::GeometryAttributesArc> geometry_ptr =
+            std::make_shared<g::GeometryAttributesArc>();
         common::XmlQueryDoubleAttribute(geometry_type_ele, "curvature",
                                         geometry_ptr->curvature);
         geometry_ptr->type = GeometryType::ARC;
         geometry_base_ptr =
-            std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
+            std::dynamic_pointer_cast<g::GeometryAttributes>(geometry_ptr);
       }
       geometry_type_ele = curr_geometry_ele->FirstChildElement("spiral");
       if (geometry_type_ele) {
-        std::shared_ptr<base::GeometryAttributesSpiral> geometry_ptr =
-            std::make_shared<base::GeometryAttributesSpiral>();
+        std::shared_ptr<g::GeometryAttributesSpiral> geometry_ptr =
+            std::make_shared<g::GeometryAttributesSpiral>();
         common::XmlQueryDoubleAttribute(geometry_type_ele, "curvStart",
                                         geometry_ptr->curve_start);
         common::XmlQueryDoubleAttribute(geometry_type_ele, "curvEnd",
                                         geometry_ptr->curve_end);
         geometry_ptr->type = GeometryType::SPIRAL;
         geometry_base_ptr =
-            std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
+            std::dynamic_pointer_cast<g::GeometryAttributes>(geometry_ptr);
       }
       geometry_type_ele = curr_geometry_ele->FirstChildElement("poly3");
       if (geometry_type_ele) {
-        std::shared_ptr<base::GeometryAttributesPoly3> geometry_ptr =
-            std::make_shared<base::GeometryAttributesPoly3>();
+        std::shared_ptr<g::GeometryAttributesPoly3> geometry_ptr =
+            std::make_shared<g::GeometryAttributesPoly3>();
         common::XmlQueryDoubleAttribute(geometry_type_ele, "a",
                                         geometry_ptr->a);
         common::XmlQueryDoubleAttribute(geometry_type_ele, "b",
@@ -195,21 +191,21 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
                                         geometry_ptr->d);
         geometry_ptr->type = GeometryType::POLY3;
         geometry_base_ptr =
-            std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
+            std::dynamic_pointer_cast<g::GeometryAttributes>(geometry_ptr);
       }
       geometry_type_ele = curr_geometry_ele->FirstChildElement("paramPoly3");
       if (geometry_type_ele) {
-        std::shared_ptr<base::GeometryAttributesParamPoly3> geometry_ptr =
-            std::make_shared<base::GeometryAttributesParamPoly3>();
+        std::shared_ptr<g::GeometryAttributesParamPoly3> geometry_ptr =
+            std::make_shared<g::GeometryAttributesParamPoly3>();
         common::XmlQueryEnumAttribute(
             geometry_type_ele, "pRange", geometry_ptr->p_range,
-            std::map<std::string, base::GeometryAttributesParamPoly3::PRange>{
+            std::map<std::string, g::GeometryAttributesParamPoly3::PRange>{
                 std::make_pair(
                     "arcLength",
-                    base::GeometryAttributesParamPoly3::PRange::ARCLENGTH),
+                    g::GeometryAttributesParamPoly3::PRange::ARCLENGTH),
                 std::make_pair(
                     "normalized",
-                    base::GeometryAttributesParamPoly3::PRange::NORMALIZED),
+                    g::GeometryAttributesParamPoly3::PRange::NORMALIZED),
             });
         common::XmlQueryDoubleAttribute(geometry_type_ele, "aU",
                                         geometry_ptr->aU);
@@ -229,7 +225,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
                                         geometry_ptr->dV);
         geometry_ptr->type = GeometryType::PARAMPOLY3;
         geometry_base_ptr =
-            std::dynamic_pointer_cast<base::GeometryAttributes>(geometry_ptr);
+            std::dynamic_pointer_cast<g::GeometryAttributes>(geometry_ptr);
       }
       if (!geometry_base_ptr) {
         set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR,
@@ -257,7 +253,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
 
 RoadXmlParser& RoadXmlParser::ParseLanesEle() {
   if (!IsValid()) return *this;
-  base::Lanes lanes;
+  g::Lanes lanes;
   const tinyxml2::XMLElement* lanes_ele = road_ele_->FirstChildElement("lanes");
   LanesXmlParser lanes_parser;
   lanes_parser.Parse(lanes_ele, &lanes);

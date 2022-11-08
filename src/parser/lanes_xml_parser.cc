@@ -1,12 +1,10 @@
 #include "opendrive-cpp/parser/lanes_xml_parser.h"
 
-#include "opendrive-cpp/core/types.h"
-
 namespace opendrive {
 namespace parser {
 
 opendrive::Status LanesXmlParser::Parse(const tinyxml2::XMLElement* lanes_ele,
-                                        base::Lanes* lanes) {
+                                        g::Lanes* lanes) {
   lanes_ele_ = lanes_ele;
   lanes_ = lanes;
   Init();
@@ -24,7 +22,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneOffsetEle() {
   if (!IsValid()) return *this;
   auto lane_offset_ele = lanes_ele_->FirstChildElement("laneOffset");
   while (lane_offset_ele) {
-    base::LaneOffset lane_offset;
+    g::LaneOffset lane_offset;
     common::XmlQueryDoubleAttribute(lane_offset_ele, "s", lane_offset.s);
     common::XmlQueryDoubleAttribute(lane_offset_ele, "a", lane_offset.a);
     common::XmlQueryDoubleAttribute(lane_offset_ele, "b", lane_offset.b);
@@ -41,7 +39,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionEle() {
   const tinyxml2::XMLElement* curr_lane_section_ele =
       lanes_ele_->FirstChildElement("laneSection");
   while (curr_lane_section_ele) {
-    base::LaneSection lane_section;
+    g::LaneSection lane_section;
     common::XmlQueryDoubleAttribute(curr_lane_section_ele, "s", lane_section.s);
     ParseLaneSectionLanesEle(curr_lane_section_ele, lane_section);
     lanes_->lane_sections.emplace_back(lane_section);
@@ -52,7 +50,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionEle() {
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneSectionLanesEle(
-    const tinyxml2::XMLElement* sections_ele, base::LaneSection& lane_section) {
+    const tinyxml2::XMLElement* sections_ele, g::LaneSection& lane_section) {
   if (!IsValid()) return *this;
 
   std::vector<std::string> section_type{"left", "center", "right"};
@@ -65,7 +63,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionLanesEle(
     const tinyxml2::XMLElement* lane_ele =
         curr_section_ele->FirstChildElement("lane");
     while (lane_ele) {
-      base::Lane lane;
+      g::Lane lane;
       this->ParseLaneEle(lane_ele, lane);
       if ("left" == type) {
         lane_section.left.lanes.emplace_back(lane);
@@ -82,7 +80,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneSectionLanesEle(
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneEle(
-    const tinyxml2::XMLElement* lane_ele, base::Lane& lane) {
+    const tinyxml2::XMLElement* lane_ele, g::Lane& lane) {
   if (!IsValid()) return *this;
 
   this->ParseLaneAttribute(lane_ele, lane)
@@ -95,7 +93,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneEle(
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneAttribute(
-    const tinyxml2::XMLElement* lane_ele, base::Lane& lane) {
+    const tinyxml2::XMLElement* lane_ele, g::Lane& lane) {
   if (!IsValid()) return *this;
   std::string lane_type;
   std::string lane_level;
@@ -141,7 +139,7 @@ LanesXmlParser& LanesXmlParser::ParseLaneAttribute(
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneLinkEle(
-    const tinyxml2::XMLElement* lane_ele, base::Lane& lane) {
+    const tinyxml2::XMLElement* lane_ele, g::Lane& lane) {
   if (!IsValid()) return *this;
   const tinyxml2::XMLElement* lane_link_ele =
       lane_ele->FirstChildElement("link");
@@ -163,12 +161,12 @@ LanesXmlParser& LanesXmlParser::ParseLaneLinkEle(
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneWidthEle(
-    const tinyxml2::XMLElement* lane_ele, base::Lane& lane) {
+    const tinyxml2::XMLElement* lane_ele, g::Lane& lane) {
   if (!IsValid()) return *this;
   const tinyxml2::XMLElement* lane_width_ele =
       lane_ele->FirstChildElement("width");
   while (lane_width_ele) {
-    base::LaneWidth lane_width;
+    g::LaneWidth lane_width;
     common::XmlQueryDoubleAttribute(lane_width_ele, "sOffset", lane_width.s);
     common::XmlQueryDoubleAttribute(lane_width_ele, "a", lane_width.a);
     common::XmlQueryDoubleAttribute(lane_width_ele, "b", lane_width.b);
@@ -181,12 +179,12 @@ LanesXmlParser& LanesXmlParser::ParseLaneWidthEle(
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneBorderEle(
-    const tinyxml2::XMLElement* lane_ele, base::Lane& lane) {
+    const tinyxml2::XMLElement* lane_ele, g::Lane& lane) {
   if (!IsValid()) return *this;
   const tinyxml2::XMLElement* curr_lane_border_ele =
       lane_ele->FirstChildElement("border");
   while (curr_lane_border_ele) {
-    base::LaneBorder lane_border;
+    g::LaneBorder lane_border;
     common::XmlQueryDoubleAttribute(curr_lane_border_ele, "sOffset",
                                     lane_border.s);
     common::XmlQueryDoubleAttribute(curr_lane_border_ele, "a", lane_border.a);
@@ -200,12 +198,12 @@ LanesXmlParser& LanesXmlParser::ParseLaneBorderEle(
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneRoadMarkEle(
-    const tinyxml2::XMLElement* lane_ele, base::Lane& lane) {
+    const tinyxml2::XMLElement* lane_ele, g::Lane& lane) {
   if (!IsValid()) return *this;
   const tinyxml2::XMLElement* curr_lane_mark_ele =
       lane_ele->FirstChildElement("roadMark");
   while (curr_lane_mark_ele) {
-    base::RoadMark road_mark;
+    g::RoadMark road_mark;
     std::string mark_type;
     std::string mark_color;
     std::string mark_weight;

@@ -1,13 +1,11 @@
 #include "opendrive-cpp/parser/header_xml_parser.h"
 
-#include "opendrive-cpp/common/common.hpp"
-#include "opendrive-cpp/parser/parser.h"
 
 namespace opendrive {
 namespace parser {
 
 opendrive::Status HeaderXmlParser::Parse(const tinyxml2::XMLElement* header_ele,
-                                         base::Header* header) {
+                                         g::Header* header) {
   header_ele_ = header_ele;
   header_ = header;
   Init();

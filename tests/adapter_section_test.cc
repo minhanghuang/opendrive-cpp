@@ -8,8 +8,7 @@
 #include <utility>
 
 #include "opendrive-cpp/common/common.hpp"
-#include "opendrive-cpp/core/section.h"
-#include "opendrive-cpp/core/types.h"
+#include "opendrive-cpp/geometry/types.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;
@@ -58,7 +57,7 @@ TEST_F(TestAdapterSection, TestAdapterSection) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
   ASSERT_TRUE(curr_road_ele != nullptr);
-  opendrive::base::Road base_road;
+  opendrive::g::Road base_road;
   auto core_road = std::make_shared<opendrive::core::Section>();
   opendrive::parser::RoadXmlParser road_parser;
   opendrive::Adapter adapter;

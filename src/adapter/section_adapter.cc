@@ -11,7 +11,7 @@ void SectionAdapter::Init() {
   }
 }
 
-opendrive::Status SectionAdapter::Run(const base::LaneSection* odr_section,
+opendrive::Status SectionAdapter::Run(const g::LaneSection* odr_section,
                                       core::Section::Ptr section_ptr) {
   odr_section_ = odr_section;
   section_ptr_ = section_ptr;

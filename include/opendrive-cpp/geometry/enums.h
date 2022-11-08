@@ -1,11 +1,7 @@
-#ifndef OPENDRIVE_CPP_TYPES_H_
-#define OPENDRIVE_CPP_TYPES_H_
+#ifndef OPENDRIVE_CPP_ENUMS_H_
+#define OPENDRIVE_CPP_ENUMS_H_
 
-#include <cstdint>
-#include <map>
-#include <memory>
 #include <string>
-#include <vector>
 
 namespace opendrive {
 
@@ -120,4 +116,4 @@ enum class RoadSpeedUnit {
 
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_TYPES_H_
+#endif  // OPENDRIVE_CPP_ENUMS_H_

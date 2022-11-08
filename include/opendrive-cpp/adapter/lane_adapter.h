@@ -1,12 +1,12 @@
 #ifndef OPENDRIVE_CPP_ADAPTER_LANE_H_
 #define OPENDRIVE_CPP_ADAPTER_LANE_H_
 
-#include "opendrive-cpp/adapter/adapter.h"
+#include "opendrive-cpp/adapter/util_adapter.h"
 
 namespace opendrive {
 namespace adapter {
 
-class LaneAdapter : public AdapterBase {
+class LaneAdapter : public UtilAdapter {
  public:
   LaneAdapter();
   opendrive::Status Run();

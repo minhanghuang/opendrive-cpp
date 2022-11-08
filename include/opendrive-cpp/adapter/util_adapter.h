@@ -1,20 +1,17 @@
-#ifndef OPENDRIVE_CPP_PARSER_H_
-#define OPENDRIVE_CPP_PARSER_H_
-#include <tinyxml2.h>
+#ifndef OPENDRIVE_CPP_ADAPTER_H_
+#define OPENDRIVE_CPP_ADAPTER_H_
 
-#include <memory>
 #include <mutex>
 
-#include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/core/types.h"
+#include "opendrive-cpp/parser/road_xml_parser.h"
 
 namespace opendrive {
-namespace parser {
+namespace adapter {
 
-class XmlParser {
+class UtilAdapter {
  public:
-  XmlParser() = default;
+  UtilAdapter();
   virtual bool IsValid() final;
   virtual opendrive::Status status() final;
   virtual void set_status(ErrorCode code, const std::string& msg) final;
@@ -26,7 +23,7 @@ class XmlParser {
   opendrive::Status status_{ErrorCode::OK, "ok"};
 };
 
-}  // namespace parser
+}  // namespace adapter
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_PARSER_H_
+#endif  // OPENDRIVE_CPP_ADAPTER_H_
