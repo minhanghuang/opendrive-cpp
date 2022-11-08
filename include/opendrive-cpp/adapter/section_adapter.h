@@ -15,6 +15,10 @@ class SectionAdapter : public AdapterBase {
 
  private:
   virtual void Init() override;
+  SectionAdapter& ParseLane();
+  SectionAdapter& Parse();
+  const base::LaneSection* odr_section_;
+  core::Section::Ptr section_ptr_;
 };
 
 }  // namespace adapter

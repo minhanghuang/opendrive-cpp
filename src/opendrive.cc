@@ -22,8 +22,7 @@ Adapter::Adapter()
 
 opendrive::Status Adapter::LaneSection(const base::LaneSection* odr_section,
                                        core::Section::Ptr section_ptr) {
-  // return section_adapter_->Run();
-  return section_adapter_->status();
+  return section_adapter_->Run(odr_section, section_ptr);
 }
 
 }  // namespace opendrive

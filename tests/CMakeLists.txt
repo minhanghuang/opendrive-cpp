@@ -23,7 +23,7 @@ SET(TEST_SOURCES
   opendrive_test
   common_test
   header_parser_test
-  adapter_section 
+  adapter_section_test 
 )
 
 FOREACH(test_src ${TEST_SOURCES})

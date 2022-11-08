@@ -64,7 +64,7 @@ TEST_F(TestAdapterSection, TestAdapterSection) {
   opendrive::Adapter adapter;
   road_parser.Parse(curr_road_ele, &base_road);
   ASSERT_TRUE(base_road.lanes.lane_sections.size() > 0);
-  adapter.LaneSection(base_road.lanes.lane_sections.front(), core_road);
+  adapter.LaneSection(&base_road.lanes.lane_sections.front(), core_road);
 }
 
 int main(int argc, char* argv[]) {
