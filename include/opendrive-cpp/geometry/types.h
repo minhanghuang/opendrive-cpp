@@ -30,8 +30,9 @@ struct Header {
   std::string vendor;
 };
 
-/// Geometry Attributes
+typedef struct GeometryAttributes GeometryAttributesType;
 struct GeometryAttributes {
+  typedef std::shared_ptr<GeometryAttributesType> Ptr;
   virtual ~GeometryAttributes() = default;
   double s = 0.;  // s-offset [meters]
   double x = 0.;  // [meters]
@@ -169,7 +170,7 @@ struct RoadTypeInfo {
 };
 
 struct RoadPlanView {
-  std::vector<std::shared_ptr<GeometryAttributes>> geometrys;
+  std::vector<GeometryAttributes::Ptr> geometrys;
 };
 
 struct Road {

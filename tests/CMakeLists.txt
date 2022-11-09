@@ -24,6 +24,7 @@ SET(TEST_SOURCES
   common_test
   header_parser_test
   adapter_section_test 
+  adapter_road_test 
 )
 
 FOREACH(test_src ${TEST_SOURCES})
