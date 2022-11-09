@@ -1,6 +1,7 @@
 #ifndef OPENDRIVE_CPP_ADAPTER_H_
 #define OPENDRIVE_CPP_ADAPTER_H_
 
+#include <cmath>
 #include <mutex>
 
 #include "opendrive-cpp/common/status.h"
@@ -16,6 +17,11 @@ class UtilAdapter {
   virtual opendrive::Status status() final;
   virtual void set_status(ErrorCode code, const std::string& msg) final;
   virtual void Init() = 0;
+  virtual void CalcLinePoint(double& x, double& y, double start_x,
+                             double start_y, double hdg, double length) final;
+  virtual void CalcArcPoint(double& x, double& y, double start_x,
+                            double start_y, double hdg, double length,
+                            double curvature) final;
 
  private:
   std::mutex mutex_;
