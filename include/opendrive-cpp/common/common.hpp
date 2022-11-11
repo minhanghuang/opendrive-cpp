@@ -20,6 +20,11 @@ static void Assert(bool r, const std::string& msg = "fault") {
   }
 }
 
+template <typename T>
+static T Clamp(T a, T min = T(0), T max = T(1)) {
+  return std::min(std::max(a, min), max);
+}
+
 static std::string StrToUpper(const std::string& s) {
   std::string ret = s;
   std::transform(s.begin(), s.end(), ret.begin(),

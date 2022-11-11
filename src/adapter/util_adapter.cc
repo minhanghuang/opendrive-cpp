@@ -32,8 +32,8 @@ void UtilAdapter::CalcArcPoint(double& x, double& y, double start_x,
   hdg = hdg - M_PI / 2.0;
   double a = 2.0 / curvature * std::sin(length * curvature / 2.0);
   double alpha = (M_PI - length * curvature) / 2.0 - hdg;
-  x = -1 * a * cos(alpha) + start_x;
-  y = a * sin(alpha) + start_y;
+  x = -1 * a * std::cos(alpha) + start_x;
+  y = a * std::sin(alpha) + start_y;
 }
 
 }  // namespace adapter
