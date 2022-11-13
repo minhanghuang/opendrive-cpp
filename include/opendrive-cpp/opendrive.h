@@ -18,8 +18,9 @@ class Parser {
   ~Parser();
   Parser();
   opendrive::Status Header(const tinyxml2::XMLElement* xml_node,
-                           g::Header* header);
-  opendrive::Status Road(const tinyxml2::XMLElement* xml_node, g::Road* road);
+                           element::Header* header);
+  opendrive::Status Road(const tinyxml2::XMLElement* xml_node,
+                         element::Road* road);
 
  private:
   std::shared_ptr<parser::HeaderXmlParser> header_parser_;
@@ -30,7 +31,7 @@ class Adapter {
  public:
   ~Adapter();
   Adapter();
-  opendrive::Status LaneSection(const g::LaneSection* odr_section,
+  opendrive::Status LaneSection(const element::LaneSection* odr_section,
                                 core::Section::Ptr section_ptr);
 
  private:

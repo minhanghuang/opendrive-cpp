@@ -1,6 +1,8 @@
 #ifndef OPENDRIVE_CPP_TYPES_H_
 #define OPENDRIVE_CPP_TYPES_H_
 
+#include <array>
+#include <cmath>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -8,14 +10,19 @@
 #include <vector>
 
 #include "enums.h"
+#include "opendrive-cpp/common/common.hpp"
+#include "opendrive-cpp/common/spiral/odrSpiral.h"
 
 namespace opendrive {
-namespace g {
+namespace element {
 
 typedef int Id;
 typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
+typedef std::array<double, 1> Vec1D;
+typedef std::array<double, 2> Vec2D;
+typedef std::array<double, 3> Vec3D;
 
 struct Header {
   std::string rev_major;
@@ -31,51 +38,151 @@ struct Header {
 };
 
 typedef struct Geometry GeometryTypedef;
-struct Geometry {
+class Geometry {
+ public:
   typedef std::shared_ptr<GeometryTypedef> Ptr;
+  Geometry() = delete;
+  Geometry(double s, double x, double y, double hdg, double length,
+           GeometryType type)
+      : s_(s), x_(x), y_(y), hdg_(hdg), length_(length), type_(type) {}
   virtual ~Geometry() = default;
-  double s = 0.;  // s-offset [meters]
-  double x = 0.;  // [meters]
-  double y = 0.;  // [meters]
-  double z = 0.;
-  double hdg = 0.;     // start orientation [radians]
-  double length = 0.;  // length of the road section [meters]
-  GeometryType type = GeometryType::UNKNOWN;  // geometry type
+  virtual Vec2D GetXY(double distance) = 0;
+  virtual double s() const final { return s_; }
+  virtual double x() const final { return s_; }
+  virtual double y() const final { return s_; }
+  virtual double hdg() const final { return s_; }
+  virtual double length() const final { return s_; }
+  virtual GeometryType type() const final { return type_; }
+
+ protected:
+  double s_;
+  double x_;
+  double y_;
+  double hdg_;
+  double length_;
+  GeometryType type_;
 };
 
-struct GeometryLine : public Geometry {};
-
-struct GeometryAttributesArc : public Geometry {
-  double curvature = 0.;
+class GeometryLine : public Geometry {
+ public:
+  GeometryLine(double s, double x, double y, double hdg, double length,
+               GeometryType type)
+      : Geometry(s, x, y, hdg, length, type) {}
+  virtual Vec2D GetXY(double distance) override {
+    distance = common::Clamp<double>(distance, 0, length_);
+    double xd = x_ + (std::cos(hdg_) * (distance - s_));
+    double yd = y_ + (std::sin(hdg_) * (distance - s_));
+    return Vec2D{xd, yd};
+  }
 };
 
-struct GeometrySpiral : public Geometry {
-  double curve_start = 0.;
-  double curve_end = 0.;
+class GeometryArc : public Geometry {
+ public:
+  GeometryArc(double s, double x, double y, double hdg, double length,
+              GeometryType type, double curvature)
+      : Geometry(s, x, y, hdg, length, type), curvature_(curvature) {}
+
+  double curvature() const { return curvature_; }
+  virtual Vec2D GetXY(double distance) override {
+    distance = common::Clamp<double>(distance, 0, length_);
+    const double angle_at_s = (distance - s_) * curvature_ - M_PI / 2;
+    const double radius = 1 / curvature_;
+    double xd = radius * (std::cos(hdg_ + angle_at_s) - std::sin(hdg_)) + x_;
+    double yd = radius * (std::sin(hdg_ + angle_at_s) + std::cos(hdg_)) + y_;
+    return Vec2D{xd, yd};
+  }
+
+ private:
+  double curvature_;
 };
 
-struct GeometryPoly3 : public Geometry {
-  double a = 0.;
-  double b = 0.;
-  double c = 0.;
-  double d = 0.;
+class GeometrySpiral : public Geometry {
+ public:
+  GeometrySpiral(double s, double x, double y, double hdg, double length,
+                 GeometryType type, double curve_start, double curve_end)
+      : Geometry(s, x, y, hdg, length, type),
+        curve_start_(curve_start),
+        curve_end_(curve_end) {}
+
+  double curve_start() const { return curve_start_; }
+  double curve_end() const { return curve_end_; }
+  virtual Vec2D GetXY(double distance) override {
+    Vec2D ret;
+    return ret;
+  }
+
+ private:
+  double curve_start_;
+  double curve_end_;
 };
 
-struct GeometryParamPoly3 : public Geometry {
+class GeometryPoly3 : public Geometry {
+ public:
+  GeometryPoly3(double s, double x, double y, double hdg, double length,
+                GeometryType type, double a, double b, double c, double d)
+      : Geometry(s, x, y, hdg, length, type), a_(a), b_(b), c_(c), d_(d) {}
+
+  double a() const { return a_; }
+  double b() const { return b_; }
+  double c() const { return c_; }
+  double d() const { return d_; }
+  virtual Vec2D GetXY(double distance) override {
+    Vec2D ret;
+    return ret;
+  }
+
+ private:
+  double a_ = 0.;
+  double b_ = 0.;
+  double c_ = 0.;
+  double d_ = 0.;
+};
+
+class GeometryParamPoly3 : public Geometry {
+ public:
   enum class PRange : std::uint8_t {
     UNKNOWN = 0,
     ARCLENGTH = 1,
     NORMALIZED = 2
   };
-  PRange p_range = PRange::UNKNOWN;
-  double aU = 0.;
-  double bU = 0.;
-  double cU = 0.;
-  double dU = 0.;
-  double aV = 0.;
-  double bV = 0.;
-  double cV = 0.;
-  double dV = 0.;
+  GeometryParamPoly3(double s, double x, double y, double hdg, double length,
+                     GeometryType type, double au, double bu, double cu,
+                     double du, double av, double bv, double cv, double dv,
+                     PRange p_range)
+      : Geometry(s, x, y, hdg, length, type),
+        au_(au),
+        bu_(bu),
+        cu_(cu),
+        du_(du),
+        av_(av),
+        bv_(bv),
+        cv_(cv),
+        dv_(dv),
+        p_range_(p_range) {}
+  double au() const { return au_; }
+  double bu() const { return bu_; }
+  double cu() const { return cu_; }
+  double du() const { return du_; }
+  double av() const { return av_; }
+  double bv() const { return bv_; }
+  double cv() const { return cv_; }
+  double dv() const { return dv_; }
+  PRange p_range() const { return p_range_; }
+  virtual Vec2D GetXY(double distance) override {
+    Vec2D ret;
+    return ret;
+  }
+
+ private:
+  PRange p_range_;
+  double au_;
+  double bu_;
+  double cu_;
+  double du_;
+  double av_;
+  double bv_;
+  double cv_;
+  double dv_;
 };
 
 struct LaneAttributes {
@@ -188,7 +295,7 @@ struct Map {
   std::vector<Road> roads;
 };
 
-}  // namespace g
+}  // namespace element
 }  // namespace opendrive
 
 #endif  // OPENDRIVE_CPP_TYPES_H_

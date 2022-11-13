@@ -11,13 +11,13 @@ namespace adapter {
 class SectionAdapter : public UtilAdapter {
  public:
   SectionAdapter();
-  opendrive::Status Run(const g::LaneSection* odr_section,
+  opendrive::Status Run(const element::LaneSection* odr_section,
                         core::Section::Ptr section_ptr);
 
  private:
   virtual void Init() override;
   SectionAdapter& TransformLane();
-  const g::LaneSection* odr_section_;
+  const element::LaneSection* odr_section_;
   core::Section::Ptr section_ptr_;
 };
 

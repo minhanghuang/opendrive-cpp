@@ -3,12 +3,7 @@
 namespace opendrive {
 namespace parser {
 
-bool XmlParser::IsValid() {
-  if (ErrorCode::OK != status_.error_code) {
-    return false;
-  }
-  return true;
-}
+bool XmlParser::IsValid() { return ErrorCode::OK == status_.error_code; }
 
 opendrive::Status XmlParser::status() { return status_; }
 

@@ -14,7 +14,7 @@ class RoadXmlParser : public XmlParser {
  public:
   RoadXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* road_ele,
-                          g::Road* road_ptr);
+                          element::Road* road_ptr);
 
  private:
   virtual void Init() override;
@@ -24,7 +24,7 @@ class RoadXmlParser : public XmlParser {
   RoadXmlParser& ParsePlanViewEle();
   RoadXmlParser& ParseLanesEle();
   const tinyxml2::XMLElement* road_ele_;
-  g::Road* road_;
+  element::Road* road_;
 };
 
 }  // namespace parser

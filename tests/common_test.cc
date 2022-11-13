@@ -71,7 +71,7 @@ TEST_F(TestCommon, TestXml) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   auto header_node = xml->FirstChildElement("header");
-  auto header_ptr = std::make_shared<opendrive::g::Header>();
+  auto header_ptr = std::make_shared<opendrive::element::Header>();
   ASSERT_TRUE(header_node != nullptr);
   opendrive::common::XmlQueryStringAttribute(header_node, "name",
                                              header_ptr->name);
@@ -107,7 +107,7 @@ TEST_F(TestCommon, TestXml2) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   auto road_ele = xml->FirstChildElement("road");
-  auto road_ptr = std::make_shared<opendrive::g::Road>();
+  auto road_ptr = std::make_shared<opendrive::element::Road>();
   ASSERT_TRUE(road_ele != nullptr);
   ASSERT_TRUE(road_ptr->attributes.rule == RoadRule::UNKNOWN);
   auto ret = opendrive::common::XmlQueryEnumAttribute(

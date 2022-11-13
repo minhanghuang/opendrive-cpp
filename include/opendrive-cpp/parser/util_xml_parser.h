@@ -22,7 +22,6 @@ class XmlParser {
 
  private:
   std::mutex mutex_;
-  bool next_ = true;
   opendrive::Status status_{ErrorCode::OK, "ok"};
 };
 

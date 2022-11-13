@@ -37,6 +37,7 @@ file(GLOB OPENDRIVE_CPP_SRCS
   "src/*.cc"
   "src/parser/*.cc"
   "src/adapter/*.cc"
+  "src/common/spiral/*.cpp"
 )
 
 add_library(${TARGET_NAME} ${opendrive-cpp-type}

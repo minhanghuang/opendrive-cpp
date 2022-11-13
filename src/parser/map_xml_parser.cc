@@ -10,7 +10,7 @@ namespace opendrive {
 namespace parser {
 
 opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* root_ele,
-                                      g::Map::Ptr map_ptr) {
+                                      element::Map::Ptr map_ptr) {
   Init();
   this->ParseHeaderEle().ParseRoadEle();
   return status();
@@ -24,7 +24,7 @@ void MapXmlParser::Init() {
 
 MapXmlParser& MapXmlParser::ParseHeaderEle() {
   if (!IsValid()) return *this;
-  g::Header header;
+  element::Header header;
   map_ptr_->header = header;
   HeaderXmlParser header_parser;
   const tinyxml2::XMLElement* header_ele =
@@ -38,7 +38,7 @@ MapXmlParser& MapXmlParser::ParseRoadEle() {
   const tinyxml2::XMLElement* curr_road_ele =
       map_ele_->FirstChildElement("road");
   while (curr_road_ele) {
-    g::Road road;
+    element::Road road;
     map_ptr_->roads.emplace_back(road);
     RoadXmlParser road_parser;
     road_parser.Parse(curr_road_ele, &road);

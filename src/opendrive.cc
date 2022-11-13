@@ -7,12 +7,12 @@ Parser::Parser()
     : header_parser_(std::make_shared<parser::HeaderXmlParser>()) {}
 
 opendrive::Status Parser::Header(const tinyxml2::XMLElement* xml_node,
-                                 g::Header* header) {
+                                 element::Header* header) {
   return header_parser_->Parse(xml_node, header);
 }
 
 opendrive::Status Parser::Road(const tinyxml2::XMLElement* xml_node,
-                               g::Road* road) {
+                               element::Road* road) {
   return road_parser_->Parse(xml_node, road);
 }
 
@@ -20,7 +20,7 @@ Adapter::~Adapter() {}
 Adapter::Adapter()
     : section_adapter_(std::make_shared<adapter::SectionAdapter>()) {}
 
-opendrive::Status Adapter::LaneSection(const g::LaneSection* odr_section,
+opendrive::Status Adapter::LaneSection(const element::LaneSection* odr_section,
                                        core::Section::Ptr section_ptr) {
   return section_adapter_->Run(odr_section, section_ptr);
 }

@@ -6,7 +6,7 @@ namespace adapter {
 RoadAdapter::RoadAdapter()
     : geometry_ptr_(std::make_shared<GeometryAdapter>()) {}
 
-opendrive::Status RoadAdapter::Run(const g::Road* g_road,
+opendrive::Status RoadAdapter::Run(const element::Road* g_road,
                                    core::Road::Ptr road_ptr) {
   g_road_ = g_road;
   road_ptr_ = road_ptr;

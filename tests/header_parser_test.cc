@@ -52,7 +52,7 @@ TEST_F(TestHeaderParser, TestHeader) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* header_node = xml->FirstChildElement("header");
   ASSERT_TRUE(header_node != nullptr);
-  opendrive::g::Header header;
+  opendrive::element::Header header;
   auto ret = parser->Header(header_node, &header);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
   ASSERT_TRUE("1" == header.rev_major);

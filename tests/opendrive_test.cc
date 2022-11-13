@@ -54,8 +54,8 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
   ASSERT_TRUE(curr_road_ele != nullptr);
-  // auto road_ptr = std::make_shared<opendrive::g::Road>();
-  opendrive::g::Road road;
+  // auto road_ptr = std::make_shared<opendrive::element::Road>();
+  opendrive::element::Road road;
   opendrive::parser::RoadXmlParser road_parser;
   road_parser.Parse(curr_road_ele, &road);
 
@@ -67,19 +67,19 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_EQ(opendrive::RoadRule::RHT, road.attributes.rule);
 
   /// road link
-  ASSERT_EQ(g::RoadLinkInfo::Type::ROAD, road.link.predecessor.type);
+  ASSERT_EQ(element::RoadLinkInfo::Type::ROAD, road.link.predecessor.type);
   ASSERT_EQ(11, road.link.predecessor.id);
-  ASSERT_EQ(g::RoadLinkInfo::PointType::START,
+  ASSERT_EQ(element::RoadLinkInfo::PointType::START,
             road.link.predecessor.point_type);
   ASSERT_EQ(0, road.link.predecessor.s);
-  ASSERT_EQ(g::RoadLinkInfo::Dir::UNKNOWN, road.link.predecessor.dir);
+  ASSERT_EQ(element::RoadLinkInfo::Dir::UNKNOWN, road.link.predecessor.dir);
 
-  ASSERT_EQ(g::RoadLinkInfo::Type::JUNCTION, road.link.successor.type);
+  ASSERT_EQ(element::RoadLinkInfo::Type::JUNCTION, road.link.successor.type);
   ASSERT_EQ(43, road.link.successor.id);
-  ASSERT_EQ(g::RoadLinkInfo::PointType::UNKNOWN,
+  ASSERT_EQ(element::RoadLinkInfo::PointType::UNKNOWN,
             road.link.successor.point_type);
   ASSERT_EQ(0, road.link.successor.s);
-  ASSERT_EQ(g::RoadLinkInfo::Dir::UNKNOWN, road.link.successor.dir);
+  ASSERT_EQ(element::RoadLinkInfo::Dir::UNKNOWN, road.link.successor.dir);
 
   /// road type
   ASSERT_EQ(2, road.type_info.size());
@@ -100,69 +100,65 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   /// road planView
   ASSERT_EQ(5, road.plan_view.geometrys.size());
   auto geometry_info1 = road.plan_view.geometrys.at(0);
-  auto geometry_info2 = std::dynamic_pointer_cast<g::GeometrySpiral>(
+  auto geometry_info2 = std::dynamic_pointer_cast<element::GeometrySpiral>(
       road.plan_view.geometrys.at(1));
-  auto geometry_info3 = std::dynamic_pointer_cast<g::GeometryAttributesArc>(
+  auto geometry_info3 = std::dynamic_pointer_cast<element::GeometryArc>(
       road.plan_view.geometrys.at(2));
-  auto geometry_info4 = std::dynamic_pointer_cast<g::GeometryPoly3>(
+  auto geometry_info4 = std::dynamic_pointer_cast<element::GeometryPoly3>(
       road.plan_view.geometrys.at(3));
-  auto geometry_info5 = std::dynamic_pointer_cast<g::GeometryParamPoly3>(
+  auto geometry_info5 = std::dynamic_pointer_cast<element::GeometryParamPoly3>(
       road.plan_view.geometrys.at(4));
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s);
-  ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x);
-  ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y);
-  ASSERT_DOUBLE_EQ(0, geometry_info1->z);
-  ASSERT_DOUBLE_EQ(3.1415926535848282e+00, geometry_info1->hdg);
-  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info1->length);
-  ASSERT_EQ(GeometryType::LINE, geometry_info1->type);
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s());
+  ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x());
+  ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y());
+  ASSERT_DOUBLE_EQ(3.1415926535848282e+00, geometry_info1->hdg());
+  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info1->length());
+  ASSERT_EQ(GeometryType::LINE, geometry_info1->type());
 
-  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info2->s);
-  ASSERT_DOUBLE_EQ(1.5085270356448223e+02, geometry_info2->x);
-  ASSERT_DOUBLE_EQ(1.1999995231616649e+02, geometry_info2->y);
-  ASSERT_DOUBLE_EQ(0, geometry_info2->z);
-  ASSERT_DOUBLE_EQ(3.1415926535798597e+00, geometry_info2->hdg);
-  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info2->length);
-  ASSERT_EQ(GeometryType::SPIRAL, geometry_info2->type);
-  ASSERT_DOUBLE_EQ(-0.0000000000000000e+00, geometry_info2->curve_start);
-  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info2->curve_end);
+  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info2->s());
+  ASSERT_DOUBLE_EQ(1.5085270356448223e+02, geometry_info2->x());
+  ASSERT_DOUBLE_EQ(1.1999995231616649e+02, geometry_info2->y());
+  ASSERT_DOUBLE_EQ(3.1415926535798597e+00, geometry_info2->hdg());
+  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info2->length());
+  ASSERT_EQ(GeometryType::SPIRAL, geometry_info2->type());
+  ASSERT_DOUBLE_EQ(-0.0000000000000000e+00, geometry_info2->curve_start());
+  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info2->curve_end());
 
-  ASSERT_DOUBLE_EQ(7.2438297688509765e+00, geometry_info3->s);
-  ASSERT_DOUBLE_EQ(1.4877093951784059e+02, geometry_info3->x);
-  ASSERT_DOUBLE_EQ(1.2006020151444957e+02, geometry_info3->y);
-  ASSERT_DOUBLE_EQ(0, geometry_info3->z);
-  ASSERT_DOUBLE_EQ(3.0547870980255456e+00, geometry_info3->hdg);
-  ASSERT_DOUBLE_EQ(1.1186223687745517e+01, geometry_info3->length);
-  ASSERT_EQ(GeometryType::ARC, geometry_info3->type);
-  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info3->curvature);
+  ASSERT_DOUBLE_EQ(7.2438297688509765e+00, geometry_info3->s());
+  ASSERT_DOUBLE_EQ(1.4877093951784059e+02, geometry_info3->x());
+  ASSERT_DOUBLE_EQ(1.2006020151444957e+02, geometry_info3->y());
+  ASSERT_DOUBLE_EQ(3.0547870980255456e+00, geometry_info3->hdg());
+  ASSERT_DOUBLE_EQ(1.1186223687745517e+01, geometry_info3->length());
+  ASSERT_EQ(GeometryType::ARC, geometry_info3->type());
+  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info3->curvature());
 
-  ASSERT_DOUBLE_EQ(1.8430053456596493e+01, geometry_info4->s);
-  ASSERT_DOUBLE_EQ(4.9416434943455940e+01, geometry_info4->x);
-  ASSERT_DOUBLE_EQ(7.9753610549006124e+00, geometry_info4->y);
-  ASSERT_DOUBLE_EQ(0, geometry_info4->z);
-  ASSERT_DOUBLE_EQ(-3.8812339311141031e-02, geometry_info4->hdg);
-  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info4->length);
-  ASSERT_EQ(GeometryType::POLY3, geometry_info4->type);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->a);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->b);
-  ASSERT_DOUBLE_EQ(7.8270095403552599e-03, geometry_info4->c);
-  ASSERT_DOUBLE_EQ(-1.2981379520556725e-04, geometry_info4->d);
+  ASSERT_DOUBLE_EQ(1.8430053456596493e+01, geometry_info4->s());
+  ASSERT_DOUBLE_EQ(4.9416434943455940e+01, geometry_info4->x());
+  ASSERT_DOUBLE_EQ(7.9753610549006124e+00, geometry_info4->y());
+  ASSERT_DOUBLE_EQ(-3.8812339311141031e-02, geometry_info4->hdg());
+  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info4->length());
+  ASSERT_EQ(GeometryType::POLY3, geometry_info4->type());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->a());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->b());
+  ASSERT_DOUBLE_EQ(7.8270095403552599e-03, geometry_info4->c());
+  ASSERT_DOUBLE_EQ(-1.2981379520556725e-04, geometry_info4->d());
 
-  ASSERT_DOUBLE_EQ(2.0513386789929825e+01, geometry_info5->s);
-  ASSERT_DOUBLE_EQ(1.3860498286986785e+02, geometry_info5->x);
-  ASSERT_DOUBLE_EQ(1.2755802030419328e+02, geometry_info5->y);
-  ASSERT_DOUBLE_EQ(0, geometry_info5->z);
-  ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg);
-  ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length);
-  ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type);
-  ASSERT_EQ(g::GeometryParamPoly3::PRange::ARCLENGTH, geometry_info5->p_range);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->aU);
-  ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bU);
-  ASSERT_DOUBLE_EQ(4.1336980395811755e-04, geometry_info5->cU);
-  ASSERT_DOUBLE_EQ(-2.5462421774261008e-04, geometry_info5->dU);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->aV);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->bV);
-  ASSERT_DOUBLE_EQ(-1.2079506903095295e-02, geometry_info5->cV);
-  ASSERT_DOUBLE_EQ(-6.1084906856370778e-04, geometry_info5->dV);
+  ASSERT_DOUBLE_EQ(2.0513386789929825e+01, geometry_info5->s());
+  ASSERT_DOUBLE_EQ(1.3860498286986785e+02, geometry_info5->x());
+  ASSERT_DOUBLE_EQ(1.2755802030419328e+02, geometry_info5->y());
+  ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg());
+  ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length());
+  ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type());
+  ASSERT_EQ(element::GeometryParamPoly3::PRange::ARCLENGTH,
+            geometry_info5->p_range());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->au());
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bu());
+  ASSERT_DOUBLE_EQ(4.1336980395811755e-04, geometry_info5->cu());
+  ASSERT_DOUBLE_EQ(-2.5462421774261008e-04, geometry_info5->du());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->av());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->bv());
+  ASSERT_DOUBLE_EQ(-1.2079506903095295e-02, geometry_info5->cv());
+  ASSERT_DOUBLE_EQ(-6.1084906856370778e-04, geometry_info5->dv());
 
   /// road lanes offset
   ASSERT_EQ(2, road.lanes.lane_offsets.size());

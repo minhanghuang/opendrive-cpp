@@ -57,7 +57,7 @@ TEST_F(TestAdapterRoad, TestAdapterRoad) {
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
   ASSERT_TRUE(curr_road_ele != nullptr);
-  opendrive::g::Road g_road;
+  opendrive::element::Road g_road;
   auto core_road_ptr = std::make_shared<opendrive::core::Road>();
 
   opendrive::parser::RoadXmlParser road_parser;

@@ -13,13 +13,13 @@ class HeaderXmlParser : public XmlParser {
  public:
   HeaderXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* header_ele,
-                          g::Header* header);
+                          element::Header* header);
 
  private:
   virtual void Init() override;
   HeaderXmlParser& ParseAttributes();
   const tinyxml2::XMLElement* header_ele_;
-  g::Header* header_;
+  element::Header* header_;
 };
 
 }  // namespace parser
