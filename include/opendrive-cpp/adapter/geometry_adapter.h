@@ -3,7 +3,7 @@
 
 #include "opendrive-cpp/adapter/util_adapter.h"
 #include "opendrive-cpp/geometry/core.h"
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 
 namespace opendrive {
 namespace adapter {
@@ -11,7 +11,7 @@ namespace adapter {
 class LineGeometryAdapter : public UtilAdapter {
  public:
   LineGeometryAdapter() = default;
-  opendrive::Status Run(const g::GeometryAttributes::Ptr geometry_ptr);
+  opendrive::Status Run(const g::Geometry::Ptr geometry_ptr);
 
  private:
   virtual void Init() override;
@@ -20,7 +20,7 @@ class LineGeometryAdapter : public UtilAdapter {
 class SpiralGeometryAdapter : public UtilAdapter {
  public:
   SpiralGeometryAdapter() = default;
-  opendrive::Status Run(const g::GeometryAttributes::Ptr geometry_ptr);
+  opendrive::Status Run(const g::Geometry::Ptr geometry_ptr);
 
  private:
   virtual void Init() override;
@@ -29,7 +29,7 @@ class SpiralGeometryAdapter : public UtilAdapter {
 class ArcGeometryAdapter : public UtilAdapter {
  public:
   ArcGeometryAdapter() = default;
-  opendrive::Status Run(const g::GeometryAttributes::Ptr geometry_ptr);
+  opendrive::Status Run(const g::Geometry::Ptr geometry_ptr);
 
  private:
   virtual void Init() override;
@@ -38,7 +38,7 @@ class ArcGeometryAdapter : public UtilAdapter {
 class Poly3GeometryAdapter : public UtilAdapter {
  public:
   Poly3GeometryAdapter() = default;
-  opendrive::Status Run(const g::GeometryAttributes::Ptr geometry_ptr);
+  opendrive::Status Run(const g::Geometry::Ptr geometry_ptr);
 
  private:
   virtual void Init() override;
@@ -47,7 +47,7 @@ class Poly3GeometryAdapter : public UtilAdapter {
 class ParamPoly3GeometryAdapter : public UtilAdapter {
  public:
   ParamPoly3GeometryAdapter() = default;
-  opendrive::Status Run(const g::GeometryAttributes::Ptr geometry_ptr);
+  opendrive::Status Run(const g::Geometry::Ptr geometry_ptr);
 
  private:
   virtual void Init() override;
@@ -56,7 +56,7 @@ class ParamPoly3GeometryAdapter : public UtilAdapter {
 class GeometryAdapter : public UtilAdapter {
  public:
   GeometryAdapter();
-  opendrive::Status Run(const g::GeometryAttributes::Ptr geometry,
+  opendrive::Status Run(const g::Geometry::Ptr geometry,
                         core::Road::Ptr road_ptr);
 
  private:

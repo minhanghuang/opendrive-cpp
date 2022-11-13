@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 
 namespace opendrive {
 namespace core {
@@ -20,11 +20,7 @@ struct Point2D {
   double y = 0.;
 };
 
-struct Point3D : public Point2D {
-  double y = 0.;
-};
-
-struct PointXD : public Point3D {
+struct PointXD : public Point2D {
   double hdg = 0.;
 };
 

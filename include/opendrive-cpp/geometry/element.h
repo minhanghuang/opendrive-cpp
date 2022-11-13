@@ -30,10 +30,10 @@ struct Header {
   std::string vendor;
 };
 
-typedef struct GeometryAttributes GeometryAttributesType;
-struct GeometryAttributes {
-  typedef std::shared_ptr<GeometryAttributesType> Ptr;
-  virtual ~GeometryAttributes() = default;
+typedef struct Geometry GeometryTypedef;
+struct Geometry {
+  typedef std::shared_ptr<GeometryTypedef> Ptr;
+  virtual ~Geometry() = default;
   double s = 0.;  // s-offset [meters]
   double x = 0.;  // [meters]
   double y = 0.;  // [meters]
@@ -43,25 +43,25 @@ struct GeometryAttributes {
   GeometryType type = GeometryType::UNKNOWN;  // geometry type
 };
 
-struct GeometryAttributesLine : public GeometryAttributes {};
+struct GeometryLine : public Geometry {};
 
-struct GeometryAttributesArc : public GeometryAttributes {
+struct GeometryAttributesArc : public Geometry {
   double curvature = 0.;
 };
 
-struct GeometryAttributesSpiral : public GeometryAttributes {
+struct GeometrySpiral : public Geometry {
   double curve_start = 0.;
   double curve_end = 0.;
 };
 
-struct GeometryAttributesPoly3 : public GeometryAttributes {
+struct GeometryPoly3 : public Geometry {
   double a = 0.;
   double b = 0.;
   double c = 0.;
   double d = 0.;
 };
 
-struct GeometryAttributesParamPoly3 : public GeometryAttributes {
+struct GeometryParamPoly3 : public Geometry {
   enum class PRange : std::uint8_t {
     UNKNOWN = 0,
     ARCLENGTH = 1,
@@ -170,7 +170,7 @@ struct RoadTypeInfo {
 };
 
 struct RoadPlanView {
-  std::vector<GeometryAttributes::Ptr> geometrys;
+  std::vector<Geometry::Ptr> geometrys;
 };
 
 struct Road {

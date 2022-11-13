@@ -3,7 +3,7 @@
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/parser/util_xml_parser.h"
 
 namespace opendrive {

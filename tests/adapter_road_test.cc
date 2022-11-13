@@ -9,7 +9,7 @@
 
 #include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;

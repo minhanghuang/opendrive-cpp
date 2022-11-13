@@ -5,7 +5,7 @@
 #include <cassert>
 #include <memory>
 
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 
 using namespace opendrive;
 
@@ -100,15 +100,14 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   /// road planView
   ASSERT_EQ(5, road.plan_view.geometrys.size());
   auto geometry_info1 = road.plan_view.geometrys.at(0);
-  auto geometry_info2 = std::dynamic_pointer_cast<g::GeometryAttributesSpiral>(
+  auto geometry_info2 = std::dynamic_pointer_cast<g::GeometrySpiral>(
       road.plan_view.geometrys.at(1));
   auto geometry_info3 = std::dynamic_pointer_cast<g::GeometryAttributesArc>(
       road.plan_view.geometrys.at(2));
-  auto geometry_info4 = std::dynamic_pointer_cast<g::GeometryAttributesPoly3>(
+  auto geometry_info4 = std::dynamic_pointer_cast<g::GeometryPoly3>(
       road.plan_view.geometrys.at(3));
-  auto geometry_info5 =
-      std::dynamic_pointer_cast<g::GeometryAttributesParamPoly3>(
-          road.plan_view.geometrys.at(4));
+  auto geometry_info5 = std::dynamic_pointer_cast<g::GeometryParamPoly3>(
+      road.plan_view.geometrys.at(4));
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s);
   ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x);
   ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y);
@@ -155,8 +154,7 @@ TEST_F(TestOpenDrive, TestParseRoad) {
   ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg);
   ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length);
   ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type);
-  ASSERT_EQ(g::GeometryAttributesParamPoly3::PRange::ARCLENGTH,
-            geometry_info5->p_range);
+  ASSERT_EQ(g::GeometryParamPoly3::PRange::ARCLENGTH, geometry_info5->p_range);
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->aU);
   ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bU);
   ASSERT_DOUBLE_EQ(4.1336980395811755e-04, geometry_info5->cU);

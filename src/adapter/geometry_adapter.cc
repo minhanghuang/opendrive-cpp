@@ -4,16 +4,16 @@
 
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/enums.h"
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 
 namespace opendrive {
 namespace adapter {
 
 void LineGeometryAdapter::Init() {}
 opendrive::Status LineGeometryAdapter::Run(
-    const g::GeometryAttributes::Ptr geometry_ptr) {
-  std::shared_ptr<g::GeometryAttributesLine> line_geometry_ptr =
-      std::dynamic_pointer_cast<g::GeometryAttributesLine>(geometry_ptr);
+    const g::Geometry::Ptr geometry_ptr) {
+  std::shared_ptr<g::GeometryLine> line_geometry_ptr =
+      std::dynamic_pointer_cast<g::GeometryLine>(geometry_ptr);
   std::cout << "Line: "
             << "s:" << line_geometry_ptr->s << ", "
             << "x:" << line_geometry_ptr->x << ", "
@@ -27,9 +27,9 @@ opendrive::Status LineGeometryAdapter::Run(
 
 void SpiralGeometryAdapter::Init() {}
 opendrive::Status SpiralGeometryAdapter::Run(
-    const g::GeometryAttributes::Ptr geometry_ptr) {
-  std::shared_ptr<g::GeometryAttributesSpiral> spiral_geometry_ptr =
-      std::dynamic_pointer_cast<g::GeometryAttributesSpiral>(geometry_ptr);
+    const g::Geometry::Ptr geometry_ptr) {
+  std::shared_ptr<g::GeometrySpiral> spiral_geometry_ptr =
+      std::dynamic_pointer_cast<g::GeometrySpiral>(geometry_ptr);
   std::cout << "Spira" << std::endl;
   std::cout << "Line: "
             << "s:" << spiral_geometry_ptr->s << ", "
@@ -45,8 +45,7 @@ opendrive::Status SpiralGeometryAdapter::Run(
 }
 
 void ArcGeometryAdapter::Init() {}
-opendrive::Status ArcGeometryAdapter::Run(
-    const g::GeometryAttributes::Ptr geometry_ptr) {
+opendrive::Status ArcGeometryAdapter::Run(const g::Geometry::Ptr geometry_ptr) {
   std::shared_ptr<g::GeometryAttributesArc> arc_geometry_ptr =
       std::dynamic_pointer_cast<g::GeometryAttributesArc>(geometry_ptr);
   std::cout << "ARC" << std::endl;
@@ -64,9 +63,9 @@ opendrive::Status ArcGeometryAdapter::Run(
 
 void Poly3GeometryAdapter::Init() {}
 opendrive::Status Poly3GeometryAdapter::Run(
-    const g::GeometryAttributes::Ptr geometry_ptr) {
-  std::shared_ptr<g::GeometryAttributesPoly3> poly3_geometry_ptr =
-      std::dynamic_pointer_cast<g::GeometryAttributesPoly3>(geometry_ptr);
+    const g::Geometry::Ptr geometry_ptr) {
+  std::shared_ptr<g::GeometryPoly3> poly3_geometry_ptr =
+      std::dynamic_pointer_cast<g::GeometryPoly3>(geometry_ptr);
   std::cout << "Poly3" << std::endl;
   std::cout << "Line: "
             << "s:" << poly3_geometry_ptr->s << ", "
@@ -85,9 +84,9 @@ opendrive::Status Poly3GeometryAdapter::Run(
 
 void ParamPoly3GeometryAdapter::Init() {}
 opendrive::Status ParamPoly3GeometryAdapter::Run(
-    const g::GeometryAttributes::Ptr geometry_ptr) {
-  std::shared_ptr<g::GeometryAttributesParamPoly3> param_poly3_geometry_ptr =
-      std::dynamic_pointer_cast<g::GeometryAttributesParamPoly3>(geometry_ptr);
+    const g::Geometry::Ptr geometry_ptr) {
+  std::shared_ptr<g::GeometryParamPoly3> param_poly3_geometry_ptr =
+      std::dynamic_pointer_cast<g::GeometryParamPoly3>(geometry_ptr);
   std::cout << "ParamPoly3" << std::endl;
   std::cout << "Line: "
             << "s:" << param_poly3_geometry_ptr->s << ", "
@@ -112,8 +111,8 @@ opendrive::Status ParamPoly3GeometryAdapter::Run(
 
 GeometryAdapter::GeometryAdapter() {}
 void GeometryAdapter::Init() {}
-opendrive::Status GeometryAdapter::Run(
-    const g::GeometryAttributes::Ptr geometry, core::Road::Ptr road_ptr) {
+opendrive::Status GeometryAdapter::Run(const g::Geometry::Ptr geometry,
+                                       core::Road::Ptr road_ptr) {
   if (!geometry || !road_ptr) {
     set_status(ErrorCode::ADAPTER_GEOMETRY_ERROR, "input is null.");
     return status();

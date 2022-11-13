@@ -9,7 +9,7 @@
 #include <string>
 #include <utility>
 
-#include "opendrive-cpp/geometry/types.h"
+#include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;
