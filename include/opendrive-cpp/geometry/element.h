@@ -102,16 +102,39 @@ class GeometrySpiral : public Geometry {
                  GeometryType type, double curve_start, double curve_end)
       : Geometry(s, x, y, hdg, length, type),
         curve_start_(curve_start),
-        curve_end_(curve_end) {}
+        curve_end_(curve_end) {
+    Init();
+  }
 
   double curve_start() const { return curve_start_; }
   double curve_end() const { return curve_end_; }
   virtual Vec2D GetXY(double distance) override {
     Vec2D ret;
-    return ret;
+    double x1, y1, a1;
+    odrSpiral(distance - s_ + s0_, curve_dot_, &x1, &y1, &a1);
+    double hdg = hdg_ - a0_;
+    double xd =
+        (std::cos(hdg) * (x1 - x0_)) - (std::sin(hdg) * (y1 - y0_)) + x_;
+    double yd =
+        (std::sin(hdg) * (x1 - x0_)) + (std::cos(hdg) * (y1 - y0_)) + y_;
+    return Vec2D{xd, yd};
   }
 
  private:
+  void Init() {
+    curve_dot_ = (curve_end_ - curve_start_) / (length_);
+    s_start_ = curve_start_ / curve_dot_;
+    s_end_ = curve_end_ / curve_dot_;
+    s0_ = curve_start_ / curve_dot_;
+    odrSpiral(s0_, curve_dot_, &x0_, &y0_, &a0_);
+  }
+  double curve_dot_;
+  double s_start_;
+  double s_end_;
+  double s0_;
+  double x0_;
+  double y0_;
+  double a0_;
   double curve_start_;
   double curve_end_;
 };
