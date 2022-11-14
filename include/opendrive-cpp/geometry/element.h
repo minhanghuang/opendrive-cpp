@@ -47,6 +47,7 @@ class Geometry {
       : s_(s), x_(x), y_(y), hdg_(hdg), length_(length), type_(type) {}
   virtual ~Geometry() = default;
   virtual Vec2D GetXY(double distance) = 0;
+  virtual Vec3D GetXYH(double distance) = 0;
   virtual double s() const final { return s_; }
   virtual double x() const final { return s_; }
   virtual double y() const final { return s_; }
@@ -55,12 +56,12 @@ class Geometry {
   virtual GeometryType type() const final { return type_; }
 
  protected:
-  double s_;
-  double x_;
-  double y_;
-  double hdg_;
-  double length_;
-  GeometryType type_;
+  const double s_;
+  const double x_;
+  const double y_;
+  const double hdg_;
+  const double length_;
+  const GeometryType type_;
 };
 
 class GeometryLine : public Geometry {
@@ -73,6 +74,12 @@ class GeometryLine : public Geometry {
     double xd = x_ + (std::cos(hdg_) * (distance - s_));
     double yd = y_ + (std::sin(hdg_) * (distance - s_));
     return Vec2D{xd, yd};
+  }
+  virtual Vec3D GetXYH(double distance) override {
+    distance = common::Clamp<double>(distance, 0, length_);
+    const double xd = x_ + (std::cos(hdg_) * (distance - s_));
+    const double yd = y_ + (std::sin(hdg_) * (distance - s_));
+    return Vec3D{xd, yd, hdg_};
   }
 };
 
@@ -87,13 +94,26 @@ class GeometryArc : public Geometry {
     distance = common::Clamp<double>(distance, 0, length_);
     const double angle_at_s = (distance - s_) * curvature_ - M_PI / 2;
     const double radius = 1 / curvature_;
-    double xd = radius * (std::cos(hdg_ + angle_at_s) - std::sin(hdg_)) + x_;
-    double yd = radius * (std::sin(hdg_ + angle_at_s) + std::cos(hdg_)) + y_;
+    const double xd =
+        radius * (std::cos(hdg_ + angle_at_s) - std::sin(hdg_)) + x_;
+    const double yd =
+        radius * (std::sin(hdg_ + angle_at_s) + std::cos(hdg_)) + y_;
     return Vec2D{xd, yd};
+  }
+  virtual Vec3D GetXYH(double distance) override {
+    distance = common::Clamp<double>(distance, 0, length_);
+    const double angle_at_s = (distance - s_) * curvature_ - M_PI / 2;
+    const double radius = 1 / curvature_;
+    const double xd =
+        radius * (std::cos(hdg_ + angle_at_s) - std::sin(hdg_)) + x_;
+    const double yd =
+        radius * (std::sin(hdg_ + angle_at_s) + std::cos(hdg_)) + y_;
+    const double tangent = hdg_ + distance * curvature_;
+    return Vec3D{xd, yd, tangent};
   }
 
  private:
-  double curvature_;
+  const double curvature_;
 };
 
 class GeometrySpiral : public Geometry {
@@ -109,15 +129,27 @@ class GeometrySpiral : public Geometry {
   double curve_start() const { return curve_start_; }
   double curve_end() const { return curve_end_; }
   virtual Vec2D GetXY(double distance) override {
-    Vec2D ret;
-    double x1, y1, a1;
-    odrSpiral(distance - s_ + s0_, curve_dot_, &x1, &y1, &a1);
-    double hdg = hdg_ - a0_;
-    double xd =
+    distance = common::Clamp<double>(distance, 0, length_);
+    double x1, y1, t1;
+    odrSpiral(distance - s_ + s0_, curve_dot_, &x1, &y1, &t1);
+    const double hdg = hdg_ - t0_;
+    const double xd =
         (std::cos(hdg) * (x1 - x0_)) - (std::sin(hdg) * (y1 - y0_)) + x_;
-    double yd =
+    const double yd =
         (std::sin(hdg) * (x1 - x0_)) + (std::cos(hdg) * (y1 - y0_)) + y_;
     return Vec2D{xd, yd};
+  }
+  virtual Vec3D GetXYH(double distance) override {
+    distance = common::Clamp<double>(distance, 0, length_);
+    double x1, y1, a1;
+    odrSpiral(distance - s_ + s0_, curve_dot_, &x1, &y1, &a1);
+    const double angle = hdg_ - t0_;
+    const double xd =
+        (std::cos(angle) * (x1 - x0_)) - (std::sin(angle) * (y1 - y0_)) + x_;
+    const double yd =
+        (std::sin(angle) * (x1 - x0_)) + (std::cos(angle) * (y1 - y0_)) + y_;
+    const double tangent = hdg_ + t0_;
+    return Vec3D{xd, yd, tangent};
   }
 
  private:
@@ -126,7 +158,7 @@ class GeometrySpiral : public Geometry {
     s_start_ = curve_start_ / curve_dot_;
     s_end_ = curve_end_ / curve_dot_;
     s0_ = curve_start_ / curve_dot_;
-    odrSpiral(s0_, curve_dot_, &x0_, &y0_, &a0_);
+    odrSpiral(s0_, curve_dot_, &x0_, &y0_, &t0_);
   }
   double curve_dot_;
   double s_start_;
@@ -134,9 +166,9 @@ class GeometrySpiral : public Geometry {
   double s0_;
   double x0_;
   double y0_;
-  double a0_;
-  double curve_start_;
-  double curve_end_;
+  double t0_;
+  const double curve_start_;
+  const double curve_end_;
 };
 
 class GeometryPoly3 : public Geometry {
@@ -151,14 +183,39 @@ class GeometryPoly3 : public Geometry {
   double d() const { return d_; }
   virtual Vec2D GetXY(double distance) override {
     Vec2D ret;
-    return ret;
+    distance = common::Clamp<double>(distance, 0, length_);
+    double u = distance;
+    double v = a_ + b_ * u + c_ * std::pow(u, 2) + d_ * std::pow(u, 3);
+    const double cos_t = std::cos(hdg_);
+    const double sin_t = std::sin(hdg_);
+    double x = u * cos_t - v * sin_t;
+    double y = u * sin_t + v * cos_t;
+    double tangent_v = b_ + 2.0 * c_ * u + 3.0 * d_ * std::pow(u, 2);
+    double theta = std::atan2(tangent_v, 1.0);
+    return Vec2D{x_ + x, y_ + y};
+  }
+  virtual Vec3D GetXYH(double distance) override {
+    Vec2D ret;
+    distance = common::Clamp<double>(distance, 0, length_);
+    double u = distance;
+    double v = a_ + b_ * u + c_ * std::pow(u, 2) + d_ * std::pow(u, 3);
+    const double cos_t = std::cos(hdg_);
+    const double sin_t = std::sin(hdg_);
+    double x = u * cos_t - v * sin_t;
+    double y = u * sin_t + v * cos_t;
+    double tangent_v = b_ + 2.0 * c_ * u + 3.0 * d_ * std::pow(u, 2);
+    double theta = std::atan2(tangent_v, 1.0);
+    const double xd = x_ + x;
+    const double yd = y_ + y;
+    const double tangent = hdg_ + theta;
+    return Vec3D{xd, yd, tangent};
   }
 
  private:
-  double a_ = 0.;
-  double b_ = 0.;
-  double c_ = 0.;
-  double d_ = 0.;
+  const double a_ = 0.;
+  const double b_ = 0.;
+  const double c_ = 0.;
+  const double d_ = 0.;
 };
 
 class GeometryParamPoly3 : public Geometry {
@@ -192,20 +249,53 @@ class GeometryParamPoly3 : public Geometry {
   double dv() const { return dv_; }
   PRange p_range() const { return p_range_; }
   virtual Vec2D GetXY(double distance) override {
-    Vec2D ret;
-    return ret;
+    distance = common::Clamp<double>(distance, 0, length_);
+    double p = distance;
+    if (PRange::NORMALIZED == p_range_) {
+      p = std::min(1.0, distance / length_);
+    }
+    double u = au_ + bu_ * p + cu_ * std::pow(p, 2) + du_ * std::pow(p, 3);
+    double v = av_ + bv_ * p + cv_ * std::pow(p, 2) + dv_ * std::pow(p, 3);
+    const double cos_t = std::cos(hdg_);
+    const double sin_t = std::sin(hdg_);
+    double x = u * cos_t - v * sin_t;
+    double y = u * sin_t + v * cos_t;
+    double tangent_u = bu_ + 2 * cu_ * p + 3 * du_ * std::pow(p, 2);
+    double tangent_v = bv_ + 2 * cv_ * p + 3 * dv_ * std::pow(p, 2);
+    double theta = std::atan2(tangent_v, tangent_u);
+    return Vec2D{x_ + x, y_ + y};
+  }
+  virtual Vec3D GetXYH(double distance) override {
+    distance = common::Clamp<double>(distance, 0, length_);
+    double p = distance;
+    if (PRange::NORMALIZED == p_range_) {
+      p = std::min(1.0, distance / length_);
+    }
+    double u = au_ + bu_ * p + cu_ * std::pow(p, 2) + du_ * std::pow(p, 3);
+    double v = av_ + bv_ * p + cv_ * std::pow(p, 2) + dv_ * std::pow(p, 3);
+    const double cos_t = std::cos(hdg_);
+    const double sin_t = std::sin(hdg_);
+    double x = u * cos_t - v * sin_t;
+    double y = u * sin_t + v * cos_t;
+    double tangent_u = bu_ + 2 * cu_ * p + 3 * du_ * std::pow(p, 2);
+    double tangent_v = bv_ + 2 * cv_ * p + 3 * dv_ * std::pow(p, 2);
+    double theta = std::atan2(tangent_v, tangent_u);
+    const double xd = x_ + x;
+    const double yd = y_ + y;
+    const double tangent = hdg_ + theta;
+    return Vec3D{xd, yd, tangent};
   }
 
  private:
-  PRange p_range_;
-  double au_;
-  double bu_;
-  double cu_;
-  double du_;
-  double av_;
-  double bv_;
-  double cv_;
-  double dv_;
+  const PRange p_range_;
+  const double au_;
+  const double bu_;
+  const double cu_;
+  const double du_;
+  const double av_;
+  const double bv_;
+  const double cv_;
+  const double dv_;
 };
 
 struct LaneAttributes {
