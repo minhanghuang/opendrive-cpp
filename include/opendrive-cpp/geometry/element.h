@@ -48,10 +48,10 @@ class Geometry {
   virtual ~Geometry() = default;
   virtual Vec3D GetXYH(double distance) = 0;
   virtual double s() const final { return s_; }
-  virtual double x() const final { return s_; }
-  virtual double y() const final { return s_; }
-  virtual double hdg() const final { return s_; }
-  virtual double length() const final { return s_; }
+  virtual double x() const final { return x_; }
+  virtual double y() const final { return y_; }
+  virtual double hdg() const final { return hdg_; }
+  virtual double length() const final { return length_; }
   virtual GeometryType type() const final { return type_; }
 
  protected:

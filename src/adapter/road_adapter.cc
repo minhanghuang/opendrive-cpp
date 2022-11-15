@@ -24,9 +24,9 @@ void RoadAdapter::Init() {
 
 RoadAdapter& RoadAdapter::TransformGeometry() {
   if (!IsValid()) return *this;
-  for (const auto& geometry : g_road_->plan_view.geometrys) {
-    geometry_ptr_->Run(geometry, road_ptr_);
-  }
+  // for (const auto& geometry : g_road_->plan_view.geometrys) {
+    // geometry_ptr_->Run(geometry, road_ptr_);
+  // }
   return *this;
 }
 
