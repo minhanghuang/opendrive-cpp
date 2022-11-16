@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/adapter/section_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
@@ -31,11 +32,13 @@ class Adapter {
  public:
   ~Adapter();
   Adapter();
-  opendrive::Status LaneSection(const element::LaneSection* odr_section,
-                                core::Section::Ptr section_ptr);
+  opendrive::Status Map(const element::Map* ele_map, core::Map::Ptr map_ptr,
+                        float step = 0.5);
+  opendrive::Status Road(const element::Road* ele_road,
+                         core::Road::Ptr road_ptr, float step = 0.5);
 
  private:
-  std::shared_ptr<adapter::SectionAdapter> section_adapter_;
+  std::shared_ptr<adapter::RoadAdapter> road_adapter_;
 };
 
 }  // namespace opendrive

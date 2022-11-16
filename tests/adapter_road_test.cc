@@ -55,17 +55,23 @@ void TestAdapterRoad::SetUp() {}
 TEST_F(TestAdapterRoad, TestAdapterRoad) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
-  const tinyxml2::XMLElement* curr_road_ele = xml->FirstChildElement("road");
-  ASSERT_TRUE(curr_road_ele != nullptr);
-  opendrive::element::Road g_road;
-  auto core_road_ptr = std::make_shared<opendrive::core::Road>();
+  const tinyxml2::XMLElement* xml_road = xml->FirstChildElement("road");
+  ASSERT_TRUE(xml_road != nullptr);
+  opendrive::element::Road ele_road;
+  auto road_ptr = std::make_shared<opendrive::core::Road>();
 
+  /// parse
   opendrive::parser::RoadXmlParser road_parser;
-  road_parser.Parse(curr_road_ele, &g_road);
-  ASSERT_TRUE(g_road.lanes.lane_sections.size() > 0);
+  auto ret = road_parser.Parse(xml_road, &ele_road);
+  std::cout << "parse ret msg: " << ret.msg << std::endl;
+  ASSERT_TRUE(ele_road.lanes.lane_sections.size() > 0);
+  ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
-  adapter::RoadAdapter road_adapter;
-  road_adapter.Run(&g_road, core_road_ptr);
+  /// adapter
+  opendrive::Adapter adapter;
+  ret = adapter.Road(&ele_road, road_ptr);
+  std::cout << "adapter ret msg: " << ret.msg << std::endl;
+  ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 }
 
 int main(int argc, char* argv[]) {

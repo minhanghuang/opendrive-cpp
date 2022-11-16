@@ -4,7 +4,9 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "opendrive-cpp/geometry/element.h"
@@ -22,6 +24,7 @@ struct Point2D {
 
 struct PointXD : public Point2D {
   double hdg = 0.;
+  double s = 0.;
 };
 
 struct Line {
@@ -35,7 +38,9 @@ struct LaneBoundary {
   RoadMarkColor color = RoadMarkColor::UNKNOWN;
 };
 
+typedef struct Lane LaneTypedef;
 struct Lane {
+  typedef std::shared_ptr<LaneTypedef> Ptr;
   Id id;
   double length = 0.;
   double speed_limit = 0.;
@@ -47,20 +52,27 @@ struct Lane {
   LaneBoundary right_boundary;
 };
 
-typedef struct Section SectionType;
+typedef struct Section SectionTypedef;
 struct Section {
-  typedef std::shared_ptr<SectionType> Ptr;
+  typedef std::shared_ptr<SectionTypedef> Ptr;
   Id id;
   double length = 0.;
-  std::vector<Lane> lanes;
+  Lane::Ptr reference_line;
+  std::vector<Lane::Ptr> lanes;
 };
 
-typedef struct Road RoadType;
+typedef struct Road RoadTypedef;
 struct Road {
-  typedef std::shared_ptr<RoadType> Ptr;
+  typedef std::shared_ptr<RoadTypedef> Ptr;
   Id id;
   double length = 0.;
-  std::vector<Section> sections;
+  std::vector<Section::Ptr> sections;
+};
+
+typedef struct Map MapTypedef;
+struct Map {
+  typedef std::shared_ptr<MapTypedef> Ptr;
+  std::unordered_map<core::Id, Road::Ptr> roads;
 };
 
 }  // namespace core

@@ -23,7 +23,6 @@ SET(TEST_SOURCES
   opendrive_test
   common_test
   header_parser_test
-  adapter_section_test 
   adapter_road_test 
 )
 

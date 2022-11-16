@@ -23,6 +23,7 @@ class RoadXmlParser : public XmlParser {
   RoadXmlParser& ParseTypeEle();
   RoadXmlParser& ParsePlanViewEle();
   RoadXmlParser& ParseLanesEle();
+  RoadXmlParser& CheckLanesEle();
   const tinyxml2::XMLElement* road_ele_;
   element::Road* road_;
 };

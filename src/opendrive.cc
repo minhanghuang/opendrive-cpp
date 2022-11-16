@@ -1,5 +1,7 @@
 #include "opendrive-cpp/opendrive.h"
 
+#include <cassert>
+
 namespace opendrive {
 
 Parser::~Parser() {}
@@ -17,12 +19,16 @@ opendrive::Status Parser::Road(const tinyxml2::XMLElement* xml_node,
 }
 
 Adapter::~Adapter() {}
-Adapter::Adapter()
-    : section_adapter_(std::make_shared<adapter::SectionAdapter>()) {}
+Adapter::Adapter() : road_adapter_(std::make_shared<adapter::RoadAdapter>()) {}
 
-opendrive::Status Adapter::LaneSection(const element::LaneSection* odr_section,
-                                       core::Section::Ptr section_ptr) {
-  return section_adapter_->Run(odr_section, section_ptr);
+opendrive::Status Adapter::Road(const element::Road* ele_road,
+                                core::Road::Ptr road_ptr, float step) {
+  if (step <= 0) {
+    return opendrive::Status{ErrorCode::ADAPTER_ROAD_ERROR, "input execption."};
+  }
+
+  road_adapter_->set_step(step);
+  return road_adapter_->Run(ele_road, road_ptr);
 }
 
 }  // namespace opendrive

@@ -12,7 +12,8 @@ opendrive::Status RoadXmlParser::Parse(const tinyxml2::XMLElement* road_ele,
       .ParseLinkEle()
       .ParseTypeEle()
       .ParsePlanViewEle()
-      .ParseLanesEle();
+      .ParseLanesEle()
+      .CheckLanesEle();
   return status();
 }
 
@@ -294,6 +295,23 @@ RoadXmlParser& RoadXmlParser::ParseLanesEle() {
   LanesXmlParser lanes_parser;
   lanes_parser.Parse(lanes_ele, &lanes);
   road_->lanes = lanes;
+  return *this;
+}
+
+RoadXmlParser& RoadXmlParser::CheckLanesEle() {
+  if (!IsValid()) return *this;
+  if (road_->plan_view.geometrys.size() != road_->lanes.lane_sections.size()) {
+    set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR,
+               "Check <geometry> Element Count Exception.");
+    return *this;
+  }
+  for (const auto& section : road_->lanes.lane_sections) {
+    if (section.center.lanes.empty()) {
+      set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR,
+                 "Check <laneSection> Element Center Line Exception.");
+      return *this;
+    }
+  }
   return *this;
 }
 

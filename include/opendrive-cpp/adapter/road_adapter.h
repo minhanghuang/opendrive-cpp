@@ -14,14 +14,17 @@ namespace adapter {
 class RoadAdapter : public UtilAdapter {
  public:
   RoadAdapter();
-  opendrive::Status Run(const element::Road* g_road, core::Road::Ptr road_ptr);
+  opendrive::Status Run(const element::Road* ele_road,
+                        core::Road::Ptr road_ptr);
 
  private:
   virtual void Init() override;
-  RoadAdapter& TransformGeometry();
+  RoadAdapter& TransformAttributes();
   RoadAdapter& TransformSection();
-  std::shared_ptr<GeometryAdapter> geometry_ptr_;
-  const element::Road* g_road_;
+  RoadAdapter& TransformReferenceLine(size_t i);
+  RoadAdapter& TransformSectionLanes(size_t i);
+  std::shared_ptr<GeometryAdapter> geometry_adapter_ptr_;
+  const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };
 

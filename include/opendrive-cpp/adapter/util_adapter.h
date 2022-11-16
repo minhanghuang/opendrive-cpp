@@ -13,14 +13,16 @@ namespace adapter {
 class UtilAdapter {
  public:
   UtilAdapter();
-  virtual bool IsValid() final;
-  virtual opendrive::Status status() final;
+  virtual bool IsValid() const final;
+  virtual opendrive::Status status() const final;
   virtual void set_status(ErrorCode code, const std::string& msg) final;
+  virtual float step() const final;
+  virtual void set_step(float num) final;
   virtual void Init() = 0;
 
  private:
   std::mutex mutex_;
-  bool next_ = true;
+  float step_;
   opendrive::Status status_{ErrorCode::OK, "ok"};
 };
 
