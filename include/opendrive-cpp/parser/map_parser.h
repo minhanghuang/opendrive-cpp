@@ -1,10 +1,14 @@
-#ifndef OPENDRIVE_CPP_MAP_XML_PARSER_H_
-#define OPENDRIVE_CPP_MAP_XML_PARSER_H_
+#ifndef OPENDRIVE_CPP_MAP_PARSER_H_
+#define OPENDRIVE_CPP_MAP_PARSER_H_
 
-#include "lanes_xml_parser.h"
+#include <memory>
+
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/parser/header_parser.h"
+#include "opendrive-cpp/parser/road_lanes_parser.h"
+#include "opendrive-cpp/parser/road_parser.h"
 
 namespace opendrive {
 namespace parser {
@@ -14,14 +18,13 @@ class MapXmlParser : public XmlParser {
                           element::Map::Ptr map_ptr);
 
  private:
-  virtual void Init() override;
   MapXmlParser& ParseHeaderEle();
   MapXmlParser& ParseRoadEle();
-  const tinyxml2::XMLElement* map_ele_;
+  const tinyxml2::XMLElement* xml_map_;
   element::Map::Ptr map_ptr_;
 };
 
 }  // namespace parser
 }  // namespace opendrive
 
-#endif  //  OPENDRIVE_CPP_MAP_XML_PARSER_H_
+#endif  //  OPENDRIVE_CPP_MAP_PARSER_H_

@@ -5,7 +5,7 @@
 #include <mutex>
 
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/parser/road_xml_parser.h"
+#include "opendrive-cpp/parser/road_parser.h"
 
 namespace opendrive {
 namespace adapter {

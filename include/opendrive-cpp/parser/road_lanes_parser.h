@@ -1,10 +1,10 @@
-#ifndef OPENDRIVE_CPP_LANES_XML_PARSER_H_
-#define OPENDRIVE_CPP_LANES_XML_PARSER_H_
+#ifndef OPENDRIVE_CPP_LANES_PARSER_H_
+#define OPENDRIVE_CPP_LANES_PARSER_H_
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
-#include "opendrive-cpp/parser/util_xml_parser.h"
+#include "opendrive-cpp/parser/util_parser.h"
 
 namespace opendrive {
 namespace parser {
@@ -16,7 +16,6 @@ class LanesXmlParser : public XmlParser {
                           element::Lanes* lanes);
 
  private:
-  virtual void Init() override;
   LanesXmlParser& ParseLaneOffsetEle();
   LanesXmlParser& ParseLaneSectionEle();
   LanesXmlParser& ParseLaneSectionLanesEle(
@@ -42,4 +41,4 @@ class LanesXmlParser : public XmlParser {
 }  // namespace parser
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_LANES_XML_PARSER_H_
+#endif  // OPENDRIVE_CPP_LANES_PARSER_H_

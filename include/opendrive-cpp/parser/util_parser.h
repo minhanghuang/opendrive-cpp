@@ -15,10 +15,14 @@ namespace parser {
 class XmlParser {
  public:
   XmlParser() = default;
-  virtual bool IsValid() final;
-  virtual opendrive::Status status() final;
+  virtual bool IsValid() const final;
+  virtual opendrive::Status status() const final;
   virtual void set_status(ErrorCode code, const std::string& msg) final;
-  virtual void Init() = 0;
+  virtual void set_status(const Status& s) final;
+  virtual void set_status(Status&& s) final;
+  virtual void update_status(ErrorCode code, const std::string& msg) final;
+  virtual void update_status(const Status& s) final;
+  virtual void update_status(Status&& s) final;
 
  private:
   std::mutex mutex_;

@@ -9,8 +9,8 @@
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
-#include "opendrive-cpp/parser/header_xml_parser.h"
-#include "opendrive-cpp/parser/road_xml_parser.h"
+#include "opendrive-cpp/parser/header_parser.h"
+#include "opendrive-cpp/parser/road_parser.h"
 
 namespace opendrive {
 

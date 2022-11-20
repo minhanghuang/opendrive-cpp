@@ -1,4 +1,4 @@
-#include "opendrive-cpp/parser/lanes_xml_parser.h"
+#include "opendrive-cpp/parser/road_lanes_parser.h"
 
 namespace opendrive {
 namespace parser {
@@ -7,15 +7,12 @@ opendrive::Status LanesXmlParser::Parse(const tinyxml2::XMLElement* lanes_ele,
                                         element::Lanes* lanes) {
   lanes_ele_ = lanes_ele;
   lanes_ = lanes;
-  Init();
-  this->ParseLaneOffsetEle().ParseLaneSectionEle();
-  return status();
-}
-
-void LanesXmlParser::Init() {
   if (!lanes_ele_ || !lanes_) {
     set_status(ErrorCode::XML_LANES_ELEMENT_ERROR, "Input is null.");
   }
+
+  this->ParseLaneOffsetEle().ParseLaneSectionEle();
+  return status();
 }
 
 LanesXmlParser& LanesXmlParser::ParseLaneOffsetEle() {
