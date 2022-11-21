@@ -4,39 +4,27 @@
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/parser/road_lanes_offset_parser.h"
+#include "opendrive-cpp/parser/road_lanes_section_parser.h"
 #include "opendrive-cpp/parser/util_parser.h"
 
 namespace opendrive {
 namespace parser {
 
-class LanesXmlParser : public XmlParser {
+class RoadLanesXmlParser : public XmlParser {
  public:
-  LanesXmlParser() = default;
+  RoadLanesXmlParser() = default;
   opendrive::Status Parse(const tinyxml2::XMLElement* lanes_ele,
                           element::Lanes* lanes);
 
  private:
-  LanesXmlParser& ParseLaneOffsetEle();
-  LanesXmlParser& ParseLaneSectionEle();
-  LanesXmlParser& ParseLaneSectionLanesEle(
-      const tinyxml2::XMLElement* sections_ele,
-      element::LaneSection& lane_section);
+  RoadLanesXmlParser& ParseLaneOffsetEle();
+  RoadLanesXmlParser& ParseLaneSectionEle();
 
-  LanesXmlParser& ParseLaneEle(const tinyxml2::XMLElement* lane_ele,
-                               element::Lane& lane);
-  LanesXmlParser& ParseLaneAttribute(const tinyxml2::XMLElement* lane_ele,
-                                     element::Lane& lane);
-  LanesXmlParser& ParseLaneLinkEle(const tinyxml2::XMLElement* lane_ele,
-                                   element::Lane& lane);
-  LanesXmlParser& ParseLaneWidthEle(const tinyxml2::XMLElement* lane_ele,
-                                    element::Lane& lane);
-  LanesXmlParser& ParseLaneBorderEle(const tinyxml2::XMLElement* lane_ele,
-                                     element::Lane& lane);
-  LanesXmlParser& ParseLaneRoadMarkEle(const tinyxml2::XMLElement* lane_ele,
-                                       element::Lane& lane);
-
-  const tinyxml2::XMLElement* lanes_ele_;
-  element::Lanes* lanes_;
+  RoadLanesOffsetXmlParser offset_parser_;
+  RoadLanesSectionXmlParser section_parser_;
+  const tinyxml2::XMLElement* xml_lanes_;
+  element::Lanes* ele_lanes_;
 };
 }  // namespace parser
 }  // namespace opendrive

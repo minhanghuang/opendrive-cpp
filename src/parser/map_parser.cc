@@ -4,20 +4,20 @@ namespace opendrive {
 namespace parser {
 
 opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* xml_map,
-                                      element::Map::Ptr map_ptr) {
+                                      element::Map* ele_map) {
   xml_map_ = xml_map;
-  map_ptr_ = map_ptr;
-  if (!xml_map_ || !map_ptr_) {
+  ele_map_ = ele_map;
+  if (!xml_map_ || !ele_map_) {
     set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR, "Input is null.");
   }
-  this->ParseHeaderEle().ParseRoadEle();
+  ParseHeaderEle().ParseRoadEle();
   return status();
 }
 
 MapXmlParser& MapXmlParser::ParseHeaderEle() {
   if (!IsValid()) return *this;
   element::Header ele_header;
-  map_ptr_->header = ele_header;
+  ele_map_->header = ele_header;
   HeaderXmlParser header_parser;
   const tinyxml2::XMLElement* xml_header =
       xml_map_->FirstChildElement("header");
@@ -33,7 +33,7 @@ MapXmlParser& MapXmlParser::ParseRoadEle() {
   while (curr_ele_road) {
     element::Road ele_road;
     road_parser.Parse(curr_ele_road, &ele_road);
-    map_ptr_->roads.emplace_back(ele_road);
+    ele_map_->roads.emplace_back(ele_road);
     common::XmlNextSiblingElement(curr_ele_road);
   }
   return *this;

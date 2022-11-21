@@ -15,13 +15,13 @@ namespace parser {
 class MapXmlParser : public XmlParser {
  public:
   opendrive::Status Parse(const tinyxml2::XMLElement* map_ele,
-                          element::Map::Ptr map_ptr);
+                          element::Map* ele_map);
 
  private:
   MapXmlParser& ParseHeaderEle();
   MapXmlParser& ParseRoadEle();
   const tinyxml2::XMLElement* xml_map_;
-  element::Map::Ptr map_ptr_;
+  element::Map* ele_map_;
 };
 
 }  // namespace parser

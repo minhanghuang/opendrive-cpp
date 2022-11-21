@@ -20,9 +20,9 @@ class XmlParser {
   virtual void set_status(ErrorCode code, const std::string& msg) final;
   virtual void set_status(const Status& s) final;
   virtual void set_status(Status&& s) final;
-  virtual void update_status(ErrorCode code, const std::string& msg) final;
-  virtual void update_status(const Status& s) final;
-  virtual void update_status(Status&& s) final;
+  virtual void CheckStatus(ErrorCode code, const std::string& msg) final;
+  virtual void CheckStatus(const Status& s) final;
+  virtual void CheckStatus(Status&& s) final;
 
  private:
   std::mutex mutex_;

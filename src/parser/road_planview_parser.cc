@@ -1,5 +1,7 @@
 #include "opendrive-cpp/parser/road_planview_parser.h"
 
+#include "opendrive-cpp/common/common.hpp"
+
 namespace opendrive {
 namespace parser {
 
@@ -11,7 +13,7 @@ opendrive::Status RoadPlanViewXmlParser::Parse(
   if (!xml_planview_ || !ele_planview_) {
     set_status(ErrorCode::XML_ROAD_PLANVIEW_ELEMENT_ERROR, "Input is null.");
   }
-
+  ParseAttributes();
   return status();
 }
 
@@ -126,10 +128,6 @@ RoadPlanViewXmlParser& RoadPlanViewXmlParser::ParseAttributes() {
       common::XmlQueryDoubleAttribute(ele_geometry_type, "bV", bv);
       common::XmlQueryDoubleAttribute(ele_geometry_type, "cV", cv);
       common::XmlQueryDoubleAttribute(ele_geometry_type, "dV", dv);
-      std::shared_ptr<element::GeometryParamPoly3> geometry_ptr =
-          std::make_shared<element::GeometryParamPoly3>(
-              s, x, y, hdg, length, GeometryType::PARAMPOLY3, au, bu, cu, du,
-              av, bv, cv, dv, p_range);
       common::XmlQueryEnumAttribute(
           ele_geometry_type, "pRange", p_range,
           std::map<std::string, element::GeometryParamPoly3::PRange>{
@@ -138,6 +136,10 @@ RoadPlanViewXmlParser& RoadPlanViewXmlParser::ParseAttributes() {
               std::make_pair("normalized",
                              element::GeometryParamPoly3::PRange::NORMALIZED),
           });
+      std::shared_ptr<element::GeometryParamPoly3> geometry_ptr =
+          std::make_shared<element::GeometryParamPoly3>(
+              s, x, y, hdg, length, GeometryType::PARAMPOLY3, au, bu, cu, du,
+              av, bv, cv, dv, p_range);
       geometry_base_ptr =
           std::dynamic_pointer_cast<element::Geometry>(geometry_ptr);
     }

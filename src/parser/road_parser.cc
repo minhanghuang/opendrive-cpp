@@ -40,7 +40,7 @@ RoadXmlParser& RoadXmlParser::ParseLinkEle() {
   if (!IsValid()) return *this;
   auto xml_link = xml_road_->FirstChildElement("link");
   auto status = road_link_parser_.Parse(xml_link, &ele_road_->link);
-  update_status(status);
+  CheckStatus(status);
   return *this;
 }
 
@@ -52,7 +52,7 @@ RoadXmlParser& RoadXmlParser::ParseTypeEle() {
   while (curr_xml_type) {
     element::RoadTypeInfo ele_road_type;
     status = road_type_parser_.Parse(curr_xml_type, &ele_road_type);
-    update_status(status);
+    CheckStatus(status);
     ele_road_->type_info.emplace_back(ele_road_type);
     curr_xml_type = common::XmlNextSiblingElement(curr_xml_type);
   }
@@ -65,7 +65,7 @@ RoadXmlParser& RoadXmlParser::ParsePlanViewEle() {
       xml_road_->FirstChildElement("planView");
   auto status =
       road_planview_parser_.Parse(xml_planview, &ele_road_->plan_view);
-  update_status(status);
+  CheckStatus(status);
   return *this;
 }
 
@@ -73,9 +73,9 @@ RoadXmlParser& RoadXmlParser::ParseLanesEle() {
   if (!IsValid()) return *this;
   element::Lanes lanes;
   const tinyxml2::XMLElement* lanes_ele = xml_road_->FirstChildElement("lanes");
-  LanesXmlParser lanes_parser;
+  RoadLanesXmlParser lanes_parser;
   auto status = lanes_parser.Parse(lanes_ele, &lanes);
-  update_status(status);
+  CheckStatus(status);
   ele_road_->lanes = lanes;
   return *this;
 }

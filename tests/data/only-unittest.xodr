@@ -8,8 +8,8 @@
     </header>
     <road name="Road 0" length="3.6360177306314796e+1" id="0" junction="-1" rule="RHT">
         <link>
-            <predecessor elementType="road" elementId="11" contactPoint="start"/>
-            <successor elementType="junction" elementId="43"/>
+            <predecessor elementType="road" elementId="11" contactPoint="start" elementDir="+"/>
+            <successor elementType="junction" elementS="1.0000000000000000e+00" elementId="43"/>
         </link>
         <type s="0.0000000000000000e+0" type="town">
             <speed max="25" unit="mph"/>

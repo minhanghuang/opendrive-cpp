@@ -20,10 +20,13 @@ link_directories (
 )
 
 SET(TEST_SOURCES
-  opendrive_test
   common_test
-  header_parser_test
-  adapter_road_test 
+  parser_header_test
+  parser_roadtype_test
+  parser_roadlink_test
+  parser_roadplanview_test
+  parser_road_test
+  parser_roadlanes_test
 )
 
 FOREACH(test_src ${TEST_SOURCES})

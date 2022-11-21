@@ -25,7 +25,7 @@ void XmlParser::set_status(Status&& s) {
   status_.msg = s.msg;
 }
 
-void XmlParser::update_status(ErrorCode code, const std::string& msg) {
+void XmlParser::CheckStatus(ErrorCode code, const std::string& msg) {
   if (ErrorCode::OK == code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = code;
@@ -33,7 +33,7 @@ void XmlParser::update_status(ErrorCode code, const std::string& msg) {
   }
 }
 
-void XmlParser::update_status(const Status& s) {
+void XmlParser::CheckStatus(const Status& s) {
   if (ErrorCode::OK == s.error_code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = s.error_code;
@@ -41,7 +41,7 @@ void XmlParser::update_status(const Status& s) {
   }
 }
 
-void XmlParser::update_status(Status&& s) {
+void XmlParser::CheckStatus(Status&& s) {
   if (ErrorCode::OK == s.error_code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = s.error_code;

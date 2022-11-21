@@ -12,8 +12,8 @@ namespace parser {
 class RoadLanesOffsetXmlParser : public XmlParser {
  public:
   RoadLanesOffsetXmlParser() = default;
-  opendrive::Status Parse(const tinyxml2::XMLElement* ele_offset,
-                          element::LaneOffset* offset);
+  opendrive::Status Parse(const tinyxml2::XMLElement* xml_offset,
+                          element::LaneOffset* ele_offset);
 
  private:
   RoadLanesOffsetXmlParser& ParseAttributes();
