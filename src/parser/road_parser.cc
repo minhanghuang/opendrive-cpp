@@ -9,6 +9,7 @@ opendrive::Status RoadXmlParser::Parse(const tinyxml2::XMLElement* xml_road,
   ele_road_ = ele_road;
   if (!xml_road_ || !ele_road_) {
     set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR, "Input is null.");
+    return status();
   }
   ParseAttributes()
       .ParseLinkEle()

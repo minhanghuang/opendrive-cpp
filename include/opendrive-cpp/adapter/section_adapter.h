@@ -1,7 +1,6 @@
 #ifndef OPENDRIVE_CPP_ADAPTER_SECTION_H_
 #define OPENDRIVE_CPP_ADAPTER_SECTION_H_
 
-#include "opendrive-cpp/adapter/lane_adapter.h"
 #include "opendrive-cpp/adapter/util_adapter.h"
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
@@ -18,7 +17,6 @@ class SectionAdapter : public UtilAdapter {
                         // core::Section::Ptr section_ptr);
 
  private:
-  virtual void Init() override;
   SectionAdapter& TransformCenterLane();
   SectionAdapter& TransformLeftLanes();
   SectionAdapter& TransformRightLanes();

@@ -10,6 +10,7 @@ opendrive::Status RoadTypeXmlParser::Parse(
   ele_roadtype_ = ele_roadtype;
   if (!xml_roadtype_ || !ele_roadtype_) {
     set_status(ErrorCode::XML_ROAD_TYPE_ELEMENT_ERROR, "Input is null.");
+    return status();
   }
   ParseAttributes();
   return status();

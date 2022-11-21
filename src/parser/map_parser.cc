@@ -9,6 +9,7 @@ opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* xml_map,
   ele_map_ = ele_map;
   if (!xml_map_ || !ele_map_) {
     set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR, "Input is null.");
+    return status();
   }
   ParseHeaderEle().ParseRoadEle();
   return status();
@@ -21,7 +22,8 @@ MapXmlParser& MapXmlParser::ParseHeaderEle() {
   HeaderXmlParser header_parser;
   const tinyxml2::XMLElement* xml_header =
       xml_map_->FirstChildElement("header");
-  header_parser.Parse(xml_header, &ele_header);
+  auto status = header_parser.Parse(xml_header, &ele_header);
+  CheckStatus(status);
   return *this;
 }
 
@@ -30,9 +32,11 @@ MapXmlParser& MapXmlParser::ParseRoadEle() {
   const tinyxml2::XMLElement* curr_ele_road =
       xml_map_->FirstChildElement("road");
   RoadXmlParser road_parser;
+  Status status{ErrorCode::OK, "ok"};
   while (curr_ele_road) {
     element::Road ele_road;
-    road_parser.Parse(curr_ele_road, &ele_road);
+    status = road_parser.Parse(curr_ele_road, &ele_road);
+    CheckStatus(status);
     ele_map_->roads.emplace_back(ele_road);
     common::XmlNextSiblingElement(curr_ele_road);
   }

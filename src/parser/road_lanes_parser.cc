@@ -9,6 +9,7 @@ opendrive::Status RoadLanesXmlParser::Parse(
   ele_lanes_ = lanes;
   if (!xml_lanes_ || !ele_lanes_) {
     set_status(ErrorCode::XML_LANES_ELEMENT_ERROR, "Input is null.");
+    return status();
   }
   ParseLaneOffsetEle().ParseLaneSectionEle();
   return status();

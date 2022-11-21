@@ -18,7 +18,9 @@ class UtilAdapter {
   virtual void set_status(ErrorCode code, const std::string& msg) final;
   virtual float step() const final;
   virtual void set_step(float num) final;
-  virtual void Init() = 0;
+  virtual void CheckStatus(ErrorCode code, const std::string& msg) final;
+  virtual void CheckStatus(const Status& s) final;
+  virtual void CheckStatus(Status&& s) final;
 
  private:
   std::mutex mutex_;

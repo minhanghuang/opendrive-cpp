@@ -3,9 +3,9 @@
 
 #include <memory>
 
-#include "opendrive-cpp/adapter/lane_adapter.h"
 #include "opendrive-cpp/adapter/util_adapter.h"
 #include "opendrive-cpp/geometry/core.h"
+#include "opendrive-cpp/geometry/element.h"
 
 namespace opendrive {
 namespace adapter {
@@ -17,9 +17,8 @@ class RoadAdapter : public UtilAdapter {
                         core::Road::Ptr road_ptr);
 
  private:
-  virtual void Init() override;
   RoadAdapter& TransformAttributes();
-  RoadAdapter& TransformSection();
+  RoadAdapter& TransformSections();
   const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };

@@ -55,6 +55,11 @@ Adapter::~Adapter() {}
 
 Adapter::Adapter() : road_adapter_(std::make_shared<adapter::RoadAdapter>()) {}
 
+// opendrive::Status Adapter::Map(const element::Map* ele_map, core::Map::Ptr
+// map_ptr, float step ) {
+
+// }
+
 opendrive::Status Adapter::Road(const element::Road* ele_road,
                                 core::Road::Ptr road_ptr, float step) {
   if (step <= 0) {

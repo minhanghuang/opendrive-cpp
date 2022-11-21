@@ -9,6 +9,7 @@ opendrive::Status HeaderXmlParser::Parse(const tinyxml2::XMLElement* ele_header,
   header_ = header;
   if (!ele_header_ || !header_) {
     set_status(ErrorCode::XML_HEADER_ELEMENT_ERROR, "Input is null.");
+    return status();
   }
   this->ParseAttributes();
   return status();

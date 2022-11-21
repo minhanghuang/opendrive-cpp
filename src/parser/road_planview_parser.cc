@@ -12,6 +12,7 @@ opendrive::Status RoadPlanViewXmlParser::Parse(
   ele_planview_ = ele_planview;
   if (!xml_planview_ || !ele_planview_) {
     set_status(ErrorCode::XML_ROAD_PLANVIEW_ELEMENT_ERROR, "Input is null.");
+    return status();
   }
   ParseAttributes();
   return status();
