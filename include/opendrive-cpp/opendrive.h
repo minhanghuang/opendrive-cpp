@@ -5,7 +5,6 @@
 #include <memory>
 
 #include "opendrive-cpp/adapter/road_adapter.h"
-#include "opendrive-cpp/adapter/section_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
