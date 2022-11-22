@@ -5,8 +5,10 @@
 
 #include <climits>
 #include <iostream>
+#include <cassert>
 #include <map>
 #include <set>
+#include <algorithm>
 #include <string>
 #include <type_traits>
 

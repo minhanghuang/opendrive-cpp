@@ -86,8 +86,8 @@ install(FILES
   DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/${TARGET_NAME}"
 )
 
-install(DIRECTORY include/hdmap/
-  DESTINATION include/hdmap
+install(DIRECTORY include/opendrive-cpp/
+  DESTINATION include/opendrive-cpp
   FILES_MATCHING
   PATTERN "*.h"
   PATTERN "*.hpp"

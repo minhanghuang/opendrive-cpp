@@ -1,9 +1,5 @@
 #include "opendrive-cpp/adapter/map_adapter.h"
 
-#include <memory>
-
-#include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/geometry/core.h"
 
 namespace opendrive {
 namespace adapter {
