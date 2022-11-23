@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_SHARED_LIBS "Build opendrive-cpp shared library" ON)
-option(BUILD_OPENDRIVECPP_TEST "Build opendrive-cpp unittest" OFF)
+option(BUILD_OPENDRIVECPP_TEST "Build opendrive-cpp unittest" ON)
 
 set(opendrive-cpp-type SHARED)
 if (NOT BUILD_SHARED_LIBS)

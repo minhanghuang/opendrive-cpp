@@ -1,10 +1,6 @@
 #include "opendrive-cpp/opendrive.h"
 
-#include <cassert>
-
 namespace opendrive {
-
-Parser::~Parser() {}
 
 Parser::Parser()
     : map_parser_(std::make_unique<parser::MapXmlParser>()),
@@ -14,6 +10,18 @@ Parser::Parser()
       road_type_parser_(std::make_unique<parser::RoadTypeXmlParser>()),
       road_planview_parser_(std::make_unique<parser::RoadPlanViewXmlParser>()),
       road_lanes_parser_(std::make_unique<parser::RoadLanesXmlParser>()) {}
+
+opendrive::Status Parser::Map(const std::string& xml_file,
+                              element::Map* ele_map) {
+  tinyxml2::XMLDocument xml_doc;
+  xml_doc.LoadFile(xml_file.c_str());
+  if (xml_doc.Error()) {
+    return Status{ErrorCode::XML_ROAD_ELEMENT_ERROR,
+                  "Parse Xml File Exection."};
+  }
+  tinyxml2::XMLElement* xml_root = xml_doc.RootElement();
+  return map_parser_->Parse(xml_root, ele_map);
+}
 
 opendrive::Status Parser::Map(const tinyxml2::XMLElement* xml_root,
                               element::Map* ele_map) {
@@ -51,14 +59,7 @@ opendrive::Status Parser::RoadLanes(const tinyxml2::XMLElement* xml_road_lanes,
   return road_lanes_parser_->Parse(xml_road_lanes, ele_road_lanes);
 }
 
-Adapter::~Adapter() {}
-
 Adapter::Adapter() : road_adapter_(std::make_shared<adapter::RoadAdapter>()) {}
-
-// opendrive::Status Adapter::Map(const element::Map* ele_map, core::Map::Ptr
-// map_ptr, float step ) {
-
-// }
 
 opendrive::Status Adapter::Road(const element::Road* ele_road,
                                 core::Road::Ptr road_ptr, float step) {

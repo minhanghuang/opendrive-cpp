@@ -38,7 +38,7 @@ MapXmlParser& MapXmlParser::ParseRoadEle() {
     status = road_parser.Parse(curr_ele_road, &ele_road);
     CheckStatus(status);
     ele_map_->roads.emplace_back(ele_road);
-    common::XmlNextSiblingElement(curr_ele_road);
+    curr_ele_road = common::XmlNextSiblingElement(curr_ele_road);
   }
   return *this;
 }

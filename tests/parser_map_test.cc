@@ -54,6 +54,13 @@ TEST_F(TestMapParser, TestMap) {
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
 }
 
+TEST_F(TestMapParser, TestMapFile) {
+  auto parser = GetParser();
+  opendrive::element::Map ele_map;
+  auto ret = parser->Map(xml_file_path, &ele_map);
+  ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+}
+
 int main(int argc, char* argv[]) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

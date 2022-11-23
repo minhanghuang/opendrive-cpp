@@ -2,6 +2,7 @@
 #define OPENDRIVE_CPP_H_
 #include <tinyxml2.h>
 
+#include <cassert>
 #include <memory>
 
 #include "opendrive-cpp/adapter/road_adapter.h"
@@ -21,8 +22,9 @@ namespace opendrive {
 
 class Parser {
  public:
-  ~Parser();
+  ~Parser() = default;
   Parser();
+  opendrive::Status Map(const std::string& xml_file, element::Map* ele_map);
   opendrive::Status Map(const tinyxml2::XMLElement* xml_root,
                         element::Map* ele_map);
   opendrive::Status Header(const tinyxml2::XMLElement* xml_header,
@@ -50,7 +52,7 @@ class Parser {
 
 class Adapter {
  public:
-  ~Adapter();
+  ~Adapter() = default;
   Adapter();
   opendrive::Status Map(const element::Map* ele_map, core::Map::Ptr map_ptr,
                         float step = 0.5);
