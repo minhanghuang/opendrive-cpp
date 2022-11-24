@@ -1,5 +1,7 @@
 #include "opendrive-cpp/opendrive.h"
 
+#include <memory>
+
 namespace opendrive {
 
 Parser::Parser()
@@ -59,12 +61,23 @@ opendrive::Status Parser::RoadLanes(const tinyxml2::XMLElement* xml_road_lanes,
   return road_lanes_parser_->Parse(xml_road_lanes, ele_road_lanes);
 }
 
-Adapter::Adapter() : road_adapter_(std::make_shared<adapter::RoadAdapter>()) {}
+Adapter::Adapter()
+    : map_adapter_(std::make_unique<adapter::MapAdapter>()),
+      road_adapter_(std::make_unique<adapter::RoadAdapter>()) {}
+
+opendrive::Status Adapter::Map(const element::Map* ele_map,
+                               core::Map::Ptr map_ptr, float step) {
+  if (step <= 0) {
+    return opendrive::Status{ErrorCode::ADAPTER_ROAD_ERROR, "Input Execption."};
+  }
+  map_adapter_->set_step(step);
+  return map_adapter_->Run(ele_map, map_ptr);
+}
 
 opendrive::Status Adapter::Road(const element::Road* ele_road,
                                 core::Road::Ptr road_ptr, float step) {
   if (step <= 0) {
-    return opendrive::Status{ErrorCode::ADAPTER_ROAD_ERROR, "input execption."};
+    return opendrive::Status{ErrorCode::ADAPTER_ROAD_ERROR, "Input Execption."};
   }
 
   road_adapter_->set_step(step);

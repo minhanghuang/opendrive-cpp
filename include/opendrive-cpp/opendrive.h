@@ -5,6 +5,7 @@
 #include <cassert>
 #include <memory>
 
+#include "opendrive-cpp/adapter/map_adapter.h"
 #include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
@@ -60,7 +61,8 @@ class Adapter {
                          core::Road::Ptr road_ptr, float step = 0.5);
 
  private:
-  std::shared_ptr<adapter::RoadAdapter> road_adapter_;
+  std::unique_ptr<adapter::MapAdapter> map_adapter_;
+  std::unique_ptr<adapter::RoadAdapter> road_adapter_;
 };
 
 }  // namespace opendrive

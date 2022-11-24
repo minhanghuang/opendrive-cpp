@@ -1,6 +1,5 @@
 #include "opendrive-cpp/adapter/map_adapter.h"
 
-
 namespace opendrive {
 namespace adapter {
 
@@ -29,7 +28,7 @@ MapAdapter& MapAdapter::TransformRoads() {
       CheckStatus(status);
       return *this;
     }
-    if (map_ptr_->roads.count(road_ptr->id) != 0) {
+    if (0 == map_ptr_->roads.count(road_ptr->id)) {
       map_ptr_->roads.insert({road_ptr->id, road_ptr});
     }
   }

@@ -83,12 +83,6 @@ RoadXmlParser& RoadXmlParser::ParseLanesEle() {
 
 RoadXmlParser& RoadXmlParser::CheckLanesEle() {
   if (!IsValid()) return *this;
-  if (ele_road_->plan_view.geometrys.size() !=
-      ele_road_->lanes.lane_sections.size()) {
-    set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR,
-               "Check <geometry> Element Count Exception.");
-    return *this;
-  }
   for (const auto& section : ele_road_->lanes.lane_sections) {
     if (section.center.lanes.empty()) {
       set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR,

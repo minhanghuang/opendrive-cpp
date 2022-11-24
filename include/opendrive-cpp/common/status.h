@@ -30,6 +30,7 @@ enum class ErrorCode {
 };
 
 struct Status {
+  Status() = default;
   Status(ErrorCode code, const std::string& m) : error_code(code), msg(m) {}
   ErrorCode error_code = ErrorCode::OK;
   std::string msg;

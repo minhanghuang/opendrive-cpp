@@ -22,7 +22,7 @@ float UtilAdapter::step() const { return step_; }
 void UtilAdapter::set_step(float num) { step_ = num; }
 
 void UtilAdapter::CheckStatus(ErrorCode code, const std::string& msg) {
-  if (ErrorCode::OK == code) {
+  if (ErrorCode::OK != code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = code;
     status_.msg = msg;
@@ -30,7 +30,7 @@ void UtilAdapter::CheckStatus(ErrorCode code, const std::string& msg) {
 }
 
 void UtilAdapter::CheckStatus(const Status& s) {
-  if (ErrorCode::OK == s.error_code) {
+  if (ErrorCode::OK != s.error_code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = s.error_code;
     status_.msg = s.msg;
@@ -38,7 +38,7 @@ void UtilAdapter::CheckStatus(const Status& s) {
 }
 
 void UtilAdapter::CheckStatus(Status&& s) {
-  if (ErrorCode::OK == s.error_code) {
+  if (ErrorCode::OK != s.error_code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = s.error_code;
     status_.msg = s.msg;

@@ -28,6 +28,7 @@ SET(TEST_SOURCES
   parser_roadplanview_test
   parser_road_test
   parser_roadlanes_test
+  adapter_map_test
 )
 
 FOREACH(test_src ${TEST_SOURCES})
