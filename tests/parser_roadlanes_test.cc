@@ -71,14 +71,14 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).d);
 
   /// section
-  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, ele_lanes.lane_sections.at(1).s);
-  ASSERT_DOUBLE_EQ(7.2438297688509765e+00, ele_lanes.lane_sections.at(2).s);
-  ASSERT_DOUBLE_EQ(1.8430053456596493e+01, ele_lanes.lane_sections.at(3).s);
-  ASSERT_DOUBLE_EQ(2.0513386789929825e+01, ele_lanes.lane_sections.at(4).s);
+  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, ele_lanes.lane_sections.at(1).s0);
+  ASSERT_DOUBLE_EQ(7.2438297688509765e+00, ele_lanes.lane_sections.at(2).s0);
+  ASSERT_DOUBLE_EQ(1.8430053456596493e+01, ele_lanes.lane_sections.at(3).s0);
+  ASSERT_DOUBLE_EQ(2.0513386789929825e+01, ele_lanes.lane_sections.at(4).s0);
 
   ASSERT_TRUE(5 == ele_lanes.lane_sections.size());
   auto lane_section1 = ele_lanes.lane_sections.front();
-  ASSERT_DOUBLE_EQ(0, lane_section1.s);
+  ASSERT_DOUBLE_EQ(0, lane_section1.s0);
   ASSERT_TRUE(lane_section1.left.lanes.size() == 3);
   ASSERT_TRUE(lane_section1.center.lanes.size() == 1);
   ASSERT_TRUE(lane_section1.right.lanes.size() == 3);

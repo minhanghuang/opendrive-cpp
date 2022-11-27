@@ -26,6 +26,7 @@ class RoadXmlParser : public XmlParser {
   RoadXmlParser& ParsePlanViewEle();
   RoadXmlParser& ParseLanesEle();
   RoadXmlParser& CheckLanesEle();
+  RoadXmlParser& GenerateRoad();
   RoadLinkXmlParser road_link_parser_;
   RoadTypeXmlParser road_type_parser_;
   RoadPlanViewXmlParser road_planview_parser_;

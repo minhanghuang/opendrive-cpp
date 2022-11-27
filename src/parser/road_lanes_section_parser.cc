@@ -18,7 +18,7 @@ opendrive::Status RoadLanesSectionXmlParser::Parse(
 
 RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseAttributes() {
   if (!IsValid()) return *this;
-  common::XmlQueryDoubleAttribute(xml_section_, "s", ele_section_->s);
+  common::XmlQueryDoubleAttribute(xml_section_, "s", ele_section_->s0);
   return *this;
 }
 

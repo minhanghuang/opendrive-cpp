@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -218,6 +219,7 @@ struct LaneAttributes {
   Id id = -1;
   LaneType type = LaneType::UNKNOWN;
   Boolean level = Boolean::UNKNOWN;
+  double length = 0.;  // lane length(extended)
 };
 
 struct OffsetPoly3 {
@@ -227,6 +229,10 @@ struct OffsetPoly3 {
   double b = 0.;  // b
   double c = 0.;  // c
   double d = 0.;  // d
+  bool operator<(const OffsetPoly3 p) const { return s > p.s; }
+  virtual double GetOffset(double ds) const final {
+    return a + b * ds + c * std::pow(ds, 2) + d * std::pow(ds, 3);
+  }
 };
 
 struct RoadMark {
@@ -255,6 +261,39 @@ struct Lane {
   std::vector<LaneWidth> widths;
   std::vector<LaneBorder> borders;
   std::vector<RoadMark> road_marks;
+  double GetLaneWidth(double ds) {
+    // width >> border
+    if (ds < 0) {
+      return GetLaneWidth(0);
+    }
+    if (widths.empty()) {
+      if (borders.empty()) {
+        return 0.;
+      }
+      /// border
+      for (size_t i = 0; i < borders.size(); i++) {
+        if (1 == borders.size() || i == borders.size() - 1) {
+          return borders.at(i).GetOffset(ds);
+        } else {
+          if (ds <= borders.at(i).s) {
+            return borders.at(i - 1).GetOffset(ds);
+          }
+        }
+      }
+    } else {
+      /// width
+      for (size_t i = 0; i < widths.size(); i++) {
+        if (1 == widths.size() || i == widths.size() - 1) {
+          return widths.at(i).GetOffset(ds);
+        } else {
+          if (ds <= widths.at(i).s) {
+            return widths.at(i - 1).GetOffset(ds);
+          }
+        }
+      }
+    }
+    return 0.;
+  }
 };
 
 struct LanesInfo {
@@ -264,7 +303,8 @@ struct LanesInfo {
 struct LaneOffset : public OffsetPoly3 {};
 
 struct LaneSection {
-  double s = 0.;
+  double s0 = 0.;  // start position
+  double s1 = 0.;  // end position(extended)
   LanesInfo left, center, right;
 };
 
@@ -275,9 +315,9 @@ struct Lanes {
 
 struct RoadAttributes {
   Name name;
-  double length;
   Id id = -1;
   Id junction = -1;
+  double length = 0.;
   RoadRule rule = RoadRule::UNKNOWN;
 };
 

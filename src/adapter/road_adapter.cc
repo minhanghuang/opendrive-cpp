@@ -55,7 +55,7 @@ RoadAdapter& RoadAdapter::TransformSections() {
       section->reference_line = reference_line;
       road_ptr_->sections.emplace_back(section);  // add section to core
       if (i <= ele_road_->lanes.lane_sections.size()-1) {
-        s = ele_road_->lanes.lane_sections.at(i).s;
+        s = ele_road_->lanes.lane_sections.at(i).s0;
       }
     } else {
       section = road_ptr_->sections.front();

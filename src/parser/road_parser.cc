@@ -16,7 +16,8 @@ opendrive::Status RoadXmlParser::Parse(const tinyxml2::XMLElement* xml_road,
       .ParseTypeEle()
       .ParsePlanViewEle()
       .ParseLanesEle()
-      .CheckLanesEle();
+      .CheckLanesEle()
+      .GenerateRoad();
   return status();
 }
 
@@ -90,6 +91,21 @@ RoadXmlParser& RoadXmlParser::CheckLanesEle() {
       return *this;
     }
   }
+  return *this;
+}
+
+RoadXmlParser& RoadXmlParser::GenerateRoad() {
+  if (!IsValid()) return *this;
+  /// update section end posotion
+  for (auto it = ele_road_->lanes.lane_sections.begin();
+       it != ele_road_->lanes.lane_sections.end(); ++it) {
+    if (it + 1 == ele_road_->lanes.lane_sections.end()) {  // 最后一个section
+      it->s1 = ele_road_->attributes.length;
+    } else {
+      it->s1 = (it + 1)->s0;
+    }
+  }
+
   return *this;
 }
 

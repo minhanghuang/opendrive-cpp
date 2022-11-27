@@ -36,7 +36,8 @@ RoadLanesXmlParser& RoadLanesXmlParser::ParseLaneSectionEle() {
   Status status{ErrorCode::OK, "ok"};
   while (curr_xml_section) {
     element::LaneSection lane_section;
-    common::XmlQueryDoubleAttribute(curr_xml_section, "s", lane_section.s);
+    common::XmlQueryDoubleAttribute(curr_xml_section, "s", lane_section.s0);
+    common::XmlQueryDoubleAttribute(curr_xml_section, "s", lane_section.s1);
     status = section_parser_.Parse(curr_xml_section, &lane_section);
     CheckStatus(status);
     ele_lanes_->lane_sections.emplace_back(lane_section);
