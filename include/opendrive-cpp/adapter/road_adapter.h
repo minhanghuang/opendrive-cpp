@@ -17,8 +17,11 @@ class RoadAdapter : public UtilAdapter {
                         core::Road::Ptr road_ptr);
 
  private:
-  RoadAdapter& TransformAttributes();
-  RoadAdapter& TransformSections();
+  RoadAdapter& GenerateAttributes();
+  RoadAdapter& GenerateSections();
+  RoadAdapter& GenerateGeometry();
+  RoadAdapter& GenerateCenterLine();
+  RoadAdapter& GenerateSamples();
   const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };

@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <memory>
+#include <set>
 
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"

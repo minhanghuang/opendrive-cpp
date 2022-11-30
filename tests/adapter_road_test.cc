@@ -45,7 +45,8 @@ class TestAdapterRoad : public testing::Test {
   static std::string xml_file_path;
 };
 
-std::string TestAdapterRoad::xml_file_path = "./tests/data/only-unittest.xodr";
+std::string TestAdapterRoad::xml_file_path =
+    "./tests/data/Ex_Simple-LaneOffset.xodr";
 
 void TestAdapterRoad::SetUpTestCase() {}
 void TestAdapterRoad::TearDownTestCase() {}
@@ -63,7 +64,6 @@ TEST_F(TestAdapterRoad, TestAdapterRoad) {
   /// parse
   opendrive::parser::RoadXmlParser road_parser;
   auto ret = road_parser.Parse(xml_road, &ele_road);
-  std::cout << "parse ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ele_road.lanes.lane_sections.size() > 0);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
@@ -72,6 +72,40 @@ TEST_F(TestAdapterRoad, TestAdapterRoad) {
   ret = adapter.Road(&ele_road, road_ptr);
   std::cout << "adapter ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+
+  /// check sections
+  ASSERT_EQ(3, road_ptr->sections.size());
+  auto section_0 = road_ptr->sections.at(0);
+  ASSERT_EQ(6, section_0->lanes.size());
+  ASSERT_EQ("1_0_3", section_0->lanes.front()->id);
+  ASSERT_EQ("1_0_2", section_0->lanes.at(1)->id);
+  ASSERT_EQ("1_0_1", section_0->lanes.at(2)->id);
+  ASSERT_EQ("1_0_0", section_0->lanes.at(3)->id);
+  ASSERT_EQ("1_0_-1", section_0->lanes.at(4)->id);
+  ASSERT_EQ("1_0_-2", section_0->lanes.at(5)->id);
+  ASSERT_DOUBLE_EQ(0, section_0->start_position);
+  ASSERT_DOUBLE_EQ(2.5000000000000000e+01, section_0->length);
+  auto section_1 = road_ptr->sections.at(1);
+  ASSERT_EQ(7, section_1->lanes.size());
+  ASSERT_EQ("1_1_3", section_1->lanes.front()->id);
+  ASSERT_EQ("1_1_2", section_1->lanes.at(1)->id);
+  ASSERT_EQ("1_1_1", section_1->lanes.at(2)->id);
+  ASSERT_EQ("1_1_0", section_1->lanes.at(3)->id);
+  ASSERT_EQ("1_1_-1", section_1->lanes.at(4)->id);
+  ASSERT_EQ("1_1_-2", section_1->lanes.at(5)->id);
+  ASSERT_EQ("1_1_-3", section_1->lanes.at(6)->id);
+  ASSERT_DOUBLE_EQ(2.5000000000000000e+01, section_1->start_position);
+  ASSERT_DOUBLE_EQ(5.0000000000000000e+01, section_1->length);
+  auto section_2 = road_ptr->sections.at(2);
+  ASSERT_EQ(6, section_2->lanes.size());
+  ASSERT_EQ("1_2_2", section_2->lanes.front()->id);
+  ASSERT_EQ("1_2_1", section_2->lanes.at(1)->id);
+  ASSERT_EQ("1_2_0", section_2->lanes.at(2)->id);
+  ASSERT_EQ("1_2_-1", section_2->lanes.at(3)->id);
+  ASSERT_EQ("1_2_-2", section_2->lanes.at(4)->id);
+  ASSERT_EQ("1_2_-3", section_2->lanes.at(5)->id);
+  ASSERT_DOUBLE_EQ(7.5000000000000000e+01, section_2->start_position);
+  ASSERT_DOUBLE_EQ(2.5000000000000000e+01, section_2->length);
 }
 
 int main(int argc, char* argv[]) {

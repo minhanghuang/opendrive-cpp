@@ -93,7 +93,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ(Boolean::FALSE, lane_section1_left1.attributes.level);
   ASSERT_EQ(-3, lane_section1_left1.link.predecessor);
   ASSERT_EQ(1, lane_section1_left1.widths.size());
-  auto lane_section1_width1 = lane_section1_left1.widths.front();
+  auto lane_section1_width1 = *lane_section1_left1.widths.begin();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width1.s);
   ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width1.a);
   ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width1.b);
@@ -101,7 +101,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width1.d);
 
   ASSERT_EQ(1, lane_section1_left1.borders.size());
-  auto lane_section1_border1 = lane_section1_left1.borders.front();
+  auto lane_section1_border1 = *lane_section1_left1.borders.begin();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border1.s);
   ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border1.a);
   ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border1.b);
@@ -150,7 +150,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ(Boolean::FALSE, lane_section1_right1.attributes.level);
   ASSERT_EQ(1, lane_section1_right1.link.predecessor);
   ASSERT_EQ(1, lane_section1_right1.widths.size());
-  auto lane_section1_width21 = lane_section1_right1.widths.front();
+  auto lane_section1_width21 = *lane_section1_right1.widths.begin();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width21.s);
   ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.a);
   ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width21.b);
@@ -158,7 +158,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.d);
 
   ASSERT_EQ(1, lane_section1_left1.borders.size());
-  auto lane_section1_border21 = lane_section1_right1.borders.front();
+  auto lane_section1_border21 = *lane_section1_right1.borders.begin();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border21.s);
   ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.a);
   ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border21.b);

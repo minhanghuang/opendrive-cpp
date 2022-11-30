@@ -3,17 +3,42 @@
 
 #include <tinyxml2.h>
 
+#include <algorithm>
+#include <cassert>
 #include <climits>
 #include <iostream>
-#include <cassert>
 #include <map>
 #include <set>
-#include <algorithm>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 namespace opendrive {
 namespace common {
+
+static bool FileExists(const std::string& path) {
+  if (FILE* f = fopen(path.c_str(), "r")) {
+    fclose(f);
+    return true;
+  }
+  return false;
+}
+
+static std::vector<std::string> Split(const std::string& str,
+                                      const std::string& delimiter) {
+  std::vector<std::string> res;
+  size_t pos = 0;
+  size_t index = 0;
+  std::string token;
+  while ((pos = str.find(delimiter, index)) != std::string::npos) {
+    token = str.substr(index, pos - index);
+    res.emplace_back(token);
+    index = pos + delimiter.length();
+  }
+  token = str.substr(index);
+  res.emplace_back(token);
+  return res;
+}
 
 static void Assert(bool r, const std::string& msg = "fault") {
   if (!r) {

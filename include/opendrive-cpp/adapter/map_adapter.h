@@ -17,7 +17,7 @@ class MapAdapter : public UtilAdapter {
   opendrive::Status Run(const element::Map* ele_map, core::Map::Ptr map_ptr);
 
  private:
-  MapAdapter& TransformRoads();
+  MapAdapter& GenerateRoads();
   std::shared_ptr<RoadAdapter> road_adapter_;
   const element::Map* ele_map_;
   core::Map::Ptr map_ptr_;

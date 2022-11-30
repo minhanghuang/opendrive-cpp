@@ -13,11 +13,11 @@ opendrive::Status MapAdapter::Run(const element::Map* ele_map,
     set_status(ErrorCode::ADAPTER_ROOT_ERROR, "Input Is Null.");
     return status();
   }
-  TransformRoads();
+  GenerateRoads();
   return status();
 }
 
-MapAdapter& MapAdapter::TransformRoads() {
+MapAdapter& MapAdapter::GenerateRoads() {
   if (!IsValid()) return *this;
   Status status{ErrorCode::OK, "ok"};
 

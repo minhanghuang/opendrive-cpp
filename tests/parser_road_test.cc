@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <memory>
+#include <set>
 
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/geometry/enums.h"
@@ -63,7 +64,22 @@ TEST_F(TestRoadParser, TestRoad) {
   ASSERT_TRUE(-1 == ele_road.attributes.junction);
   ASSERT_TRUE(RoadRule::RHT == ele_road.attributes.rule);
 
+  /// road type info
   ASSERT_TRUE(2 == ele_road.type_info.size());
+  std::set<element::RoadTypeInfo>::iterator type_info_begin =
+      ele_road.type_info.begin();
+  auto type_info_1 = *type_info_begin;
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+0, type_info_1.s);
+  ASSERT_DOUBLE_EQ(25, type_info_1.max_speed);
+  ASSERT_TRUE(RoadType::TOWN == type_info_1.type);
+  ASSERT_TRUE("" == type_info_1.country);
+  ASSERT_TRUE(RoadSpeedUnit::MPH == type_info_1.speed_unit);
+  auto type_info_2 = *(++type_info_begin);
+  ASSERT_DOUBLE_EQ(2.0601003600277540e+01, type_info_2.s);
+  ASSERT_DOUBLE_EQ(25, type_info_2.max_speed);
+  ASSERT_TRUE(RoadType::TOWN == type_info_2.type);
+  ASSERT_TRUE("DE" == type_info_2.country);
+  ASSERT_TRUE(RoadSpeedUnit::KMH == type_info_2.speed_unit);
 
   ASSERT_TRUE(5 == ele_road.lanes.lane_sections.size());
 }

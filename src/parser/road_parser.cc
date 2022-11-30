@@ -55,7 +55,7 @@ RoadXmlParser& RoadXmlParser::ParseTypeEle() {
     element::RoadTypeInfo ele_road_type;
     status = road_type_parser_.Parse(curr_xml_type, &ele_road_type);
     CheckStatus(status);
-    ele_road_->type_info.emplace_back(ele_road_type);
+    ele_road_->type_info.insert(ele_road_type);
     curr_xml_type = common::XmlNextSiblingElement(curr_xml_type);
   }
   return *this;

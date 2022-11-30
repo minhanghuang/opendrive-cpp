@@ -53,7 +53,7 @@ class Geometry {
         sin_hdg(std::sin(_hdg)),
         cos_hdg(std::cos(_hdg)) {}
   virtual ~Geometry() = default;
-  virtual Vec3D GetXYH(double distance) = 0;
+  virtual Vec3D GetXYT(double distance) = 0;
   const double s;
   const double x;
   const double y;
@@ -69,11 +69,11 @@ class GeometryLine final : public Geometry {
   GeometryLine(double _s, double _x, double _y, double _hdg, double _length,
                GeometryType _type)
       : Geometry(_s, _x, _y, _hdg, _length, _type) {}
-  virtual Vec3D GetXYH(double distance) override {
-    distance = common::Clamp<double>(distance, 0, length);
-    const double xd = x + (cos_hdg * (distance - s));
-    const double yd = y + (sin_hdg * (distance - s));
-    return Vec3D{xd, yd, hdg};
+  virtual Vec3D GetXYT(double ds) override {
+    ds = common::Clamp<double>(ds, 0, length);
+    const double xd = x + (cos_hdg * (ds - s));
+    const double yd = y + (sin_hdg * (ds - s));
+    return Vec3D{xd, yd, 0.};
   }
 };
 
@@ -84,12 +84,12 @@ class GeometryArc final : public Geometry {
       : Geometry(_s, _x, _y, _hdg, _length, _type),
         curvature(_curvature),
         radius(1.0 / _curvature) {}
-  virtual Vec3D GetXYH(double distance) override {
-    distance = common::Clamp<double>(distance, 0, length);
-    const double angle_at_s = (distance - s) * curvature - M_PI / 2;
+  virtual Vec3D GetXYT(double ds) override {
+    ds = common::Clamp<double>(ds, 0, length);
+    const double angle_at_s = (ds - s) * curvature - M_PI / 2;
     const double xd = radius * (std::cos(hdg + angle_at_s) - sin_hdg) + x;
     const double yd = radius * (std::sin(hdg + angle_at_s) + cos_hdg) + y;
-    const double tangent = hdg + distance * curvature;
+    const double tangent = hdg + ds * curvature;
     return Vec3D{xd, yd, tangent};
   }
   const double curvature;
@@ -105,10 +105,10 @@ class GeometrySpiral final : public Geometry {
         curve_end(_curve_end),
         curve_dot((_curve_end - _curve_start) / (_length)) {}
 
-  virtual Vec3D GetXYH(double distance) override {
-    distance = common::Clamp<double>(distance, 0, length);
+  virtual Vec3D GetXYT(double ds) override {
+    ds = common::Clamp<double>(ds, 0, length);
 
-    const double s1 = curve_start / curve_dot + distance;
+    const double s1 = curve_start / curve_dot + ds;
     double x1;
     double y1;
     double t1;
@@ -146,9 +146,9 @@ class GeometryPoly3 final : public Geometry {
         c(_c),
         d(_d) {}
 
-  virtual Vec3D GetXYH(double distance) override {
-    distance = common::Clamp<double>(distance, 0, length);
-    const double u = distance;
+  virtual Vec3D GetXYT(double ds) override {
+    ds = common::Clamp<double>(ds, 0, length);
+    const double u = ds;
     const double v = a + b * u + c * std::pow(u, 2) + d * std::pow(u, 3);
     const double x1 = u * cos_hdg - v * sin_hdg;
     const double y1 = u * sin_hdg + v * cos_hdg;
@@ -186,11 +186,11 @@ class GeometryParamPoly3 final : public Geometry {
         cv(_cv),
         dv(_dv),
         p_range(_p_range) {}
-  virtual Vec3D GetXYH(double distance) override {
-    distance = common::Clamp<double>(distance, 0, length);
-    double p = distance;
+  virtual Vec3D GetXYT(double ds) override {
+    ds = common::Clamp<double>(ds, 0, length);
+    double p = ds;
     if (PRange::NORMALIZED == p_range) {
-      p = std::min(1.0, distance / length);
+      p = std::min(1.0, ds / length);
     }
     const double u = au + bu * p + cu * std::pow(p, 2) + du * std::pow(p, 3);
     const double v = av + bv * p + cv * std::pow(p, 2) + dv * std::pow(p, 3);
@@ -219,7 +219,6 @@ struct LaneAttributes {
   Id id = -1;
   LaneType type = LaneType::UNKNOWN;
   Boolean level = Boolean::UNKNOWN;
-  double length = 0.;  // lane length(extended)
 };
 
 struct OffsetPoly3 {
@@ -229,7 +228,7 @@ struct OffsetPoly3 {
   double b = 0.;  // b
   double c = 0.;  // c
   double d = 0.;  // d
-  bool operator<(const OffsetPoly3 p) const { return s > p.s; }
+  bool operator<(const OffsetPoly3& obj) const { return s < obj.s; }
   virtual double GetOffset(double ds) const final {
     return a + b * ds + c * std::pow(ds, 2) + d * std::pow(ds, 3);
   }
@@ -258,38 +257,36 @@ struct LaneLink {
 struct Lane {
   LaneAttributes attributes;
   LaneLink link;
-  std::vector<LaneWidth> widths;
-  std::vector<LaneBorder> borders;
+  std::set<LaneWidth> widths;
+  std::set<LaneBorder> borders;
   std::vector<RoadMark> road_marks;
   double GetLaneWidth(double ds) {
     // width >> border
     if (ds < 0) {
-      return GetLaneWidth(0);
+      return GetLaneWidth(0.);
     }
     if (widths.empty()) {
       if (borders.empty()) {
         return 0.;
       }
       /// border
-      for (size_t i = 0; i < borders.size(); i++) {
-        if (1 == borders.size() || i == borders.size() - 1) {
-          return borders.at(i).GetOffset(ds);
-        } else {
-          if (ds <= borders.at(i).s) {
-            return borders.at(i - 1).GetOffset(ds);
-          }
-        }
+      LaneBorder border_target;
+      border_target.s = ds;
+      auto border_ret = borders.lower_bound(border_target);
+      if (border_ret == borders.end()) {  // out range
+        return 0.;
+      } else {
+        return (*border_ret).GetOffset(ds);
       }
     } else {
       /// width
-      for (size_t i = 0; i < widths.size(); i++) {
-        if (1 == widths.size() || i == widths.size() - 1) {
-          return widths.at(i).GetOffset(ds);
-        } else {
-          if (ds <= widths.at(i).s) {
-            return widths.at(i - 1).GetOffset(ds);
-          }
-        }
+      LaneWidth width_target;
+      width_target.s = ds;
+      auto width_ret = widths.lower_bound(width_target);
+      if (width_ret == widths.end()) {  // out range
+        return 0.;
+      } else {
+        return (*width_ret).GetOffset(ds);
       }
     }
     return 0.;
@@ -343,18 +340,50 @@ struct RoadTypeInfo {
   std::string country;
   double max_speed = 0.;
   RoadSpeedUnit speed_unit = RoadSpeedUnit::UNKNOWN;
+  bool operator<(const RoadTypeInfo& obj) const { return s < obj.s; }
 };
 
 struct RoadPlanView {
   std::vector<Geometry::Ptr> geometrys;
+  Geometry::Ptr GetGeometry(double ds) const {
+    Geometry::Ptr ptr = nullptr;
+    if (geometrys.empty()) {
+      return ptr;
+    }
+    if (ds <= 0.) {
+      return geometrys.front();
+    }
+    for (const auto& geometry : geometrys) {
+      if (geometry->s >= ds) {
+        return geometry;
+      }
+    }
+    return geometrys.back();
+  }
 };
 
 struct Road {
   RoadAttributes attributes;
   RoadLink link;
-  std::vector<RoadTypeInfo> type_info;
+  std::set<RoadTypeInfo> type_info;
   RoadPlanView plan_view;
   Lanes lanes;
+  RoadTypeInfo GetRoadTypeInfo(double ds) const {
+    RoadTypeInfo type_info_target;
+    if (type_info.empty()) {
+      return type_info_target;
+    }
+    if (ds < 0.) {
+      return *(type_info.begin());
+    }
+    type_info_target.s = ds;
+    auto type_info_ret = type_info.lower_bound(type_info_target);
+    if (type_info_ret == type_info.end()) {  // out range
+      return *(--type_info.end());           // end value
+    } else {
+      return *type_info_ret;
+    }
+  }
 };
 
 typedef struct Map MapType;

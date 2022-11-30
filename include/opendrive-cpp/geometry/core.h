@@ -32,7 +32,6 @@ struct Line {
 };
 
 struct LaneBoundary {
-  double length = 0.;
   Line line;
   RoadMarkType type = RoadMarkType::UNKNOWN;
   RoadMarkColor color = RoadMarkColor::UNKNOWN;
@@ -42,8 +41,6 @@ typedef struct Lane LaneTypedef;
 struct Lane {
   typedef std::shared_ptr<LaneTypedef> Ptr;
   Id id;
-  double length = 0.;
-  double speed_limit = 0.;
   LaneType type = LaneType::UNKNOWN;
   Line line;
   Ids predecessors;
@@ -56,7 +53,9 @@ typedef struct Section SectionTypedef;
 struct Section {
   typedef std::shared_ptr<SectionTypedef> Ptr;
   Id id;
+  double start_position = 0.;
   double length = 0.;
+  double speed_limit = 0.;  // km/h
   Lane::Ptr reference_line;
   std::vector<Lane::Ptr> lanes;
 };
