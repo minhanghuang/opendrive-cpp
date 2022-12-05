@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
@@ -53,6 +54,60 @@ void TestCommon::TearDown() {}
 void TestCommon::SetUp() {}
 
 TEST_F(TestCommon, TestDemo) {}
+
+TEST_F(TestCommon, TestLeftValue) {
+  std::vector<element::LaneOffset> lane_offsets;
+  element::LaneOffset l1, l2, l3, l4, l5;
+  int ret = common::GetLeftValuePoloy3(lane_offsets, 11);
+  ASSERT_EQ(-1, ret);
+  l1.s = 11;
+  l2.s = 13;
+  l3.s = 15;
+  l4.s = 16;
+  l5.s = 19;
+  lane_offsets.emplace_back(l1);
+  lane_offsets.emplace_back(l2);
+  lane_offsets.emplace_back(l3);
+  lane_offsets.emplace_back(l4);
+  lane_offsets.emplace_back(l5);
+  ret = common::GetLeftValuePoloy3(lane_offsets, 0);
+  ASSERT_EQ(-1, ret);
+  ret = common::GetLeftValuePoloy3(lane_offsets, 11);
+  ASSERT_EQ(0, ret);
+  ret = common::GetLeftValuePoloy3(lane_offsets, 15);
+  ASSERT_EQ(2, ret);
+  ret = common::GetLeftValuePoloy3(lane_offsets, 19);
+  ASSERT_EQ(4, ret);
+  ret = common::GetLeftValuePoloy3(lane_offsets, 100);
+  ASSERT_EQ(4, ret);
+}
+
+TEST_F(TestCommon, TestLeftPtr) {
+  std::vector<element::Geometry::Ptr> geometrys;
+  auto g1 = std::make_shared<element::GeometryLine>(11, 2, 3, 4, 5,
+                                                    GeometryType::LINE);
+  auto g2 = std::make_shared<element::GeometryLine>(13, 2, 3, 4, 5,
+                                                    GeometryType::LINE);
+  auto g3 = std::make_shared<element::GeometryLine>(15, 2, 3, 4, 5,
+                                                    GeometryType::LINE);
+  auto g4 = std::make_shared<element::GeometryLine>(18, 2, 3, 4, 5,
+                                                    GeometryType::LINE);
+  auto g5 = std::make_shared<element::GeometryLine>(19, 2, 3, 4, 5,
+                                                    GeometryType::LINE);
+  geometrys.emplace_back(g1);
+  geometrys.emplace_back(g2);
+  geometrys.emplace_back(g3);
+  geometrys.emplace_back(g4);
+  geometrys.emplace_back(g5);
+  auto ret = common::GetLeftPtrPoloy3(geometrys, 0);
+  ASSERT_EQ(-1, ret);
+  ret = common::GetLeftPtrPoloy3(geometrys, 11);
+  ASSERT_EQ(0, ret);
+  ret = common::GetLeftPtrPoloy3(geometrys, 19);
+  ASSERT_EQ(4, ret);
+  ret = common::GetLeftPtrPoloy3(geometrys, 100);
+  ASSERT_EQ(4, ret);
+}
 
 TEST_F(TestCommon, TestStr) {
   std::string a = "abc";

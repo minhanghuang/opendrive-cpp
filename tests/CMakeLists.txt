@@ -21,6 +21,7 @@ link_directories (
 
 SET(TEST_SOURCES
   common_test
+  geometry_test
   parser_map_test
   parser_header_test
   parser_roadtype_test

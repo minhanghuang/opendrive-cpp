@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <memory>
+#include <set>
 
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
@@ -175,7 +176,6 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ("standard", lane_section1_roadmarks21.material);
   ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_roadmarks21.width);
   ASSERT_DOUBLE_EQ(4.0000000000000000e+0, lane_section1_roadmarks21.height);
-
 }
 
 int main(int argc, char* argv[]) {
