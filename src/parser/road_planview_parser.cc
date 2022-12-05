@@ -45,8 +45,8 @@ RoadPlanViewXmlParser& RoadPlanViewXmlParser::ParseAttributes() {
       element::GeometryParamPoly3::PRange::UNKNOWN;
   const tinyxml2::XMLElement* curr_ele_geometry =
       xml_planview_->FirstChildElement("geometry");
-  element::Geometry::Ptr geometry_base_ptr;
   while (curr_ele_geometry) {
+    element::Geometry::Ptr geometry_base_ptr;
     s = 0.;
     x = 0.;
     y = 0.;

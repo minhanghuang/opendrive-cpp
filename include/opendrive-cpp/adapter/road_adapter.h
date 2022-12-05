@@ -2,6 +2,7 @@
 #define OPENDRIVE_CPP_ADAPTER_ROAD_H_
 
 #include <memory>
+#include <unordered_map>
 
 #include "opendrive-cpp/adapter/util_adapter.h"
 #include "opendrive-cpp/geometry/core.h"
@@ -19,9 +20,10 @@ class RoadAdapter : public UtilAdapter {
  private:
   RoadAdapter& GenerateAttributes();
   RoadAdapter& GenerateSections();
-  RoadAdapter& GenerateGeometry();
-  RoadAdapter& GenerateCenterLine();
-  RoadAdapter& GenerateSamples();
+  void GenerateCenterLine(core::Section::Ptr section,
+                          element::Geometry::Ptr geometry_base,
+                          double& reference_ds);
+  void DebugCenterLine();
   const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };

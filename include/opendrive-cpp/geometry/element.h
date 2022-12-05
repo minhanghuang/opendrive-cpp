@@ -1,6 +1,7 @@
 #ifndef OPENDRIVE_CPP_TYPES_H_
 #define OPENDRIVE_CPP_TYPES_H_
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstddef>
@@ -24,6 +25,13 @@ typedef std::string Name;
 typedef std::array<double, 1> Vec1D;
 typedef std::array<double, 2> Vec2D;
 typedef std::array<double, 3> Vec3D;
+
+struct Point {
+  double x = 0.;
+  double y = 0.;
+  double hdg = 0.;
+  double tangent = 0.;
+};
 
 struct Header {
   std::string rev_major;
@@ -53,7 +61,7 @@ class Geometry {
         sin_hdg(std::sin(_hdg)),
         cos_hdg(std::cos(_hdg)) {}
   virtual ~Geometry() = default;
-  virtual Vec3D GetXYT(double distance) = 0;
+  virtual Point GetPoint(double ref_line_ds) const = 0;
   const double s;
   const double x;
   const double y;
@@ -69,11 +77,11 @@ class GeometryLine final : public Geometry {
   GeometryLine(double _s, double _x, double _y, double _hdg, double _length,
                GeometryType _type)
       : Geometry(_s, _x, _y, _hdg, _length, _type) {}
-  virtual Vec3D GetXYT(double ds) override {
-    ds = common::Clamp<double>(ds, 0, length);
-    const double xd = x + (cos_hdg * (ds - s));
-    const double yd = y + (sin_hdg * (ds - s));
-    return Vec3D{xd, yd, 0.};
+  virtual Point GetPoint(double ref_line_ds) const override {
+    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
+    const double xd = x + (cos_hdg * (ref_line_ds - s));
+    const double yd = y + (sin_hdg * (ref_line_ds - s));
+    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = 0};
   }
 };
 
@@ -84,13 +92,13 @@ class GeometryArc final : public Geometry {
       : Geometry(_s, _x, _y, _hdg, _length, _type),
         curvature(_curvature),
         radius(1.0 / _curvature) {}
-  virtual Vec3D GetXYT(double ds) override {
-    ds = common::Clamp<double>(ds, 0, length);
-    const double angle_at_s = (ds - s) * curvature - M_PI / 2;
+  virtual Point GetPoint(double ref_line_ds) const override {
+    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
+    const double angle_at_s = (ref_line_ds - s) * curvature - M_PI / 2;
     const double xd = radius * (std::cos(hdg + angle_at_s) - sin_hdg) + x;
     const double yd = radius * (std::sin(hdg + angle_at_s) + cos_hdg) + y;
-    const double tangent = hdg + ds * curvature;
-    return Vec3D{xd, yd, tangent};
+    const double tangent = hdg + ref_line_ds * curvature;
+    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
   }
   const double curvature;
   const double radius;
@@ -105,10 +113,10 @@ class GeometrySpiral final : public Geometry {
         curve_end(_curve_end),
         curve_dot((_curve_end - _curve_start) / (_length)) {}
 
-  virtual Vec3D GetXYT(double ds) override {
-    ds = common::Clamp<double>(ds, 0, length);
+  virtual Point GetPoint(double ref_line_ds) const override {
+    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
 
-    const double s1 = curve_start / curve_dot + ds;
+    const double s1 = curve_start / curve_dot + ref_line_ds;
     double x1;
     double y1;
     double t1;
@@ -129,7 +137,7 @@ class GeometrySpiral final : public Geometry {
     const double xd = x + x1 * cos_a - y1 * sin_a;
     const double yd = y + y1 * cos_a + x1 * sin_a;
     const double tangent = hdg + t1;
-    return Vec3D{xd, yd, tangent};
+    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
   }
   const double curve_start;
   const double curve_end;
@@ -146,9 +154,9 @@ class GeometryPoly3 final : public Geometry {
         c(_c),
         d(_d) {}
 
-  virtual Vec3D GetXYT(double ds) override {
-    ds = common::Clamp<double>(ds, 0, length);
-    const double u = ds;
+  virtual Point GetPoint(double ref_line_ds) const override {
+    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
+    const double u = ref_line_ds;
     const double v = a + b * u + c * std::pow(u, 2) + d * std::pow(u, 3);
     const double x1 = u * cos_hdg - v * sin_hdg;
     const double y1 = u * sin_hdg + v * cos_hdg;
@@ -157,7 +165,7 @@ class GeometryPoly3 final : public Geometry {
     const double xd = x + x1;
     const double yd = y + y1;
     const double tangent = hdg + theta;
-    return Vec3D{xd, yd, tangent};
+    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
   }
   const double a;
   const double b;
@@ -186,11 +194,11 @@ class GeometryParamPoly3 final : public Geometry {
         cv(_cv),
         dv(_dv),
         p_range(_p_range) {}
-  virtual Vec3D GetXYT(double ds) override {
-    ds = common::Clamp<double>(ds, 0, length);
-    double p = ds;
+  virtual Point GetPoint(double ref_line_ds) const override {
+    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
+    double p = ref_line_ds;
     if (PRange::NORMALIZED == p_range) {
-      p = std::min(1.0, ds / length);
+      p = std::min(1.0, ref_line_ds / length);
     }
     const double u = au + bu * p + cu * std::pow(p, 2) + du * std::pow(p, 3);
     const double v = av + bv * p + cv * std::pow(p, 2) + dv * std::pow(p, 3);
@@ -202,7 +210,7 @@ class GeometryParamPoly3 final : public Geometry {
     const double xd = x + x1;
     const double yd = y + y1;
     const double tangent = hdg + theta;
-    return Vec3D{xd, yd, tangent};
+    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
   }
   const PRange p_range;
   const double au;
@@ -228,9 +236,10 @@ struct OffsetPoly3 {
   double b = 0.;  // b
   double c = 0.;  // c
   double d = 0.;  // d
-  bool operator<(const OffsetPoly3& obj) const { return s < obj.s; }
-  virtual double GetOffset(double ds) const final {
-    return a + b * ds + c * std::pow(ds, 2) + d * std::pow(ds, 3);
+  bool operator<(const OffsetPoly3& obj) const { return this->s > obj.s; }
+  virtual double GetOffset(double section_ds) const final {
+    return a + b * section_ds + c * std::pow(section_ds, 2) +
+           d * std::pow(section_ds, 3);
   }
 };
 
@@ -297,7 +306,16 @@ struct LanesInfo {
   std::vector<Lane> lanes;
 };
 
-struct LaneOffset : public OffsetPoly3 {};
+struct LaneOffset : public OffsetPoly3 {
+  Point GetPoint(const Point& reference_point, double lateral_offset) const {
+    auto normal_x = -std::sin(reference_point.tangent);
+    auto normal_y = std::cos(reference_point.tangent);
+    Point ret = reference_point;
+    ret.x += lateral_offset * normal_x;
+    ret.y += lateral_offset * normal_y;
+    return ret;
+  }
+};
 
 struct LaneSection {
   double s0 = 0.;  // start position
@@ -340,26 +358,11 @@ struct RoadTypeInfo {
   std::string country;
   double max_speed = 0.;
   RoadSpeedUnit speed_unit = RoadSpeedUnit::UNKNOWN;
-  bool operator<(const RoadTypeInfo& obj) const { return s < obj.s; }
+  bool operator<(const RoadTypeInfo& obj) const { return s > obj.s; }
 };
 
 struct RoadPlanView {
   std::vector<Geometry::Ptr> geometrys;
-  Geometry::Ptr GetGeometry(double ds) const {
-    Geometry::Ptr ptr = nullptr;
-    if (geometrys.empty()) {
-      return ptr;
-    }
-    if (ds <= 0.) {
-      return geometrys.front();
-    }
-    for (const auto& geometry : geometrys) {
-      if (geometry->s >= ds) {
-        return geometry;
-      }
-    }
-    return geometrys.back();
-  }
 };
 
 struct Road {

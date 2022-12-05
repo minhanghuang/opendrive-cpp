@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <cassert>
 #include <climits>
+#include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <set>
 #include <string>
@@ -15,6 +17,41 @@
 
 namespace opendrive {
 namespace common {
+
+/**
+ * @brief 获取第一个小于目标值的元素
+ *
+ * @tparam T1 element::Poloy3
+ * @tparam T2 number
+ * @param items ascending sequence
+ * @param target target value
+ * @return sequence index or -1
+ */
+template <typename T1, typename T2>
+static int GetLeftValuePoloy3(const std::vector<T1>& items, T2 target) {
+  if (items.empty() || target < items.at(0).s) {
+    return -1;
+  }
+  for (size_t i = items.size() - 1; i >= 0; i--) {
+    if (items.at(i).s <= target) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+template <typename T1, typename T2>
+static int GetLeftPtrPoloy3(const std::vector<T1>& items, T2 target) {
+  if (items.empty() || target < items.at(0)->s) {
+    return -1;
+  }
+  for (size_t i = items.size() - 1; i >= 0; i--) {
+    if (items.at(i)->s <= target) {
+      return i;
+    }
+  }
+  return -1;
+}
 
 static bool FileExists(const std::string& path) {
   if (FILE* f = fopen(path.c_str(), "r")) {

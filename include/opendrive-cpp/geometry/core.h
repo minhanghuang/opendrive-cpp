@@ -56,7 +56,7 @@ struct Section {
   double start_position = 0.;
   double length = 0.;
   double speed_limit = 0.;  // km/h
-  Lane::Ptr reference_line;
+  Lane::Ptr center_line;
   std::vector<Lane::Ptr> lanes;
 };
 
