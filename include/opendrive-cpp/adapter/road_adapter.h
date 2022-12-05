@@ -22,8 +22,8 @@ class RoadAdapter : public UtilAdapter {
   RoadAdapter& GenerateSections();
   void GenerateCenterLine(core::Section::Ptr section,
                           element::Geometry::Ptr geometry_base,
-                          double& reference_ds);
-  void DebugCenterLine();
+                          double& reference_line_ds);
+  RoadAdapter& DebugCenterLine();
   const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };

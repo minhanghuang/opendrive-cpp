@@ -1,5 +1,7 @@
 #include "opendrive-cpp/parser/road_lanes_section_parser.h"
 
+#include "opendrive-cpp/common/common.hpp"
+
 namespace opendrive {
 namespace parser {
 
@@ -141,9 +143,10 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneWidthEle(
     common::XmlQueryDoubleAttribute(curr_xml_width, "b", lane_width.b);
     common::XmlQueryDoubleAttribute(curr_xml_width, "c", lane_width.c);
     common::XmlQueryDoubleAttribute(curr_xml_width, "d", lane_width.d);
-    ele_lane.widths.insert(lane_width);
+    ele_lane.widths.emplace_back(lane_width);
     curr_xml_width = common::XmlNextSiblingElement(curr_xml_width);
   }
+  common::VectorSortPoloy3(ele_lane.widths);
   return *this;
 }
 
@@ -159,9 +162,10 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneBorderEle(
     common::XmlQueryDoubleAttribute(curr_xml_border, "b", lane_border.b);
     common::XmlQueryDoubleAttribute(curr_xml_border, "c", lane_border.c);
     common::XmlQueryDoubleAttribute(curr_xml_border, "d", lane_border.d);
-    ele_lane.borders.insert(lane_border);
+    ele_lane.borders.emplace_back(lane_border);
     curr_xml_border = common::XmlNextSiblingElement(curr_xml_border);
   }
+  common::VectorSortPoloy3(ele_lane.borders);
   return *this;
 }
 
@@ -221,7 +225,7 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneRoadMarkEle(
     ele_lane.road_marks.emplace_back(road_mark);
     curr_xml_mark = common::XmlNextSiblingElement(curr_xml_mark);
   }
-
+  common::VectorSortPoloy3(ele_lane.road_marks);
   return *this;
 }
 

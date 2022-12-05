@@ -53,7 +53,27 @@ void TestCommon::TearDownTestCase() {}
 void TestCommon::TearDown() {}
 void TestCommon::SetUp() {}
 
-TEST_F(TestCommon, TestDemo) {}
+TEST_F(TestCommon, TestVectorSort) {
+  std::vector<element::LaneOffset> lane_offsets;
+  element::LaneOffset l1, l2, l3, l4, l5;
+  int ret = common::GetLeftValuePoloy3(lane_offsets, 11);
+  ASSERT_EQ(-1, ret);
+  l1.s = 11;
+  l2.s = 13;
+  l3.s = 15;
+  l4.s = 16;
+  l5.s = 19;
+  lane_offsets.emplace_back(l1);
+  lane_offsets.emplace_back(l2);
+  lane_offsets.emplace_back(l5);
+  lane_offsets.emplace_back(l3);
+  lane_offsets.emplace_back(l4);
+  common::VectorSortPoloy3(lane_offsets);
+  std::vector<double> e_v{11, 13, 15, 16, 19};
+  for (int i = 0; i < lane_offsets.size(); i++) {
+    ASSERT_DOUBLE_EQ(e_v.at(i), lane_offsets.at(i).s);
+  }
+}
 
 TEST_F(TestCommon, TestLeftValue) {
   std::vector<element::LaneOffset> lane_offsets;

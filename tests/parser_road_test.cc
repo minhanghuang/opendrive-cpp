@@ -66,15 +66,13 @@ TEST_F(TestRoadParser, TestRoad) {
 
   /// road type info
   ASSERT_TRUE(2 == ele_road.type_info.size());
-  std::set<element::RoadTypeInfo>::iterator type_info_begin =
-      ele_road.type_info.begin();
-  auto type_info_1 = *type_info_begin;
+  auto type_info_1 = ele_road.type_info.at(0);
   ASSERT_DOUBLE_EQ(0.0000000000000000e+0, type_info_1.s);
   ASSERT_DOUBLE_EQ(25, type_info_1.max_speed);
   ASSERT_TRUE(RoadType::TOWN == type_info_1.type);
   ASSERT_TRUE("" == type_info_1.country);
   ASSERT_TRUE(RoadSpeedUnit::MPH == type_info_1.speed_unit);
-  auto type_info_2 = *(++type_info_begin);
+  auto type_info_2 = ele_road.type_info.at(1);
   ASSERT_DOUBLE_EQ(2.0601003600277540e+01, type_info_2.s);
   ASSERT_DOUBLE_EQ(25, type_info_2.max_speed);
   ASSERT_TRUE(RoadType::TOWN == type_info_2.type);

@@ -71,10 +71,13 @@ RoadAdapter& RoadAdapter::GenerateSections() {
     section->id = road_ptr_->id + "_" + std::to_string(i++);
     section->start_position = ele_section.s0;
     section->length = ele_section.s1 - ele_section.s0;
-    road_type_info = ele_road_->GetRoadTypeInfo(ele_section.s0);
-    section->speed_limit = road_type_info.max_speed;
+    int road_type_index =
+        common::GetLeftValuePoloy3(ele_road_->type_info, ele_section.s0);
+    if (road_type_index >= 0) {
+      road_type_info = ele_road_->type_info.at(road_type_index);
+      section->speed_limit = road_type_info.max_speed;
+    }
 
-    std::cout << "[debug] section id:" << section->id << std::endl;
     /// left lanes
     for (const auto& ele_lane : ele_section.left.lanes) {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
@@ -158,13 +161,15 @@ void RoadAdapter::GenerateCenterLine(core::Section::Ptr section,
   }  // if geometry type
 }
 
-void RoadAdapter::DebugCenterLine() {
+RoadAdapter& RoadAdapter::DebugCenterLine() {
+  if (!IsValid()) return *this;
   for (const auto& section : road_ptr_->sections) {
     std::cout << "\ncenter id: " << section->center_line->id << std::endl;
     for (const auto& point : section->center_line->line.points) {
       std::cout << "[" << point.x << "," << point.y << "],";
     }
   }
+  return *this;
 }
 
 }  // namespace adapter

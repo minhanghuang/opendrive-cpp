@@ -26,7 +26,7 @@ enum class ErrorCode {
   ADAPTER_LANE_ERROR,
   ADAPTER_SECTION_ERROR,
   ADAPTER_GEOMETRY_ERROR,
-
+  ADAPTER_ROADTYPE_ERROR,
 };
 
 struct Status {

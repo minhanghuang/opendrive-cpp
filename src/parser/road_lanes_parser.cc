@@ -1,5 +1,7 @@
 #include "opendrive-cpp/parser/road_lanes_parser.h"
 
+#include "opendrive-cpp/common/common.hpp"
+
 namespace opendrive {
 namespace parser {
 
@@ -26,6 +28,7 @@ RoadLanesXmlParser& RoadLanesXmlParser::ParseLaneOffsetEle() {
     ele_lanes_->lane_offsets.emplace_back(offset);
     xml_offset = common::XmlNextSiblingElement(xml_offset);
   }
+  common::VectorSortPoloy3(ele_lanes_->lane_offsets);
   return *this;
 }
 

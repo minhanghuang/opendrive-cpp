@@ -19,6 +19,20 @@ namespace opendrive {
 namespace common {
 
 /**
+ * @brief 容器排序
+ *
+ * @tparam T Poloy3派生类
+ * @param items Poloy3 vector;
+ * @param asc 升序/降序
+ */
+template <typename T>
+static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
+  std::sort(items.begin(), items.end(), [asc](const T& t1, const T& t2) {
+    return asc ? t1.s < t2.s : t1.s > t2.s;
+  });
+}
+
+/**
  * @brief 获取第一个小于目标值的元素
  *
  * @tparam T1 element::Poloy3

@@ -266,8 +266,8 @@ struct LaneLink {
 struct Lane {
   LaneAttributes attributes;
   LaneLink link;
-  std::set<LaneWidth> widths;
-  std::set<LaneBorder> borders;
+  std::vector<LaneWidth> widths;
+  std::vector<LaneBorder> borders;
   std::vector<RoadMark> road_marks;
   double GetLaneWidth(double ds) {
     // width >> border
@@ -279,24 +279,18 @@ struct Lane {
         return 0.;
       }
       /// border
-      LaneBorder border_target;
-      border_target.s = ds;
-      auto border_ret = borders.lower_bound(border_target);
-      if (border_ret == borders.end()) {  // out range
+      int border_index = common::GetLeftValuePoloy3(borders, ds);
+      if (border_index < 0) {
         return 0.;
-      } else {
-        return (*border_ret).GetOffset(ds);
       }
+      return borders.at(border_index).GetOffset(ds);
     } else {
       /// width
-      LaneWidth width_target;
-      width_target.s = ds;
-      auto width_ret = widths.lower_bound(width_target);
-      if (width_ret == widths.end()) {  // out range
+      int width_index = common::GetLeftValuePoloy3(widths, ds);
+      if (width_index < 0) {
         return 0.;
-      } else {
-        return (*width_ret).GetOffset(ds);
       }
+      return borders.at(width_index).GetOffset(ds);
     }
     return 0.;
   }
@@ -358,7 +352,6 @@ struct RoadTypeInfo {
   std::string country;
   double max_speed = 0.;
   RoadSpeedUnit speed_unit = RoadSpeedUnit::UNKNOWN;
-  bool operator<(const RoadTypeInfo& obj) const { return s > obj.s; }
 };
 
 struct RoadPlanView {
@@ -368,25 +361,9 @@ struct RoadPlanView {
 struct Road {
   RoadAttributes attributes;
   RoadLink link;
-  std::set<RoadTypeInfo> type_info;
+  std::vector<RoadTypeInfo> type_info;
   RoadPlanView plan_view;
   Lanes lanes;
-  RoadTypeInfo GetRoadTypeInfo(double ds) const {
-    RoadTypeInfo type_info_target;
-    if (type_info.empty()) {
-      return type_info_target;
-    }
-    if (ds < 0.) {
-      return *(type_info.begin());
-    }
-    type_info_target.s = ds;
-    auto type_info_ret = type_info.lower_bound(type_info_target);
-    if (type_info_ret == type_info.end()) {  // out range
-      return *(--type_info.end());           // end value
-    } else {
-      return *type_info_ret;
-    }
-  }
 };
 
 typedef struct Map MapType;
