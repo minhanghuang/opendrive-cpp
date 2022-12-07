@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <cassert>
 #include <climits>
+#include <cmath>
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -15,8 +17,28 @@
 #include <type_traits>
 #include <vector>
 
+#include "opendrive-cpp/geometry/enums.h"
+
 namespace opendrive {
 namespace common {
+
+/**
+ * @brief 计算偏离点
+ *
+ * @tparam T element::Point
+ * @param point 基准点
+ * @param lateral_offset 横向偏离距离
+ * @return 偏离点
+ */
+template <typename T>
+T GetOffsetPoint(const T& point, double lateral_offset) {
+  const double x = -std::sin(point.tangent);
+  const double y = std::cos(point.tangent);
+  T offset_point = point;
+  offset_point.x += lateral_offset * x;
+  offset_point.y += lateral_offset * y;
+  return offset_point;
+}
 
 /**
  * @brief 容器排序
@@ -89,6 +111,20 @@ static std::vector<std::string> Split(const std::string& str,
   token = str.substr(index);
   res.emplace_back(token);
   return res;
+}
+
+static LaneDirection GetLaneDirection(const std::string& lane_id) {
+  auto ret = Split(lane_id, "_");
+  if (3 == ret.size()) {
+    if (ret.at(2) > "0") {
+      return LaneDirection::LEFT;
+    } else if ("0" == ret.at(2)) {
+      return LaneDirection::CENTER;
+    } else if (ret.at(2) < "0") {
+      return LaneDirection::RIGHT;
+    }
+  }
+  return LaneDirection::UNKNOWN;
 }
 
 static void Assert(bool r, const std::string& msg = "fault") {

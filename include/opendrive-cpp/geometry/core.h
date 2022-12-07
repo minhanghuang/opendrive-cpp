@@ -23,8 +23,9 @@ struct Point2D {
 };
 
 struct PointXD : public Point2D {
-  double hdg = 0.;
   double s = 0.;
+  double hdg = 0.;
+  double tangent = 0.;
 };
 
 struct Line {

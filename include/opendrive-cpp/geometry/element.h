@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <map>
 #include <memory>
 #include <string>
@@ -224,7 +225,7 @@ class GeometryParamPoly3 final : public Geometry {
 };
 
 struct LaneAttributes {
-  Id id = -1;
+  Id id = std::numeric_limits<Id>::max();
   LaneType type = LaneType::UNKNOWN;
   Boolean level = Boolean::UNKNOWN;
 };
@@ -269,7 +270,7 @@ struct Lane {
   std::vector<LaneWidth> widths;
   std::vector<LaneBorder> borders;
   std::vector<RoadMark> road_marks;
-  double GetLaneWidth(double ds) {
+  double GetLaneWidth(double ds) const {
     // width >> border
     if (ds < 0) {
       return GetLaneWidth(0.);
@@ -290,7 +291,7 @@ struct Lane {
       if (width_index < 0) {
         return 0.;
       }
-      return borders.at(width_index).GetOffset(ds);
+      return widths.at(width_index).GetOffset(ds);
     }
     return 0.;
   }
@@ -300,16 +301,7 @@ struct LanesInfo {
   std::vector<Lane> lanes;
 };
 
-struct LaneOffset : public OffsetPoly3 {
-  Point GetPoint(const Point& reference_point, double lateral_offset) const {
-    auto normal_x = -std::sin(reference_point.tangent);
-    auto normal_y = std::cos(reference_point.tangent);
-    Point ret = reference_point;
-    ret.x += lateral_offset * normal_x;
-    ret.y += lateral_offset * normal_y;
-    return ret;
-  }
-};
+struct LaneOffset : public OffsetPoly3 {};
 
 struct LaneSection {
   double s0 = 0.;  // start position

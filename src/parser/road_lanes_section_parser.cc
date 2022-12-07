@@ -1,5 +1,7 @@
 #include "opendrive-cpp/parser/road_lanes_section_parser.h"
 
+#include <algorithm>
+
 #include "opendrive-cpp/common/common.hpp"
 
 namespace opendrive {
@@ -48,6 +50,11 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLanesEle() {
       curr_xml_lane = common::XmlNextSiblingElement(curr_xml_lane);
     }
   }
+  /// sort left lanes
+  std::sort(ele_section_->left.lanes.begin(), ele_section_->left.lanes.end(),
+            [](const element::Lane& l1, const element::Lane& l2) {
+              return l1.attributes.id < l2.attributes.id;
+            });
   return *this;
 }
 

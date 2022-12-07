@@ -20,10 +20,15 @@ class RoadAdapter : public UtilAdapter {
  private:
   RoadAdapter& GenerateAttributes();
   RoadAdapter& GenerateSections();
-  void GenerateCenterLine(core::Section::Ptr section,
+  void GenerateCenterLine(core::Section::Ptr core_section,
                           element::Geometry::Ptr geometry_base,
                           double& reference_line_ds);
+  void GenerateLaneSamples(const element::Lane& ele_lane,
+                           core::Lane::Ptr core_lane,
+                           const core::Line& reference_line);
+  RoadAdapter& Debug();
   RoadAdapter& DebugCenterLine();
+  RoadAdapter& DebugLane();
   const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };

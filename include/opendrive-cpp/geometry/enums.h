@@ -110,6 +110,8 @@ enum class RoadSpeedUnit {
   KMH   // km/h
 };
 
+enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
+
 }  // namespace opendrive
 
 #endif  // OPENDRIVE_CPP_ENUMS_H_

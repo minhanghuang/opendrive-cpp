@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/geometry/core.h"
@@ -22,7 +23,7 @@ opendrive::Status RoadAdapter::Run(const element::Road* ele_road,
     set_status(ErrorCode::ADAPTER_ROAD_ERROR, "Input Is Null.");
     return status();
   }
-  GenerateAttributes().GenerateSections().DebugCenterLine();
+  GenerateAttributes().GenerateSections().Debug();
   return status();
 }
 
@@ -77,14 +78,6 @@ RoadAdapter& RoadAdapter::GenerateSections() {
       road_type_info = ele_road_->type_info.at(road_type_index);
       section->speed_limit = road_type_info.max_speed;
     }
-
-    /// left lanes
-    for (const auto& ele_lane : ele_section.left.lanes) {
-      core::Lane::Ptr lane = std::make_shared<core::Lane>();
-      lane->id = section->id + "_" + std::to_string(ele_lane.attributes.id);
-      lane->type = ele_lane.attributes.type;
-      section->lanes.emplace_back(lane);
-    }
     /// center lane
     if (1 != ele_section.center.lanes.size()) {
       set_status(ErrorCode::ADAPTER_SECTION_ERROR,
@@ -94,80 +87,154 @@ RoadAdapter& RoadAdapter::GenerateSections() {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = section->id + "_0";
       section->center_line = lane;
-      this->GenerateCenterLine(section, geometry_base, reference_line_ds);
     }
-    /// right lane
-    for (const auto& ele_lane : ele_section.right.lanes) {
+    this->GenerateCenterLine(section, geometry_base, reference_line_ds);
+
+    /// left lanes
+    for (size_t i = 0; i < ele_section.left.lanes.size(); i++) {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
-      lane->id = section->id + "_" + std::to_string(ele_lane.attributes.id);
-      lane->type = ele_lane.attributes.type;
+      lane->id = section->id + "_" +
+                 std::to_string(ele_section.left.lanes.at(i).attributes.id);
+      lane->type = ele_section.left.lanes.at(i).attributes.type;
+      if (0 == i) {
+        this->GenerateLaneSamples(ele_section.left.lanes.at(i), lane,
+                                  section->center_line->line);
+      } else {
+        this->GenerateLaneSamples(ele_section.left.lanes.at(i), lane,
+                                  section->lanes.back()->right_boundary.line);
+      }
+      section->lanes.emplace_back(lane);
+    }
+    /// right lanes
+    for (size_t i = 0; i < ele_section.right.lanes.size(); i++) {
+      core::Lane::Ptr lane = std::make_shared<core::Lane>();
+      lane->id = section->id + "_" +
+                 std::to_string(ele_section.right.lanes.at(i).attributes.id);
+      lane->type = ele_section.right.lanes.at(i).attributes.type;
+      if (0 == i) {
+        this->GenerateLaneSamples(ele_section.right.lanes.at(i), lane,
+                                  section->center_line->line);
+      } else {
+        this->GenerateLaneSamples(ele_section.right.lanes.at(i), lane,
+                                  section->lanes.back()->right_boundary.line);
+      }
       section->lanes.emplace_back(lane);
     }
   }
   return *this;
 }
 
-void RoadAdapter::GenerateCenterLine(core::Section::Ptr section,
+void RoadAdapter::GenerateCenterLine(core::Section::Ptr core_section,
                                      element::Geometry::Ptr geometry_base,
                                      double& reference_line_ds) {
   double section_ds = 0.;
-  section->center_line->line.points.clear();
+  core_section->center_line->line.points.clear();
 
   /// laneoffset
   int laneoffset_index = common::GetLeftValuePoloy3(
-      ele_road_->lanes.lane_offsets, section->start_position);
+      ele_road_->lanes.lane_offsets, core_section->start_position);
   element::LaneOffset lane_offset;
   if (laneoffset_index >= 0) {
     lane_offset = ele_road_->lanes.lane_offsets.at(laneoffset_index);
   }
 
   /// geometry
+  element::Geometry::Ptr geometry = nullptr;
   if (GeometryType::LINE == geometry_base->type) {
-    auto geometry =
-        std::dynamic_pointer_cast<element::GeometryLine>(geometry_base);
-    core::PointXD center_point;
-    element::Point reference_point;
-    element::Point lane_offset_point;
-    double offset = 0.;
-    while (section_ds <= section->length) {
-      reference_point = geometry->GetPoint(reference_line_ds);
-      if (laneoffset_index >= 0) {
-        offset = lane_offset.GetOffset(section_ds);
-        lane_offset_point = lane_offset.GetPoint(reference_point, offset);
-        center_point.x = lane_offset_point.x;
-        center_point.y = lane_offset_point.y;
-        center_point.hdg = lane_offset_point.hdg;
-      } else {
-        center_point.x = reference_point.x;
-        center_point.y = reference_point.y;
-        center_point.hdg = reference_point.hdg;
-      }
-      section->center_line->line.points.emplace_back(center_point);
-      section_ds += step();
-      reference_line_ds += step();
-    }
+    geometry = std::dynamic_pointer_cast<element::GeometryLine>(geometry_base);
   } else if (GeometryType::ARC == geometry_base->type) {
-    auto geometry =
-        std::dynamic_pointer_cast<element::GeometryArc>(geometry_base);
+    geometry = std::dynamic_pointer_cast<element::GeometryArc>(geometry_base);
   } else if (GeometryType::SPIRAL == geometry_base->type) {
-    auto geometry =
+    geometry =
         std::dynamic_pointer_cast<element::GeometrySpiral>(geometry_base);
   } else if (GeometryType::POLY3 == geometry_base->type) {
-    auto geometry =
-        std::dynamic_pointer_cast<element::GeometryPoly3>(geometry_base);
+    geometry = std::dynamic_pointer_cast<element::GeometryPoly3>(geometry_base);
   } else if (GeometryType::PARAMPOLY3 == geometry_base->type) {
-    auto geometry =
+    geometry =
         std::dynamic_pointer_cast<element::GeometryParamPoly3>(geometry_base);
-  }  // if geometry type
+  }
+
+  if (nullptr == geometry) {
+    set_status(ErrorCode::ADAPTER_GEOMETRY_ERROR, "Geometry Pointer Is Null.");
+    return;
+  }
+  core::PointXD center_point;
+  element::Point reference_point;
+  element::Point center_offset_point;
+  double offset = 0.;
+  while (section_ds <= core_section->length) {
+    reference_point = geometry->GetPoint(reference_line_ds);
+    if (laneoffset_index >= 0) {
+      offset = lane_offset.GetOffset(section_ds);
+      center_offset_point = common::GetOffsetPoint(reference_point, offset);
+      center_point.x = center_offset_point.x;
+      center_point.y = center_offset_point.y;
+      center_point.hdg = center_offset_point.hdg;
+      center_point.tangent = center_offset_point.tangent;
+      center_point.s = section_ds;
+    } else {
+      center_point.x = reference_point.x;
+      center_point.y = reference_point.y;
+      center_point.hdg = reference_point.hdg;
+      center_point.tangent = reference_point.tangent;
+      center_point.s = section_ds;
+    }
+    core_section->center_line->line.points.emplace_back(center_point);
+    section_ds += step();
+    reference_line_ds += step();
+  }
+}
+
+void RoadAdapter::GenerateLaneSamples(const element::Lane& ele_lane,
+                                      core::Lane::Ptr core_lane,
+                                      const core::Line& reference_line) {
+  double lane_width = 0.;
+  core::PointXD lane_point;
+  const int lane_direction =
+      LaneDirection::LEFT == common::GetLaneDirection(core_lane->id) ? 1 : -1;
+  for (const auto& reference_point : reference_line.points) {
+    lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
+    lane_point = common::GetOffsetPoint(reference_point, lane_width);
+    core_lane->left_boundary.line.points.emplace_back(reference_point);
+    core_lane->right_boundary.line.points.emplace_back(lane_point);
+  }
+}
+
+RoadAdapter& RoadAdapter::Debug() {
+  if (!IsValid()) return *this;
+  DebugCenterLine().DebugLane();
+  return *this;
 }
 
 RoadAdapter& RoadAdapter::DebugCenterLine() {
   if (!IsValid()) return *this;
   for (const auto& section : road_ptr_->sections) {
-    std::cout << "\ncenter id: " << section->center_line->id << std::endl;
+    std::cout << "[";
     for (const auto& point : section->center_line->line.points) {
       std::cout << "[" << point.x << "," << point.y << "],";
     }
+    std::cout << "]," << std::endl;
+  }
+  return *this;
+}
+
+RoadAdapter& RoadAdapter::DebugLane() {
+  if (!IsValid()) return *this;
+  std::cout << "[debug] lane" << std::endl;
+  for (const auto& section : road_ptr_->sections) {
+    for (const auto& lane : section->lanes) {
+      std::cout << "[";
+      for (const auto& point : lane->left_boundary.line.points) {
+        std::cout << "[" << point.x << "," << point.y << "],";
+      }
+      std::cout << "]," << std::endl;
+      std::cout << "[";
+      for (const auto& point : lane->right_boundary.line.points) {
+        std::cout << "[" << point.x << "," << point.y << "],";
+      }
+      std::cout << "]," << std::endl;
+    }
+    // break;
   }
   return *this;
 }
