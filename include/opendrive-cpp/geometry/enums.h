@@ -103,6 +103,8 @@ enum class RoadType : std::uint8_t {
   TOWNPLAYSTREET
 };
 
+enum class RoadLinkType { UNKNOWN = 0, ROAD = 1, JUNCTION = 2 };
+
 enum class RoadSpeedUnit {
   UNKNOWN = 0,
   MS,   // m/s

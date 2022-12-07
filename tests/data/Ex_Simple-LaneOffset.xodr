@@ -4,6 +4,8 @@
     </header>
     <road rule="RHT" name="" length="1.0000000000000000e+02" id="1" junction="-1">
         <link>
+            <predecessor elementType="road" elementId="11" contactPoint="start" elementDir="+"/>
+            <successor elementType="junction" elementS="1.0000000000000000e+00" elementId="43"/>
         </link>
         <planView>
             <geometry s="0.0000000000000000e+00" x="0.0000000000000000e+00" y="0.0000000000000000e+00" hdg="0.0000000000000000e+00" length="1.0000000000000000e+02">

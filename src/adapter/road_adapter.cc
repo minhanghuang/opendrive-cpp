@@ -35,6 +35,10 @@ RoadAdapter& RoadAdapter::GenerateAttributes() {
   }
   road_ptr_->id = std::to_string(ele_road_->attributes.id);
   road_ptr_->length = ele_road_->attributes.length;
+  road_ptr_->predecessor = std::to_string(ele_road_->link.predecessor.id);
+  road_ptr_->successor = std::to_string(ele_road_->link.successor.id);
+  road_ptr_->predecessor_type = ele_road_->link.predecessor.type;
+  road_ptr_->successor_type = ele_road_->link.successor.type;
   return *this;
 }
 
@@ -58,7 +62,6 @@ RoadAdapter& RoadAdapter::GenerateSections() {
     }
     if (geometry_index != geometry_index_curr) {
       // new reference line
-      std::cout << "[debug] update reference line" << std::endl;
       geometry_index = geometry_index_curr;
       reference_line_ds = 0.;
     }
@@ -234,7 +237,6 @@ RoadAdapter& RoadAdapter::DebugLane() {
       }
       std::cout << "]," << std::endl;
     }
-    // break;
   }
   return *this;
 }

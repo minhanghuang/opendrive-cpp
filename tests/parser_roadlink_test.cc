@@ -60,15 +60,13 @@ TEST_F(TestRoadLinkParser, TestRoadLink) {
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
   ASSERT_TRUE(11 == ele_roadlink.predecessor.id);
   ASSERT_DOUBLE_EQ(0, ele_roadlink.predecessor.s);
-  ASSERT_TRUE(element::RoadLinkInfo::Type::ROAD ==
-              ele_roadlink.predecessor.type);
+  ASSERT_TRUE(RoadLinkType::ROAD == ele_roadlink.predecessor.type);
   ASSERT_TRUE(element::RoadLinkInfo::PointType::START ==
               ele_roadlink.predecessor.point_type);
   ASSERT_TRUE(element::RoadLinkInfo::Dir::PLUS == ele_roadlink.predecessor.dir);
   ASSERT_TRUE(43 == ele_roadlink.successor.id);
   ASSERT_DOUBLE_EQ(1.0000000000000000e+00, ele_roadlink.successor.s);
-  ASSERT_TRUE(element::RoadLinkInfo::Type::JUNCTION ==
-              ele_roadlink.successor.type);
+  ASSERT_TRUE(RoadLinkType::JUNCTION == ele_roadlink.successor.type);
   ASSERT_TRUE(element::RoadLinkInfo::PointType::UNKNOWN ==
               ele_roadlink.successor.point_type);
   ASSERT_TRUE(element::RoadLinkInfo::Dir::UNKNOWN ==

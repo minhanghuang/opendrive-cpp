@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/geometry/enums.h"
 
 namespace opendrive {
 namespace core {
@@ -45,7 +46,7 @@ struct Lane {
   LaneType type = LaneType::UNKNOWN;
   Line line;
   Ids predecessors;
-  Ids successor;
+  Ids successors;
   LaneBoundary left_boundary;
   LaneBoundary right_boundary;
 };
@@ -67,6 +68,10 @@ struct Road {
   Id id;
   double length = 0.;
   std::vector<Section::Ptr> sections;
+  Id predecessor;
+  Id successor;
+  RoadLinkType predecessor_type = RoadLinkType::UNKNOWN;
+  RoadLinkType successor_type = RoadLinkType::UNKNOWN;
 };
 
 typedef struct Map MapTypedef;

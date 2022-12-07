@@ -323,12 +323,11 @@ struct RoadAttributes {
 };
 
 struct RoadLinkInfo {
-  enum class Type { UNKNOWN = 0, ROAD = 1, JUNCTION = 2 };
   enum class PointType { UNKNOWN = 0, START = 1, END = 2 };
   enum class Dir { UNKNOWN = 0, PLUS = 1, MINUS = 2 };
   Id id = -1;
   double s = 0.;
-  Type type = Type::UNKNOWN;
+  RoadLinkType type = RoadLinkType::UNKNOWN;
   PointType point_type = PointType::UNKNOWN;
   Dir dir = Dir::UNKNOWN;
 };

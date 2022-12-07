@@ -10,6 +10,7 @@
 #include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;
@@ -72,6 +73,11 @@ TEST_F(TestAdapterRoad, TestAdapterRoad) {
   ret = adapter.Road(&ele_road, road_ptr);
   std::cout << "adapter ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+  /// check link
+  ASSERT_EQ("11", road_ptr->predecessor);
+  ASSERT_EQ("43", road_ptr->successor);
+  ASSERT_EQ(RoadLinkType::ROAD, road_ptr->predecessor_type);
+  ASSERT_EQ(RoadLinkType::JUNCTION, road_ptr->successor_type);
 
   /// check sections
   ASSERT_EQ(3, road_ptr->sections.size());
