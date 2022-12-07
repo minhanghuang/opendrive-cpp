@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "opendrive-cpp/common/common.hpp"
+#include "opendrive-cpp/geometry/element.h"
 
 namespace opendrive {
 namespace parser {
@@ -121,17 +122,24 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneLinkEle(
   const tinyxml2::XMLElement* xml_lane_link =
       xml_lane->FirstChildElement("link");
   if (xml_lane_link) {
-    const tinyxml2::XMLElement* xml_lane_link_predecessor =
+    element::Id id = 0;
+    const tinyxml2::XMLElement* curr_xml_lane_link_predecessor =
         xml_lane_link->FirstChildElement("predecessor");
-    if (xml_lane_link_predecessor) {
-      common::XmlQueryIntAttribute(xml_lane_link_predecessor, "id",
-                                   ele_lane.link.predecessor);
+    while (curr_xml_lane_link_predecessor) {
+      id = 0;
+      common::XmlQueryIntAttribute(curr_xml_lane_link_predecessor, "id", id);
+      ele_lane.link.predecessors.emplace_back(id);
+      curr_xml_lane_link_predecessor =
+          common::XmlNextSiblingElement(curr_xml_lane_link_predecessor);
     }
-    const tinyxml2::XMLElement* xml_lane_link_successor =
+    const tinyxml2::XMLElement* curr_xml_lane_link_successor =
         xml_lane_link->FirstChildElement("successor");
-    if (xml_lane_link_successor) {
-      common::XmlQueryIntAttribute(xml_lane_link_successor, "id",
-                                   ele_lane.link.successor);
+    while (curr_xml_lane_link_successor) {
+      id = 0;
+      common::XmlQueryIntAttribute(curr_xml_lane_link_successor, "id", id);
+      ele_lane.link.successors.emplace_back(id);
+      curr_xml_lane_link_successor =
+          common::XmlNextSiblingElement(curr_xml_lane_link_successor);
     }
   }
 

@@ -99,6 +99,7 @@ RoadAdapter& RoadAdapter::GenerateSections() {
       lane->id = section->id + "_" +
                  std::to_string(ele_section.left.lanes.at(i).attributes.id);
       lane->type = ele_section.left.lanes.at(i).attributes.type;
+      this->GenerateLaneLink(lane, ele_section.left.lanes.at(i).link);
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.left.lanes.at(i), lane,
                                   section->center_line->line);
@@ -114,6 +115,7 @@ RoadAdapter& RoadAdapter::GenerateSections() {
       lane->id = section->id + "_" +
                  std::to_string(ele_section.right.lanes.at(i).attributes.id);
       lane->type = ele_section.right.lanes.at(i).attributes.type;
+      this->GenerateLaneLink(lane, ele_section.right.lanes.at(i).link);
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.right.lanes.at(i), lane,
                                   section->center_line->line);
@@ -200,6 +202,16 @@ void RoadAdapter::GenerateLaneSamples(const element::Lane& ele_lane,
     lane_point = common::GetOffsetPoint(reference_point, lane_width);
     core_lane->left_boundary.line.points.emplace_back(reference_point);
     core_lane->right_boundary.line.points.emplace_back(lane_point);
+  }
+}
+
+void RoadAdapter::GenerateLaneLink(core::Lane::Ptr lane,
+                                   const element::LaneLink& lane_link) {
+  for (const auto& id : lane_link.predecessors) {
+    lane->predecessors.emplace_back(std::to_string(id));
+  }
+  for (const auto& id : lane_link.successors) {
+    lane->successors.emplace_back(std::to_string(id));
   }
 }
 

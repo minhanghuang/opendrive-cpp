@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include "opendrive-cpp/adapter/util_adapter.h"
 #include "opendrive-cpp/geometry/core.h"
@@ -26,6 +27,8 @@ class RoadAdapter : public UtilAdapter {
   void GenerateLaneSamples(const element::Lane& ele_lane,
                            core::Lane::Ptr core_lane,
                            const core::Line& reference_line);
+  void GenerateLaneLink(core::Lane::Ptr lane,
+                        const element::LaneLink& lane_link);
   RoadAdapter& Debug();
   RoadAdapter& DebugCenterLine();
   RoadAdapter& DebugLane();

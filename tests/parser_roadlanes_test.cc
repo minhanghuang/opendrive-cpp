@@ -93,7 +93,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ(1, lane_section1_l1.attributes.id);
   ASSERT_EQ(LaneType::SIDEWALK, lane_section1_l3.attributes.type);
   ASSERT_EQ(Boolean::FALSE, lane_section1_l3.attributes.level);
-  ASSERT_EQ(-3, lane_section1_l3.link.predecessor);
+  ASSERT_EQ(-3, lane_section1_l3.link.predecessors.at(0));
   ASSERT_EQ(1, lane_section1_l3.widths.size());
   auto lane_section1_width1 = *lane_section1_l3.widths.begin();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width1.s);
@@ -150,7 +150,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ(-3, lane_section1_right3.attributes.id);
   ASSERT_EQ(LaneType::DRIVING, lane_section1_right1.attributes.type);
   ASSERT_EQ(Boolean::FALSE, lane_section1_right1.attributes.level);
-  ASSERT_EQ(1, lane_section1_right1.link.predecessor);
+  ASSERT_EQ(1, lane_section1_right1.link.predecessors.at(0));
   ASSERT_EQ(1, lane_section1_right1.widths.size());
   auto lane_section1_width21 = *lane_section1_right1.widths.begin();
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width21.s);

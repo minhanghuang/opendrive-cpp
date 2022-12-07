@@ -260,8 +260,8 @@ struct LaneWidth : public OffsetPoly3 {};
 struct LaneBorder : public OffsetPoly3 {};
 
 struct LaneLink {
-  Id predecessor = 0;
-  Id successor = 0;
+  Ids predecessors;
+  Ids successors;
 };
 
 struct Lane {
