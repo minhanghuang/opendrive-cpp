@@ -11,6 +11,7 @@
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/parser/header_parser.h"
+#include "opendrive-cpp/parser/junction_parser.h"
 #include "opendrive-cpp/parser/map_parser.h"
 #include "opendrive-cpp/parser/road_lanes_parser.h"
 #include "opendrive-cpp/parser/road_lanes_section_parser.h"
@@ -40,6 +41,8 @@ class Parser {
                                  element::RoadPlanView* ele_road_planview);
   opendrive::Status RoadLanes(const tinyxml2::XMLElement* xml_road_lanes,
                               element::Lanes* ele_road_lanes);
+  opendrive::Status Junction(const tinyxml2::XMLElement* xml_junction,
+                             element::Junction* ele_junction);
 
  private:
   std::unique_ptr<parser::MapXmlParser> map_parser_;
@@ -49,6 +52,7 @@ class Parser {
   std::unique_ptr<parser::RoadTypeXmlParser> road_type_parser_;
   std::unique_ptr<parser::RoadPlanViewXmlParser> road_planview_parser_;
   std::unique_ptr<parser::RoadLanesXmlParser> road_lanes_parser_;
+  std::unique_ptr<parser::JunctionXmlParser> junction_parser_;
 };
 
 class Adapter {

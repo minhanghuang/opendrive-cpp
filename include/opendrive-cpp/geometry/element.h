@@ -357,11 +357,37 @@ struct Road {
   Lanes lanes;
 };
 
+struct JunctionAttributes {
+  Id id = -1;  // [required]
+  std::string name;
+  JunctionType type = JunctionType::UNKNOWN;
+};
+
+struct JunctionLaneLink {
+  Id from = std::numeric_limits<Id>::max();  // [required]
+  Id to = std::numeric_limits<Id>::max();    // [required]
+};
+
+struct JunctionConnection {
+  Id id = -1;  // [required]
+  JunctionType type = JunctionType::UNKNOWN;
+  Id incoming_road = -1;
+  Id connecting_road = -1;
+  JunctionContactPointType contact_point = JunctionContactPointType::UNKNOWN;
+  std::vector<JunctionLaneLink> lane_links;
+};
+
+struct Junction {
+  JunctionAttributes attributes;
+  std::vector<JunctionConnection> connections;
+};
+
 typedef struct Map MapType;
 struct Map {
   typedef std::shared_ptr<MapType> Ptr;
   Header header;
   std::vector<Road> roads;
+  std::vector<Junction> junctions;
 };
 
 }  // namespace element

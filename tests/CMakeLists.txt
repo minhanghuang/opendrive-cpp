@@ -29,6 +29,7 @@ SET(TEST_SOURCES
   parser_roadplanview_test
   parser_road_test
   parser_roadlanes_test
+  parser_junction_test
   adapter_map_test
   adapter_road_test
 )

@@ -11,7 +11,8 @@ Parser::Parser()
       road_link_parser_(std::make_unique<parser::RoadLinkXmlParser>()),
       road_type_parser_(std::make_unique<parser::RoadTypeXmlParser>()),
       road_planview_parser_(std::make_unique<parser::RoadPlanViewXmlParser>()),
-      road_lanes_parser_(std::make_unique<parser::RoadLanesXmlParser>()) {}
+      road_lanes_parser_(std::make_unique<parser::RoadLanesXmlParser>()),
+      junction_parser_(std::make_unique<parser::JunctionXmlParser>()) {}
 
 opendrive::Status Parser::Map(const std::string& xml_file,
                               element::Map* ele_map) {
@@ -59,6 +60,11 @@ opendrive::Status Parser::RoadPlanView(
 opendrive::Status Parser::RoadLanes(const tinyxml2::XMLElement* xml_road_lanes,
                                     element::Lanes* ele_road_lanes) {
   return road_lanes_parser_->Parse(xml_road_lanes, ele_road_lanes);
+}
+
+opendrive::Status Parser::Junction(const tinyxml2::XMLElement* xml_junction,
+                                   element::Junction* ele_junction) {
+  return junction_parser_->Parse(xml_junction, ele_junction);
 }
 
 Adapter::Adapter()

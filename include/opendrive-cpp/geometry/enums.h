@@ -114,6 +114,10 @@ enum class RoadSpeedUnit {
 
 enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
 
+enum class JunctionType { UNKNOWN = 0, DEFAULT, VIRTUAL };
+
+enum class JunctionContactPointType { UNKNOWN = 0, START, END };
+
 }  // namespace opendrive
 
 #endif  // OPENDRIVE_CPP_ENUMS_H_
