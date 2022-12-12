@@ -18,12 +18,12 @@ opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* xml_map,
 MapXmlParser& MapXmlParser::ParseHeaderEle() {
   if (!IsValid()) return *this;
   element::Header ele_header;
-  ele_map_->header = ele_header;
   HeaderXmlParser header_parser;
   const tinyxml2::XMLElement* xml_header =
       xml_map_->FirstChildElement("header");
   auto status = header_parser.Parse(xml_header, &ele_header);
   CheckStatus(status);
+  ele_map_->header = ele_header;
   return *this;
 }
 

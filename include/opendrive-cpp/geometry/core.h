@@ -24,6 +24,7 @@ struct Point2D {
 };
 
 struct PointXD : public Point2D {
+  Id id;
   double s = 0.;
   double hdg = 0.;
   double tangent = 0.;
@@ -74,10 +75,35 @@ struct Road {
   RoadLinkType successor_type = RoadLinkType::UNKNOWN;
 };
 
+typedef struct Junction JunctionTypedef;
+struct Junction {
+  typedef std::shared_ptr<JunctionTypedef> Ptr;
+  Id id;
+  std::string name;
+  JunctionType type = JunctionType::UNKNOWN;
+};
+
+typedef struct Header HeaderTypedef;
+struct Header {
+  typedef std::shared_ptr<HeaderTypedef> Ptr;
+  std::string rev_major;
+  std::string rev_minor;
+  std::string name;
+  std::string version;
+  std::string date;
+  double north = 0.;
+  double south = 0.;
+  double west = 0.;
+  double east = 0.;
+  std::string vendor;
+};
+
 typedef struct Map MapTypedef;
 struct Map {
   typedef std::shared_ptr<MapTypedef> Ptr;
+  Header::Ptr header;
   std::unordered_map<core::Id, Road::Ptr> roads;
+  std::unordered_map<core::Id, Junction::Ptr> junctions;
 };
 
 }  // namespace core

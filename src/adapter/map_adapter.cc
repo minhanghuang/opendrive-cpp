@@ -13,8 +13,25 @@ opendrive::Status MapAdapter::Run(const element::Map* ele_map,
     set_status(ErrorCode::ADAPTER_ROOT_ERROR, "Input Is Null.");
     return status();
   }
-  GenerateRoads();
+  GenerateHeader().GenerateRoads();
   return status();
+}
+
+MapAdapter& MapAdapter::GenerateHeader() {
+  if (!IsValid()) return *this;
+  core::Header::Ptr header = std::make_shared<core::Header>();
+  header->rev_major = ele_map_->header.rev_major;
+  header->rev_minor = ele_map_->header.rev_minor;
+  header->name = ele_map_->header.name;
+  header->version = ele_map_->header.version;
+  header->date = ele_map_->header.date;
+  header->north = ele_map_->header.north;
+  header->south = ele_map_->header.south;
+  header->west = ele_map_->header.west;
+  header->east = ele_map_->header.east;
+  header->vendor = ele_map_->header.vendor;
+  map_ptr_->header = header;
+  return *this;
 }
 
 MapAdapter& MapAdapter::GenerateRoads() {
