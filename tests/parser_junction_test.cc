@@ -48,7 +48,7 @@ void TestJunctionParser::TearDownTestCase() {}
 void TestJunctionParser::TearDown() {}
 void TestJunctionParser::SetUp() {}
 
-TEST_F(TestJunctionParser, TestHeader) {
+TEST_F(TestJunctionParser, TestJunction) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   const tinyxml2::XMLElement* junction_node =

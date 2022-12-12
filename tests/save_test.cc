@@ -15,7 +15,7 @@
 
 using namespace opendrive;
 
-class TestAdapterMap : public testing::Test {
+class TestSaveData : public testing::Test {
  public:
   static void SetUpTestCase();     // 在第一个case之前执行
   static void TearDownTestCase();  // 在最后一个case之后执行
@@ -34,10 +34,10 @@ class TestAdapterMap : public testing::Test {
       static std::once_flag flag;
       std::call_once(flag, [&] {
         instance = new (std::nothrow) tinyxml2::XMLDocument();
-        if (TestAdapterMap::xml_file_path.empty()) {
+        if (TestSaveData::xml_file_path.empty()) {
           assert(false);
         }
-        instance->LoadFile(TestAdapterMap::xml_file_path.c_str());
+        instance->LoadFile(TestSaveData::xml_file_path.c_str());
       });
     }
     return instance;
@@ -46,14 +46,14 @@ class TestAdapterMap : public testing::Test {
   static std::string xml_file_path;
 };
 
-std::string TestAdapterMap::xml_file_path = "./tests/data/only-unittest.xodr";
+std::string TestSaveData::xml_file_path = "./tests/data/Ex_Simple-LaneOffset.xodr";
 
-void TestAdapterMap::SetUpTestCase() {}
-void TestAdapterMap::TearDownTestCase() {}
-void TestAdapterMap::TearDown() {}
-void TestAdapterMap::SetUp() {}
+void TestSaveData::SetUpTestCase() {}
+void TestSaveData::TearDownTestCase() {}
+void TestSaveData::TearDown() {}
+void TestSaveData::SetUp() {}
 
-TEST_F(TestAdapterMap, TestAdapterMap) {
+TEST_F(TestSaveData, TestSaveData) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
   const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
@@ -65,26 +65,11 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   /// parse
   auto ret = parser->Map(xml_root, &ele_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  ASSERT_EQ(2, ele_map.roads.size());
 
   /// adapter
   opendrive::Adapter adapter;
   ret = adapter.Map(&ele_map, core_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  /// check header
-  ASSERT_EQ("1", core_map->header->rev_major);
-  ASSERT_EQ("4", core_map->header->rev_minor);
-  ASSERT_EQ("zhichun Rd", core_map->header->name);
-  ASSERT_EQ("1", core_map->header->version);
-  ASSERT_EQ("2019-04-06T10:38:28", core_map->header->date);
-  ASSERT_EQ(2.8349990809409476e+1, core_map->header->north);
-  ASSERT_EQ(-3.5690998535156251e+2, core_map->header->south);
-  ASSERT_EQ(4.2268105762411665e+2, core_map->header->east);
-  ASSERT_EQ(-2.8359911988457576e+1, core_map->header->west);
-  ASSERT_EQ("VectorZero", core_map->header->vendor);
-
-  ASSERT_EQ(2, core_map->roads.size());
-
   const std::string file_path = "./oxrd.xml";
   adapter.SaveData(core_map, file_path);
 }
