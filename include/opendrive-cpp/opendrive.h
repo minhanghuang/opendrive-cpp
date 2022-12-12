@@ -9,6 +9,7 @@
 #include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
+#include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/parser/header_parser.h"
 #include "opendrive-cpp/parser/junction_parser.h"
@@ -63,8 +64,11 @@ class Adapter {
                         float step = 0.5);
   opendrive::Status Road(const element::Road* ele_road,
                          core::Road::Ptr road_ptr, float step = 0.5);
+  opendrive::Status SaveData(core::Map::Ptr map_ptr,
+                             const std::string& file_path);
 
  private:
+  tinyxml2::XMLDocument xml_doc_;
   std::unique_ptr<adapter::MapAdapter> map_adapter_;
   std::unique_ptr<adapter::RoadAdapter> road_adapter_;
 };

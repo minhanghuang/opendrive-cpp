@@ -23,7 +23,7 @@ opendrive::Status RoadAdapter::Run(const element::Road* ele_road,
     set_status(ErrorCode::ADAPTER_ROAD_ERROR, "Input Is Null.");
     return status();
   }
-  GenerateAttributes().GenerateSections().Debug();
+  GenerateAttributes().GenerateSections();
   return status();
 }
 
@@ -194,14 +194,18 @@ void RoadAdapter::GenerateLaneSamples(const element::Lane& ele_lane,
                                       core::Lane::Ptr core_lane,
                                       const core::Line& reference_line) {
   double lane_width = 0.;
-  core::PointXD lane_point;
+  core::PointXD right_point;
+  core::PointXD center_point;
   const int lane_direction =
       LaneDirection::LEFT == common::GetLaneDirection(core_lane->id) ? 1 : -1;
+  size_t index = 0;
   for (const auto& reference_point : reference_line.points) {
     lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
-    lane_point = common::GetOffsetPoint(reference_point, lane_width);
+    center_point = common::GetOffsetPoint(reference_point, lane_width / 2);
+    right_point = common::GetOffsetPoint(reference_point, lane_width);
     core_lane->left_boundary.line.points.emplace_back(reference_point);
-    core_lane->right_boundary.line.points.emplace_back(lane_point);
+    core_lane->line.points.emplace_back(center_point);
+    core_lane->right_boundary.line.points.emplace_back(right_point);
   }
 }
 
@@ -213,44 +217,6 @@ void RoadAdapter::GenerateLaneLink(core::Lane::Ptr lane,
   for (const auto& id : lane_link.successors) {
     lane->successors.emplace_back(std::to_string(id));
   }
-}
-
-RoadAdapter& RoadAdapter::Debug() {
-  if (!IsValid()) return *this;
-  DebugCenterLine().DebugLane();
-  return *this;
-}
-
-RoadAdapter& RoadAdapter::DebugCenterLine() {
-  if (!IsValid()) return *this;
-  for (const auto& section : road_ptr_->sections) {
-    std::cout << "[";
-    for (const auto& point : section->center_line->line.points) {
-      std::cout << "[" << point.x << "," << point.y << "],";
-    }
-    std::cout << "]," << std::endl;
-  }
-  return *this;
-}
-
-RoadAdapter& RoadAdapter::DebugLane() {
-  if (!IsValid()) return *this;
-  std::cout << "[debug] lane" << std::endl;
-  for (const auto& section : road_ptr_->sections) {
-    for (const auto& lane : section->lanes) {
-      std::cout << "[";
-      for (const auto& point : lane->left_boundary.line.points) {
-        std::cout << "[" << point.x << "," << point.y << "],";
-      }
-      std::cout << "]," << std::endl;
-      std::cout << "[";
-      for (const auto& point : lane->right_boundary.line.points) {
-        std::cout << "[" << point.x << "," << point.y << "],";
-      }
-      std::cout << "]," << std::endl;
-    }
-  }
-  return *this;
 }
 
 }  // namespace adapter

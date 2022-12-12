@@ -29,9 +29,6 @@ class RoadAdapter : public UtilAdapter {
                            const core::Line& reference_line);
   void GenerateLaneLink(core::Lane::Ptr lane,
                         const element::LaneLink& lane_link);
-  RoadAdapter& Debug();
-  RoadAdapter& DebugCenterLine();
-  RoadAdapter& DebugLane();
   const element::Road* ele_road_;
   core::Road::Ptr road_ptr_;
 };

@@ -28,6 +28,8 @@ enum class ErrorCode {
   ADAPTER_SECTION_ERROR,
   ADAPTER_GEOMETRY_ERROR,
   ADAPTER_ROADTYPE_ERROR,
+
+  SAVE_DATA_ERROR,
 };
 
 struct Status {
