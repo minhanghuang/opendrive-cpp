@@ -11,7 +11,7 @@ opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* xml_map,
     set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR, "Input is null.");
     return status();
   }
-  ParseHeaderEle().ParseRoadEle();
+  ParseHeaderEle().ParseJunctionEle().ParseRoadEle();
   return status();
 }
 
@@ -24,6 +24,23 @@ MapXmlParser& MapXmlParser::ParseHeaderEle() {
   auto status = header_parser.Parse(xml_header, &ele_header);
   CheckStatus(status);
   ele_map_->header = ele_header;
+  return *this;
+}
+
+MapXmlParser& MapXmlParser::ParseJunctionEle() {
+  if (!IsValid()) return *this;
+  const tinyxml2::XMLElement* curr_ele_junction =
+      xml_map_->FirstChildElement("junction");
+  JunctionXmlParser junction_parser;
+  Status status{ErrorCode::OK, "ok"};
+
+  while (curr_ele_junction) {
+    element::Junction ele_junction;
+    status = junction_parser.Parse(curr_ele_junction, &ele_junction);
+    CheckStatus(status);
+    ele_map_->junctions.emplace_back(ele_junction);
+    curr_ele_junction = common::XmlNextSiblingElement(curr_ele_junction);
+  }
   return *this;
 }
 

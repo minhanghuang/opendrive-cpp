@@ -18,6 +18,8 @@ class JunctionAdapter : public UtilAdapter {
                         core::Junction::Ptr junction_ptr);
 
  private:
+  JunctionAdapter& GenerateAttributes();
+  JunctionAdapter& GenerateConnection();
   const element::Junction* ele_junction_;
   core::Junction::Ptr junction_ptr_;
 };

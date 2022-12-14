@@ -46,6 +46,7 @@ class TestSaveData : public testing::Test {
   static std::string xml_file_path;
 };
 
+// std::string TestSaveData::xml_file_path = "./tests/data/Ex_Simple-LaneOffset.xodr";
 std::string TestSaveData::xml_file_path = "./tests/data/Ex_Simple-LaneOffset.xodr";
 
 void TestSaveData::SetUpTestCase() {}

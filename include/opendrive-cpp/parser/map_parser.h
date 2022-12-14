@@ -7,6 +7,7 @@
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/parser/header_parser.h"
+#include "opendrive-cpp/parser/junction_parser.h"
 #include "opendrive-cpp/parser/road_lanes_parser.h"
 #include "opendrive-cpp/parser/road_parser.h"
 
@@ -19,6 +20,7 @@ class MapXmlParser : public XmlParser {
 
  private:
   MapXmlParser& ParseHeaderEle();
+  MapXmlParser& ParseJunctionEle();
   MapXmlParser& ParseRoadEle();
   const tinyxml2::XMLElement* xml_map_;
   element::Map* ele_map_;

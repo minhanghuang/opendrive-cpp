@@ -22,7 +22,6 @@ class JunctionXmlParser : public XmlParser {
  private:
   JunctionXmlParser& ParseAttributes();
   JunctionXmlParser& ParseConnection();
-  JunctionXmlParser& ParseLaneLink();
   const tinyxml2::XMLElement* xml_junction_;
   element::Junction* ele_junction_;
 };

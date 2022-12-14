@@ -1,9 +1,16 @@
 #include "opendrive-cpp/adapter/map_adapter.h"
 
+#include <memory>
+
+#include "opendrive-cpp/adapter/junction_adapter.h"
+#include "opendrive-cpp/geometry/core.h"
+
 namespace opendrive {
 namespace adapter {
 
-MapAdapter::MapAdapter() : road_adapter_(std::make_shared<RoadAdapter>()) {}
+MapAdapter::MapAdapter()
+    : junction_adapter_(std::make_shared<JunctionAdapter>()),
+      road_adapter_(std::make_shared<RoadAdapter>()) {}
 
 opendrive::Status MapAdapter::Run(const element::Map* ele_map,
                                   core::Map::Ptr map_ptr) {
@@ -13,7 +20,7 @@ opendrive::Status MapAdapter::Run(const element::Map* ele_map,
     set_status(ErrorCode::ADAPTER_ROOT_ERROR, "Input Is Null.");
     return status();
   }
-  GenerateHeader().GenerateRoads();
+  GenerateHeader().GenerateJunctions().GenerateRoads();
   return status();
 }
 
@@ -31,6 +38,24 @@ MapAdapter& MapAdapter::GenerateHeader() {
   header->east = ele_map_->header.east;
   header->vendor = ele_map_->header.vendor;
   map_ptr_->header = header;
+  return *this;
+}
+
+MapAdapter& MapAdapter::GenerateJunctions() {
+  if (!IsValid()) return *this;
+  Status status{ErrorCode::OK, "ok"};
+
+  for (const auto& ele_junction : ele_map_->junctions) {
+    core::Junction::Ptr junction_ptr = std::make_shared<core::Junction>();
+    status = junction_adapter_->Run(&ele_junction, junction_ptr);
+    if (ErrorCode::OK != status.error_code) {
+      CheckStatus(status);
+      return *this;
+    }
+    if (0 == map_ptr_->junctions.count(junction_ptr->id)) {
+      map_ptr_->junctions.insert({junction_ptr->id, junction_ptr});
+    }
+  }
   return *this;
 }
 
