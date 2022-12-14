@@ -11,6 +11,7 @@
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;
@@ -83,6 +84,24 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   ASSERT_EQ(-2.8359911988457576e+1, core_map->header->west);
   ASSERT_EQ("VectorZero", core_map->header->vendor);
 
+  /// check junction
+  ASSERT_EQ(12, core_map->junctions.size());
+  auto junction_1 = core_map->junctions["26"];
+  ASSERT_EQ("junction26", junction_1->name);
+  ASSERT_EQ(6, junction_1->connections.size());
+  auto connection_1_1 = junction_1->connections.at(0);
+  ASSERT_EQ("0", connection_1_1.id);
+  ASSERT_EQ("1", connection_1_1.incoming_road);
+  ASSERT_EQ("27", connection_1_1.connecting_road);
+  ASSERT_EQ(JunctionContactPointType::END, connection_1_1.contact_point);
+  ASSERT_EQ(1, connection_1_1.lane_links.size());
+  auto link_1_1_1 = connection_1_1.lane_links.at(0);
+  for (const auto& item : link_1_1_1) {
+    ASSERT_EQ("-1", item.first);
+    ASSERT_EQ("1", item.second);
+  }
+
+  /// check roads
   ASSERT_EQ(2, core_map->roads.size());
 
   const std::string file_path = "./oxrd.xml";

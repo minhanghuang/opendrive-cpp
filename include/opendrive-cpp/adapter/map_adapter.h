@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "opendrive-cpp/adapter/junction_adapter.h"
 #include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/adapter/util_adapter.h"
 #include "opendrive-cpp/geometry/core.h"
@@ -18,8 +19,10 @@ class MapAdapter : public UtilAdapter {
 
  private:
   MapAdapter& GenerateHeader();
+  MapAdapter& GenerateJunctions();
   MapAdapter& GenerateRoads();
   std::shared_ptr<RoadAdapter> road_adapter_;
+  std::shared_ptr<JunctionAdapter> junction_adapter_;
   const element::Map* ele_map_;
   core::Map::Ptr map_ptr_;
 };

@@ -72,11 +72,5 @@ JunctionXmlParser& JunctionXmlParser::ParseConnection() {
   return *this;
 }
 
-JunctionXmlParser& JunctionXmlParser::ParseLaneLink() {
-  if (!IsValid()) return *this;
-
-  return *this;
-}
-
 }  // namespace parser
 }  // namespace opendrive
