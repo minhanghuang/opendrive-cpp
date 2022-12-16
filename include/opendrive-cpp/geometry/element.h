@@ -79,10 +79,10 @@ class GeometryLine final : public Geometry {
                GeometryType _type)
       : Geometry(_s, _x, _y, _hdg, _length, _type) {}
   virtual Point GetPoint(double ref_line_ds) const override {
-    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
     const double xd = x + (cos_hdg * (ref_line_ds - s));
     const double yd = y + (sin_hdg * (ref_line_ds - s));
-    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = 0};
+    // return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = 0};
+    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = hdg};
   }
 };
 
@@ -94,7 +94,6 @@ class GeometryArc final : public Geometry {
         curvature(_curvature),
         radius(1.0 / _curvature) {}
   virtual Point GetPoint(double ref_line_ds) const override {
-    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
     const double angle_at_s = (ref_line_ds - s) * curvature - M_PI / 2;
     const double xd = radius * (std::cos(hdg + angle_at_s) - sin_hdg) + x;
     const double yd = radius * (std::sin(hdg + angle_at_s) + cos_hdg) + y;
@@ -115,8 +114,6 @@ class GeometrySpiral final : public Geometry {
         curve_dot((_curve_end - _curve_start) / (_length)) {}
 
   virtual Point GetPoint(double ref_line_ds) const override {
-    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
-
     const double s1 = curve_start / curve_dot + ref_line_ds;
     double x1;
     double y1;
@@ -156,7 +153,6 @@ class GeometryPoly3 final : public Geometry {
         d(_d) {}
 
   virtual Point GetPoint(double ref_line_ds) const override {
-    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
     const double u = ref_line_ds;
     const double v = a + b * u + c * std::pow(u, 2) + d * std::pow(u, 3);
     const double x1 = u * cos_hdg - v * sin_hdg;
@@ -196,7 +192,6 @@ class GeometryParamPoly3 final : public Geometry {
         dv(_dv),
         p_range(_p_range) {}
   virtual Point GetPoint(double ref_line_ds) const override {
-    ref_line_ds = common::Clamp<double>(ref_line_ds, 0, length);
     double p = ref_line_ds;
     if (PRange::NORMALIZED == p_range) {
       p = std::min(1.0, ref_line_ds / length);
