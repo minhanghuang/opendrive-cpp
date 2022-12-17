@@ -81,7 +81,6 @@ class GeometryLine final : public Geometry {
   virtual Point GetPoint(double ref_line_ds) const override {
     const double xd = x + (cos_hdg * (ref_line_ds - s));
     const double yd = y + (sin_hdg * (ref_line_ds - s));
-    // return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = 0};
     return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = hdg};
   }
 };
@@ -97,8 +96,8 @@ class GeometryArc final : public Geometry {
     const double angle_at_s = (ref_line_ds - s) * curvature - M_PI / 2;
     const double xd = radius * (std::cos(hdg + angle_at_s) - sin_hdg) + x;
     const double yd = radius * (std::sin(hdg + angle_at_s) + cos_hdg) + y;
-    const double tangent = hdg + ref_line_ds * curvature;
-    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
+    const double tangent = hdg + (ref_line_ds-s) * curvature;
+    return Point{.x = xd, .y = yd, .hdg = tangent, .tangent = tangent};
   }
   const double curvature;
   const double radius;
