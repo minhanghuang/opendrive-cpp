@@ -31,7 +31,6 @@ struct Point {
   double x = 0.;
   double y = 0.;
   double hdg = 0.;
-  double tangent = 0.;
 };
 
 struct Header {
@@ -78,10 +77,11 @@ class GeometryLine final : public Geometry {
   GeometryLine(double _s, double _x, double _y, double _hdg, double _length,
                GeometryType _type)
       : Geometry(_s, _x, _y, _hdg, _length, _type) {}
-  virtual Point GetPoint(double ref_line_ds) const override {
-    const double xd = x + (cos_hdg * (ref_line_ds - s));
-    const double yd = y + (sin_hdg * (ref_line_ds - s));
-    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = hdg};
+  virtual Point GetPoint(double road_ds) const override {
+    const double ref_line_ds = road_ds - s;
+    const double xd = x + (cos_hdg * ref_line_ds);
+    const double yd = y + (sin_hdg * ref_line_ds);
+    return Point{.x = xd, .y = yd, .hdg = hdg};
   }
 };
 
@@ -92,12 +92,13 @@ class GeometryArc final : public Geometry {
       : Geometry(_s, _x, _y, _hdg, _length, _type),
         curvature(_curvature),
         radius(1.0 / _curvature) {}
-  virtual Point GetPoint(double ref_line_ds) const override {
-    const double angle_at_s = (ref_line_ds - s) * curvature - M_PI / 2;
+  virtual Point GetPoint(double road_ds) const override {
+    const double ref_line_ds = road_ds - s;
+    const double angle_at_s = ref_line_ds * curvature - M_PI / 2;
     const double xd = radius * (std::cos(hdg + angle_at_s) - sin_hdg) + x;
     const double yd = radius * (std::sin(hdg + angle_at_s) + cos_hdg) + y;
-    const double tangent = hdg + (ref_line_ds-s) * curvature;
-    return Point{.x = xd, .y = yd, .hdg = tangent, .tangent = tangent};
+    const double tangent = hdg + ref_line_ds * curvature;
+    return Point{.x = xd, .y = yd, .hdg = tangent};
   }
   const double curvature;
   const double radius;
@@ -112,7 +113,8 @@ class GeometrySpiral final : public Geometry {
         curve_end(_curve_end),
         curve_dot((_curve_end - _curve_start) / (_length)) {}
 
-  virtual Point GetPoint(double ref_line_ds) const override {
+  virtual Point GetPoint(double road_ds) const override {
+    const double ref_line_ds = road_ds - s;
     const double s1 = curve_start / curve_dot + ref_line_ds;
     double x1;
     double y1;
@@ -134,7 +136,7 @@ class GeometrySpiral final : public Geometry {
     const double xd = x + x1 * cos_a - y1 * sin_a;
     const double yd = y + y1 * cos_a + x1 * sin_a;
     const double tangent = hdg + t1;
-    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
+    return Point{.x = xd, .y = yd, .hdg = tangent};
   }
   const double curve_start;
   const double curve_end;
@@ -151,7 +153,8 @@ class GeometryPoly3 final : public Geometry {
         c(_c),
         d(_d) {}
 
-  virtual Point GetPoint(double ref_line_ds) const override {
+  virtual Point GetPoint(double road_ds) const override {
+    const double ref_line_ds = road_ds - s;
     const double u = ref_line_ds;
     const double v = a + b * u + c * std::pow(u, 2) + d * std::pow(u, 3);
     const double x1 = u * cos_hdg - v * sin_hdg;
@@ -161,7 +164,7 @@ class GeometryPoly3 final : public Geometry {
     const double xd = x + x1;
     const double yd = y + y1;
     const double tangent = hdg + theta;
-    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
+    return Point{.x = xd, .y = yd, .hdg = tangent};
   }
   const double a;
   const double b;
@@ -190,7 +193,8 @@ class GeometryParamPoly3 final : public Geometry {
         cv(_cv),
         dv(_dv),
         p_range(_p_range) {}
-  virtual Point GetPoint(double ref_line_ds) const override {
+  virtual Point GetPoint(double road_ds) const override {
+    const double ref_line_ds = road_ds - s;
     double p = ref_line_ds;
     if (PRange::NORMALIZED == p_range) {
       p = std::min(1.0, ref_line_ds / length);
@@ -205,7 +209,7 @@ class GeometryParamPoly3 final : public Geometry {
     const double xd = x + x1;
     const double yd = y + y1;
     const double tangent = hdg + theta;
-    return Point{.x = xd, .y = yd, .hdg = hdg, .tangent = tangent};
+    return Point{.x = xd, .y = yd, .hdg = tangent};
   }
   const PRange p_range;
   const double au;

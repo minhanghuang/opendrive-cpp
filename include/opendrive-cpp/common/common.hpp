@@ -32,8 +32,8 @@ namespace common {
  */
 template <typename T>
 T GetOffsetPoint(const T& point, double lateral_offset) {
-  const double x = -std::sin(point.tangent);
-  const double y = std::cos(point.tangent);
+  const double x = -std::sin(point.hdg);
+  const double y = std::cos(point.hdg);
   T offset_point = point;
   offset_point.x += lateral_offset * x;
   offset_point.y += lateral_offset * y;
