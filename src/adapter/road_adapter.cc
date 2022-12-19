@@ -1,5 +1,6 @@
 #include "opendrive-cpp/adapter/road_adapter.h"
 
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -190,9 +191,11 @@ void RoadAdapter::GenerateLaneSamples(const element::Lane& ele_lane,
   core::PointXD center_point;
   const int lane_direction =
       LaneDirection::LEFT == common::GetLaneDirection(core_lane->id) ? 1 : -1;
+  size_t index = 0;
   for (const auto& reference_point : reference_line.points) {
     lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
     center_point = common::GetOffsetPoint(reference_point, lane_width / 2);
+    center_point.id = core_lane->id + "_" + std::to_string(index++);
     right_point = common::GetOffsetPoint(reference_point, lane_width);
     core_lane->left_boundary.line.points.emplace_back(reference_point);
     core_lane->line.points.emplace_back(center_point);
