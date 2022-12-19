@@ -16,7 +16,7 @@ namespace opendrive {
 namespace core {
 
 typedef std::string Id;
-typedef std::vector<Id> Ids;
+typedef std::set<Id> Ids;
 typedef std::vector<Id> Path;
 
 struct Point2D {

@@ -206,10 +206,10 @@ void RoadAdapter::GenerateLaneSamples(const element::Lane& ele_lane,
 void RoadAdapter::GenerateLaneLink(core::Lane::Ptr lane,
                                    const element::LaneLink& lane_link) {
   for (const auto& id : lane_link.predecessors) {
-    lane->predecessors.emplace_back(std::to_string(id));
+    lane->predecessors.insert(std::to_string(id));
   }
   for (const auto& id : lane_link.successors) {
-    lane->successors.emplace_back(std::to_string(id));
+    lane->successors.insert(std::to_string(id));
   }
 }
 
