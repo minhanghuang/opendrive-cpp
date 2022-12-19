@@ -17,6 +17,7 @@ namespace core {
 
 typedef std::string Id;
 typedef std::vector<Id> Ids;
+typedef std::vector<Id> Path;
 
 struct Point2D {
   double x = 0.;
