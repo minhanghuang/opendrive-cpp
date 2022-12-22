@@ -4,11 +4,8 @@
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
-#include "opendrive-cpp/parser/road_link_parser.h"
-#include "opendrive-cpp/parser/road_planview_parser.h"
-#include "opendrive-cpp/parser/road_type_parser.h"
 #include "opendrive-cpp/parser/util_parser.h"
-#include "road_lanes_parser.h"
+#include "opendrive-cpp/parser/section_parser.h"
 
 namespace opendrive {
 namespace parser {
@@ -16,20 +13,18 @@ namespace parser {
 class RoadXmlParser : public XmlParser {
  public:
   RoadXmlParser() = default;
+  RoadXmlParser(const std::string& version);
   opendrive::Status Parse(const tinyxml2::XMLElement* xml_road,
                           element::Road* ele_road);
 
  private:
-  RoadXmlParser& ParseAttributes();
-  RoadXmlParser& ParseLinkEle();
-  RoadXmlParser& ParseTypeEle();
-  RoadXmlParser& ParsePlanViewEle();
-  RoadXmlParser& ParseLanesEle();
-  RoadXmlParser& CheckLanesEle();
+  RoadXmlParser& Attributes();
+  RoadXmlParser& LinkElement();
+  RoadXmlParser& TypeElement();
+  RoadXmlParser& PlanViewElement();
+  RoadXmlParser& LanesElement();
+  RoadXmlParser& CheckLanesElement();
   RoadXmlParser& GenerateRoad();
-  RoadLinkXmlParser road_link_parser_;
-  RoadTypeXmlParser road_type_parser_;
-  RoadPlanViewXmlParser road_planview_parser_;
   const tinyxml2::XMLElement* xml_road_;
   element::Road* ele_road_;
 };

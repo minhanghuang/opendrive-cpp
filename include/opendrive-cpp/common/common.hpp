@@ -31,7 +31,7 @@ namespace common {
  * @return 偏离点
  */
 template <typename T>
-T GetOffsetPoint(const T& point, double lateral_offset) {
+static T GetOffsetPoint(const T& point, double lateral_offset) {
   const double x = -std::sin(point.hdg);
   const double y = std::cos(point.hdg);
   T offset_point = point;

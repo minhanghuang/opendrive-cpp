@@ -15,16 +15,16 @@ namespace parser {
 class XmlParser {
  public:
   XmlParser() = default;
+  XmlParser(const std::string& version);
+  virtual void set_opendrive_version(const std::string& version) final;
+  virtual std::string opendrive_version() const final;
   virtual bool IsValid() const final;
   virtual opendrive::Status status() const final;
   virtual void set_status(ErrorCode code, const std::string& msg) final;
-  virtual void set_status(const Status& s) final;
-  virtual void set_status(Status&& s) final;
-  virtual void CheckStatus(ErrorCode code, const std::string& msg) final;
-  virtual void CheckStatus(const Status& s) final;
-  virtual void CheckStatus(Status&& s) final;
+  virtual bool CheckStatus(const Status& s) final;
 
  private:
+  std::string opendrive_version_;
   std::mutex mutex_;
   opendrive::Status status_{ErrorCode::OK, "ok"};
 };

@@ -1,12 +1,10 @@
-#include "opendrive-cpp/parser/road_lanes_section_parser.h"
-
-#include <algorithm>
-
-#include "opendrive-cpp/common/common.hpp"
-#include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/parser/section_parser.h"
 
 namespace opendrive {
 namespace parser {
+
+RoadLanesSectionXmlParser::RoadLanesSectionXmlParser(const std::string& version)
+    : XmlParser(version) {}
 
 opendrive::Status RoadLanesSectionXmlParser::Parse(
     const tinyxml2::XMLElement* xml_section,
@@ -24,6 +22,7 @@ opendrive::Status RoadLanesSectionXmlParser::Parse(
 RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseAttributes() {
   if (!IsValid()) return *this;
   common::XmlQueryDoubleAttribute(xml_section_, "s", ele_section_->s0);
+  common::XmlQueryDoubleAttribute(xml_section_, "s", ele_section_->s1);
   return *this;
 }
 

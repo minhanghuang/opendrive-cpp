@@ -3,6 +3,15 @@
 namespace opendrive {
 namespace parser {
 
+XmlParser::XmlParser(const std::string& version)
+    : opendrive_version_(version) {}
+
+void XmlParser::set_opendrive_version(const std::string& version) {
+  opendrive_version_ = version;
+}
+
+std::string XmlParser::opendrive_version() const { return opendrive_version_; }
+
 bool XmlParser::IsValid() const { return ErrorCode::OK == status_.error_code; }
 
 opendrive::Status XmlParser::status() const { return status_; }
@@ -13,40 +22,14 @@ void XmlParser::set_status(ErrorCode code, const std::string& msg) {
   status_.msg = msg;
 }
 
-void XmlParser::set_status(const Status& s) {
-  std::unique_lock<std::mutex> lock(mutex_);
-  status_.error_code = s.error_code;
-  status_.msg = s.msg;
-}
-
-void XmlParser::set_status(Status&& s) {
-  std::unique_lock<std::mutex> lock(mutex_);
-  status_.error_code = s.error_code;
-  status_.msg = s.msg;
-}
-
-void XmlParser::CheckStatus(ErrorCode code, const std::string& msg) {
-  if (ErrorCode::OK != code) {
-    std::unique_lock<std::mutex> lock(mutex_);
-    status_.error_code = code;
-    status_.msg = msg;
-  }
-}
-
-void XmlParser::CheckStatus(const Status& s) {
+bool XmlParser::CheckStatus(const Status& s) {
   if (ErrorCode::OK != s.error_code) {
     std::unique_lock<std::mutex> lock(mutex_);
     status_.error_code = s.error_code;
     status_.msg = s.msg;
+    return false;
   }
-}
-
-void XmlParser::CheckStatus(Status&& s) {
-  if (ErrorCode::OK != s.error_code) {
-    std::unique_lock<std::mutex> lock(mutex_);
-    status_.error_code = s.error_code;
-    status_.msg = s.msg;
-  }
+  return true;
 }
 
 }  // namespace parser

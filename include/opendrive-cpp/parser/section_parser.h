@@ -1,6 +1,8 @@
 #ifndef OPENDRIVE_CPP_ROAD_LANES_SECTION_PARSER_H_
 #define OPENDRIVE_CPP_ROAD_LANES_SECTION_PARSER_H_
 
+#include <algorithm>
+
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"
@@ -12,6 +14,7 @@ namespace parser {
 class RoadLanesSectionXmlParser : public XmlParser {
  public:
   RoadLanesSectionXmlParser() = default;
+  RoadLanesSectionXmlParser(const std::string& version);
   opendrive::Status Parse(const tinyxml2::XMLElement* xml_section,
                           element::LaneSection* ele_section);
 

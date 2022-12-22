@@ -2,6 +2,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
+import sys
 
 
 def ParseMapFile(file_path):
@@ -51,7 +52,12 @@ def ParseMapFile(file_path):
 
 if __name__ == "__main__":
     print("display.")
-    ret = ParseMapFile("../build/oxrd.xml")
+    if len(sys.argv) < 2:
+        print("python3 display_points.py /opt/xx/xx/xx.xml")
+        exit(0)
+    file_path = sys.argv[1]
+    print("file path: {}".format(file_path))
+    ret = ParseMapFile(file_path)
     reference = ret[0]
     left = ret[1]
     right = ret[2]
