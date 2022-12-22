@@ -5,21 +5,14 @@
 #include <cassert>
 #include <memory>
 
-#include "opendrive-cpp/adapter/map_adapter.h"
-#include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
-#include "opendrive-cpp/parser/header_parser.h"
-#include "opendrive-cpp/parser/junction_parser.h"
+#include "opendrive-cpp/parser/adapter.h"
 #include "opendrive-cpp/parser/map_parser.h"
-#include "opendrive-cpp/parser/road_lanes_parser.h"
-#include "opendrive-cpp/parser/road_lanes_section_parser.h"
-#include "opendrive-cpp/parser/road_link_parser.h"
 #include "opendrive-cpp/parser/road_parser.h"
-#include "opendrive-cpp/parser/road_planview_parser.h"
-#include "opendrive-cpp/parser/road_type_parser.h"
+#include "opendrive-cpp/parser/section_parser.h"
 
 namespace opendrive {
 
@@ -27,50 +20,20 @@ class Parser {
  public:
   ~Parser() = default;
   Parser();
-  opendrive::Status Map(const std::string& xml_file, element::Map* ele_map);
-  opendrive::Status Map(const tinyxml2::XMLElement* xml_root,
-                        element::Map* ele_map);
-  opendrive::Status Header(const tinyxml2::XMLElement* xml_header,
-                           element::Header* ele_header);
-  opendrive::Status Road(const tinyxml2::XMLElement* xml_road,
-                         element::Road* ele_road);
-  opendrive::Status RoadLink(const tinyxml2::XMLElement* xml_road_link,
-                             element::RoadLink* ele_road_link);
-  opendrive::Status RoadType(const tinyxml2::XMLElement* xml_road_type,
-                             element::RoadTypeInfo* ele_road_type);
-  opendrive::Status RoadPlanView(const tinyxml2::XMLElement* xml_road_planview,
-                                 element::RoadPlanView* ele_road_planview);
-  opendrive::Status RoadLanes(const tinyxml2::XMLElement* xml_road_lanes,
-                              element::Lanes* ele_road_lanes);
-  opendrive::Status Junction(const tinyxml2::XMLElement* xml_junction,
-                             element::Junction* ele_junction);
-
- private:
-  std::unique_ptr<parser::MapXmlParser> map_parser_;
-  std::unique_ptr<parser::HeaderXmlParser> header_parser_;
-  std::unique_ptr<parser::RoadXmlParser> road_parser_;
-  std::unique_ptr<parser::RoadLinkXmlParser> road_link_parser_;
-  std::unique_ptr<parser::RoadTypeXmlParser> road_type_parser_;
-  std::unique_ptr<parser::RoadPlanViewXmlParser> road_planview_parser_;
-  std::unique_ptr<parser::RoadLanesXmlParser> road_lanes_parser_;
-  std::unique_ptr<parser::JunctionXmlParser> junction_parser_;
-};
-
-class Adapter {
- public:
-  ~Adapter() = default;
-  Adapter();
-  opendrive::Status Map(const element::Map* ele_map, core::Map::Ptr map_ptr,
-                        float step = 0.5);
-  opendrive::Status Road(const element::Road* ele_road,
-                         core::Road::Ptr road_ptr, float step = 0.5);
+  std::string GetOpenDriveVersion() const;
+  opendrive::Status ParseMap(const std::string& xml_file,
+                             element::Map* ele_map);
+  opendrive::Status ParseMap(const tinyxml2::XMLElement* xml_root,
+                             element::Map* ele_map);
+  opendrive::Status Adapter(const element::Map* ele_map, core::Map::Ptr map_ptr,
+                            float step = 0.5);
   opendrive::Status SaveData(core::Map::Ptr map_ptr,
                              const std::string& file_path);
 
  private:
   tinyxml2::XMLDocument xml_doc_;
-  std::unique_ptr<adapter::MapAdapter> map_adapter_;
-  std::unique_ptr<adapter::RoadAdapter> road_adapter_;
+  std::unique_ptr<parser::MapXmlParser> map_parser_;
+  std::unique_ptr<adapter::AdapterMap> adapter_;
 };
 
 }  // namespace opendrive
