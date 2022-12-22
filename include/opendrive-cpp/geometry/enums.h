@@ -114,7 +114,7 @@ enum class RoadSpeedUnit {
 
 enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
 
-enum class JunctionType { UNKNOWN = 0, DEFAULT, VIRTUAL };
+enum class JunctionType { UNKNOWN = 0, DEFAULT, DIRECT, VIRTUAL };
 
 enum class JunctionContactPointType { UNKNOWN = 0, START, END };
 

@@ -36,8 +36,8 @@ struct Point {
 struct Header {
   std::string rev_major;
   std::string rev_minor;
-  std::string name;
   std::string version;
+  std::string name;
   std::string date;
   double north = 0.;
   double south = 0.;
@@ -50,6 +50,7 @@ typedef struct Geometry GeometryTypedef;
 class Geometry {
  public:
   typedef std::shared_ptr<GeometryTypedef> Ptr;
+  typedef std::vector<Ptr> Ptrs;
   Geometry(double _s, double _x, double _y, double _hdg, double _length,
            GeometryType _type)
       : s(_s),
@@ -300,21 +301,23 @@ struct LanesInfo {
 };
 
 struct LaneOffset : public OffsetPoly3 {};
+typedef std::vector<LaneOffset> LaneOffsets;
 
 struct LaneSection {
   double s0 = 0.;  // start position
   double s1 = 0.;  // end position(extended)
   LanesInfo left, center, right;
 };
+typedef std::vector<LaneSection> LaneSections;
 
 struct Lanes {
-  std::vector<LaneOffset> lane_offsets;
-  std::vector<LaneSection> lane_sections;
+  LaneOffsets lane_offsets;
+  LaneSections lane_sections;
 };
 
 struct RoadAttributes {
   Name name;
-  Id id = -1;
+  Id id = -1;  // [>=0]
   Id junction = -1;
   double length = 0.;
   RoadRule rule = RoadRule::UNKNOWN;
@@ -323,7 +326,7 @@ struct RoadAttributes {
 struct RoadLinkInfo {
   enum class PointType { UNKNOWN = 0, START = 1, END = 2 };
   enum class Dir { UNKNOWN = 0, PLUS = 1, MINUS = 2 };
-  Id id = -1;
+  Id id = -1;  // [>=0]
   double s = 0.;
   RoadLinkType type = RoadLinkType::UNKNOWN;
   PointType point_type = PointType::UNKNOWN;
@@ -344,7 +347,7 @@ struct RoadTypeInfo {
 };
 
 struct RoadPlanView {
-  std::vector<Geometry::Ptr> geometrys;
+  Geometry::Ptrs geometrys;
 };
 
 struct Road {

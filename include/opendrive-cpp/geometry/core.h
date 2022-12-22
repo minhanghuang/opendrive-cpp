@@ -23,16 +23,17 @@ struct Point2D {
   double x = 0.;
   double y = 0.;
 };
+typedef std::vector<Point2D> Point2Ds;
 
 struct PointXD : public Point2D {
   Id id;
   double s = 0.;
   double hdg = 0.;
-  double tangent = 0.;
 };
+typedef std::vector<PointXD> PointXDs;
 
 struct Line {
-  std::vector<PointXD> points;
+  PointXDs points;
 };
 
 struct LaneBoundary {
@@ -44,34 +45,40 @@ struct LaneBoundary {
 typedef struct Lane LaneTypedef;
 struct Lane {
   typedef std::shared_ptr<LaneTypedef> Ptr;
-  Id id;
+  typedef std::vector<Ptr> Ptrs;
+  typedef std::shared_ptr<LaneTypedef const> ConstPtr;
+  Id id;  // [required]
   LaneType type = LaneType::UNKNOWN;
-  Line line;
-  Ids predecessors;
-  Ids successors;
-  Ids junction_pres;  // junction connecting lane ids
-  Ids junction_sucs;  // junction incoming lane ids
+  Line center_line;
   LaneBoundary left_boundary;
   LaneBoundary right_boundary;
+  Ids predecessors;
+  Ids successors;
+  Id left_lane;   // current lane left lane
+  Id right_lane;  // current lane right lane
 };
 
 typedef struct Section SectionTypedef;
 struct Section {
   typedef std::shared_ptr<SectionTypedef> Ptr;
-  Id id;
+  typedef std::vector<Ptr> Ptrs;
+  typedef std::shared_ptr<SectionTypedef const> ConstPtr;
+  Id id;  // [required]
   double start_position = 0.;
   double length = 0.;
   double speed_limit = 0.;  // km/h
-  Lane::Ptr center_line;
-  std::vector<Lane::Ptr> lanes;
+  Lane::Ptr center_lane;
+  Lane::Ptrs left_lanes;
+  Lane::Ptrs right_lanes;
 };
 
 typedef struct Road RoadTypedef;
 struct Road {
   typedef std::shared_ptr<RoadTypedef> Ptr;
-  Id id;
+  typedef std::shared_ptr<RoadTypedef const> ConstPtr;
+  Id id;  // [required]
   double length = 0.;
-  std::vector<Section::Ptr> sections;
+  Section::Ptrs sections;
   Id predecessor;
   Id successor;
   RoadLinkType predecessor_type = RoadLinkType::UNKNOWN;
@@ -79,13 +86,15 @@ struct Road {
 };
 
 struct JunctionConnection {
-  Id id;  // [required]
+  Id id;       // [required]
+  Id link_id;  // [required] [extended] (incoming_road + "_" + connecting_road)
   JunctionType type = JunctionType::UNKNOWN;
   Id incoming_road;
   Id connecting_road;
   JunctionContactPointType contact_point = JunctionContactPointType::UNKNOWN;
-  std::vector<std::map<Id, Id>> lane_links;  // {from : to}
+  std::vector<std::pair<Id, Id>> lane_links;  // {from : to}
 };
+typedef std::unordered_map<core::Id, JunctionConnection> JunctionConnections;
 
 typedef struct Junction JunctionTypedef;
 struct Junction {
@@ -93,7 +102,7 @@ struct Junction {
   Id id;
   std::string name;
   JunctionType type = JunctionType::UNKNOWN;
-  std::vector<JunctionConnection> connections;
+  JunctionConnections connections;
 };
 
 typedef struct Header HeaderTypedef;
