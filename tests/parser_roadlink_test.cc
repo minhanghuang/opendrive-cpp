@@ -50,14 +50,11 @@ void TestRoadLinkParser::SetUp() {}
 TEST_F(TestRoadLinkParser, TestRoadLink) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
-  const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
-  ASSERT_TRUE(xml_road != nullptr);
-  const tinyxml2::XMLElement* xml_roadlink =
-      xml_road->FirstChildElement("link");
-  ASSERT_TRUE(xml_roadlink != nullptr);
-  opendrive::element::RoadLink ele_roadlink;
-  auto ret = parser->RoadLink(xml_roadlink, &ele_roadlink);
+  ASSERT_TRUE(xml_root != nullptr);
+  opendrive::element::Map ele_map;
+  auto ret = parser->ParseMap(xml_root, &ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+  auto ele_roadlink = ele_map.roads.front().link;
   ASSERT_TRUE(11 == ele_roadlink.predecessor.id);
   ASSERT_DOUBLE_EQ(0, ele_roadlink.predecessor.s);
   ASSERT_TRUE(RoadLinkType::ROAD == ele_roadlink.predecessor.type);

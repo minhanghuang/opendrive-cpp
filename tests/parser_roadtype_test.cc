@@ -51,14 +51,11 @@ void TestRoadTypeParser::SetUp() {}
 TEST_F(TestRoadTypeParser, TestRoadType) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
-  const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
-  ASSERT_TRUE(xml_road != nullptr);
-  const tinyxml2::XMLElement* xml_roadtype =
-      xml_road->FirstChildElement("type");
-  ASSERT_TRUE(xml_roadtype != nullptr);
-  opendrive::element::RoadTypeInfo ele_roadtype;
-  auto ret = parser->RoadType(xml_roadtype, &ele_roadtype);
+  ASSERT_TRUE(xml_root != nullptr);
+  opendrive::element::Map ele_map;
+  auto ret = parser->ParseMap(xml_root, &ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+  auto ele_roadtype = ele_map.roads.front().type_info.front();
   ASSERT_DOUBLE_EQ(0.0000000000000000e+0, ele_roadtype.s);
   ASSERT_TRUE(RoadType::TOWN == ele_roadtype.type);
   ASSERT_TRUE(ele_roadtype.country.empty());

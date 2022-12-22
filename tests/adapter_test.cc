@@ -7,12 +7,12 @@
 #include <string>
 #include <utility>
 
-#include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/opendrive.h"
+#include "opendrive-cpp/parser/adapter.h"
 
 using namespace opendrive;
 
@@ -64,14 +64,15 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   auto core_map = std::make_shared<opendrive::core::Map>();
 
   /// parse
-  auto ret = parser->Map(xml_root, &ele_map);
+  auto ret = parser->ParseMap(xml_root, &ele_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
   ASSERT_EQ(2, ele_map.roads.size());
 
   /// adapter
-  opendrive::Adapter adapter;
-  ret = adapter.Map(&ele_map, core_map);
+  ret = parser->Adapter(&ele_map, core_map);
+  std::cout << "ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+
   /// check header
   ASSERT_EQ("1", core_map->header->rev_major);
   ASSERT_EQ("4", core_map->header->rev_minor);
@@ -89,23 +90,48 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   auto junction_1 = core_map->junctions["26"];
   ASSERT_EQ("junction26", junction_1->name);
   ASSERT_EQ(6, junction_1->connections.size());
-  auto connection_1_1 = junction_1->connections.at(0);
+  ASSERT_TRUE(0 != junction_1->connections.count("1_27"));
+  auto connection_1_1 = junction_1->connections.at("1_27");
   ASSERT_EQ("0", connection_1_1.id);
   ASSERT_EQ("1", connection_1_1.incoming_road);
   ASSERT_EQ("27", connection_1_1.connecting_road);
   ASSERT_EQ(JunctionContactPointType::END, connection_1_1.contact_point);
   ASSERT_EQ(1, connection_1_1.lane_links.size());
   auto link_1_1_1 = connection_1_1.lane_links.at(0);
-  for (const auto& item : link_1_1_1) {
-    ASSERT_EQ("-1", item.first);
-    ASSERT_EQ("1", item.second);
-  }
+  ASSERT_EQ("-1", link_1_1_1.first);
+  ASSERT_EQ("1", link_1_1_1.second);
 
   /// check roads
   ASSERT_EQ(2, core_map->roads.size());
 
   const std::string file_path = "./oxrd.xml";
-  adapter.SaveData(core_map, file_path);
+  parser->SaveData(core_map, file_path);
+}
+
+TEST_F(TestAdapterMap, TestLaneLink) {
+  const std::string file_path = "./tests/data/UC_Simple-X-Junction.xodr";
+  std::shared_ptr<opendrive::Parser> parser =
+      std::make_shared<opendrive::Parser>();
+  tinyxml2::XMLDocument* instance = nullptr;
+  instance = new (std::nothrow) tinyxml2::XMLDocument();
+  instance->LoadFile(file_path.c_str());
+  const tinyxml2::XMLElement* xml_root = instance->RootElement();
+  const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
+  ASSERT_TRUE(xml_road != nullptr);
+  opendrive::element::Road ele_road;
+  opendrive::element::Map ele_map;
+  auto core_map = std::make_shared<opendrive::core::Map>();
+
+  /// parse
+  auto ret = parser->ParseMap(xml_root, &ele_map);
+  std::cout << "ret msg: " << ret.msg << std::endl;
+  ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+  ASSERT_EQ(16, ele_map.roads.size());
+  /// adapter
+  ret = parser->Adapter(&ele_map, core_map);
+  ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+
+  delete instance;
 }
 
 int main(int argc, char* argv[]) {

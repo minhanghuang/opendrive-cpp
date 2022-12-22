@@ -3,6 +3,7 @@
 #include <cassert>
 #include <memory>
 
+#include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;
@@ -48,11 +49,11 @@ void TestHeaderParser::SetUp() {}
 TEST_F(TestHeaderParser, TestHeader) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
-  const tinyxml2::XMLElement* header_node = xml->FirstChildElement("header");
-  ASSERT_TRUE(header_node != nullptr);
-  opendrive::element::Header header;
-  auto ret = parser->Header(header_node, &header);
+  ASSERT_TRUE(xml != nullptr);
+  opendrive::element::Map ele_map;
+  auto ret = parser->ParseMap(xml, &ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+  auto header = ele_map.header;
   ASSERT_TRUE("1" == header.rev_major);
   ASSERT_TRUE("4" == header.rev_minor);
   ASSERT_TRUE("1" == header.version);

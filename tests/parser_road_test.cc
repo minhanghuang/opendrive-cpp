@@ -51,11 +51,11 @@ void TestRoadParser::SetUp() {}
 TEST_F(TestRoadParser, TestRoad) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
-  const tinyxml2::XMLElement* xml_road = xml->FirstChildElement("road");
-  ASSERT_TRUE(xml_road != nullptr);
-  opendrive::element::Road ele_road;
-  auto ret = parser->Road(xml_road, &ele_road);
+  ASSERT_TRUE(xml != nullptr);
+  opendrive::element::Map ele_map;
+  auto ret = parser->ParseMap(xml, &ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+  auto ele_road = ele_map.roads.front();
 
   /// attributes
   ASSERT_TRUE("Road 0" == ele_road.attributes.name);

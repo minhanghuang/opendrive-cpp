@@ -51,12 +51,11 @@ void TestJunctionParser::SetUp() {}
 TEST_F(TestJunctionParser, TestJunction) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
-  const tinyxml2::XMLElement* junction_node =
-      xml->FirstChildElement("junction");
-  ASSERT_TRUE(junction_node != nullptr);
-  opendrive::element::Junction junction;
-  auto ret = parser->Junction(junction_node, &junction);
+  ASSERT_TRUE(xml != nullptr);
+  opendrive::element::Map ele_map;
+  auto ret = parser->ParseMap(xml, &ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
+  auto junction = ele_map.junctions.front();
   ASSERT_EQ(1, junction.attributes.id);
   ASSERT_EQ("", junction.attributes.name);
   ASSERT_EQ(JunctionType::DEFAULT, junction.attributes.type);

@@ -7,11 +7,11 @@
 #include <string>
 #include <utility>
 
-#include "opendrive-cpp/adapter/road_adapter.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
+#include "opendrive-cpp/parser/adapter.h"
 
 using namespace opendrive;
 
@@ -46,8 +46,9 @@ class TestSaveData : public testing::Test {
   static std::string xml_file_path;
 };
 
-// std::string TestSaveData::xml_file_path = "./tests/data/Ex_Simple-LaneOffset.xodr";
-std::string TestSaveData::xml_file_path = "./tests/data/Ex_Simple-LaneOffset.xodr";
+std::string TestSaveData::xml_file_path =
+    "/Users/cox/work/code/github/opendrive-files/carla-simulator/Town01.xodr";
+    // "./tests/data/Ex_Simple-LaneOffset.xodr";
 
 void TestSaveData::SetUpTestCase() {}
 void TestSaveData::TearDownTestCase() {}
@@ -64,15 +65,15 @@ TEST_F(TestSaveData, TestSaveData) {
   auto core_map = std::make_shared<opendrive::core::Map>();
 
   /// parse
-  auto ret = parser->Map(xml_root, &ele_map);
+  auto ret = parser->ParseMap(xml_root, &ele_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
   /// adapter
-  opendrive::Adapter adapter;
-  ret = adapter.Map(&ele_map, core_map);
+  ret = parser->Adapter(&ele_map, core_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  const std::string file_path = "./oxrd.xml";
-  adapter.SaveData(core_map, file_path);
+  // const std::string file_path = "./oxrd.xml";
+  const std::string file_path = "./carla-01.xml";
+  parser->SaveData(core_map, file_path);
 }
 
 int main(int argc, char* argv[]) {

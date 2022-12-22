@@ -21,18 +21,16 @@ link_directories (
 
 SET(TEST_SOURCES
   common_test
-  geometry_test
   parser_map_test
   parser_header_test
-  parser_roadtype_test
-  parser_roadlink_test
-  parser_roadplanview_test
+  parser_junction_test
   parser_road_test
   parser_roadlanes_test
-  parser_junction_test
-  adapter_map_test
-  adapter_road_test
-  save_test 
+  parser_roadlink_test
+  parser_roadplanview_test
+  parser_roadtype_test
+  adapter_test
+  save_test
 )
 
 FOREACH(test_src ${TEST_SOURCES})
