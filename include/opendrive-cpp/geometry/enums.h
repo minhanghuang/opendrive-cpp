@@ -103,7 +103,7 @@ enum class RoadType : std::uint8_t {
   TOWNPLAYSTREET
 };
 
-enum class RoadLinkType { UNKNOWN = 0, ROAD = 1, JUNCTION = 2 };
+enum class RoadLinkType { UNKNOWN = 0, ROAD, JUNCTION };
 
 enum class RoadSpeedUnit {
   UNKNOWN = 0,
@@ -116,7 +116,11 @@ enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
 
 enum class JunctionType { UNKNOWN = 0, DEFAULT, DIRECT, VIRTUAL };
 
-enum class JunctionContactPointType { UNKNOWN = 0, START, END };
+enum class JunctionConnectionType { UNKNOWN = 0, DEFAULT, VIRTUAL };
+
+enum class ContactPointType { UNKNOWN = 0, START, END };
+
+enum class Dir { UNKNOWN = 0, PLUS, MINUS };
 
 }  // namespace opendrive
 

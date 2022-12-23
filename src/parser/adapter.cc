@@ -19,8 +19,8 @@ opendrive::Status AdapterMap::Start(const element::Map* ele_map,
     set_status(ErrorCode::ADAPTER_ROOT_ERROR, "Input Is Null.");
     return status_;
   }
-  Clean();
   Header().Junctions().Roads().GenerateTopo();
+  Clean();
   return status_;
 }
 

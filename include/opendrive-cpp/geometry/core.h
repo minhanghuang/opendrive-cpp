@@ -88,10 +88,10 @@ struct Road {
 struct JunctionConnection {
   Id id;       // [required]
   Id link_id;  // [required] [extended] (incoming_road + "_" + connecting_road)
-  JunctionType type = JunctionType::UNKNOWN;
+  JunctionConnectionType type = JunctionConnectionType::UNKNOWN;
   Id incoming_road;
   Id connecting_road;
-  JunctionContactPointType contact_point = JunctionContactPointType::UNKNOWN;
+  ContactPointType contact_point = ContactPointType::UNKNOWN;
   std::vector<std::pair<Id, Id>> lane_links;  // {from : to}
 };
 typedef std::unordered_map<core::Id, JunctionConnection> JunctionConnections;

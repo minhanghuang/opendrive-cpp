@@ -317,19 +317,17 @@ struct Lanes {
 
 struct RoadAttributes {
   Name name;
-  Id id = -1;  // [>=0]
-  Id junction = -1;
+  Id id = -1;        // [>=0]
+  Id junction = -1;  // -1: Road; other: junction road
   double length = 0.;
   RoadRule rule = RoadRule::UNKNOWN;
 };
 
 struct RoadLinkInfo {
-  enum class PointType { UNKNOWN = 0, START = 1, END = 2 };
-  enum class Dir { UNKNOWN = 0, PLUS = 1, MINUS = 2 };
-  Id id = -1;  // [>=0]
-  double s = 0.;
+  Id id = -1;     // [>=0]
+  double s = -1;  // [>=0]
   RoadLinkType type = RoadLinkType::UNKNOWN;
-  PointType point_type = PointType::UNKNOWN;
+  ContactPointType point_type = ContactPointType::UNKNOWN;
   Dir dir = Dir::UNKNOWN;
 };
 
@@ -362,19 +360,24 @@ struct JunctionAttributes {
   Id id = -1;  // [required]
   std::string name;
   JunctionType type = JunctionType::UNKNOWN;
+  Id main_road;                    // virtual junctions v1.7
+  double s_start;                  // virtual junctions v1.7
+  double s_end;                    // virtual junctions v1.7
+  Dir orientation = Dir::UNKNOWN;  // virtual junctions v1.7
 };
 
 struct JunctionLaneLink {
-  Id from = std::numeric_limits<Id>::max();  // [required]
-  Id to = std::numeric_limits<Id>::max();    // [required]
+  Id from = -1;  // [required]
+  Id to = -1;    // [required]
 };
 
 struct JunctionConnection {
   Id id = -1;  // [required]
-  JunctionType type = JunctionType::UNKNOWN;
+  JunctionConnectionType type = JunctionConnectionType::UNKNOWN;
   Id incoming_road = -1;
   Id connecting_road = -1;
-  JunctionContactPointType contact_point = JunctionContactPointType::UNKNOWN;
+  Id linked_road = -1;  // Only to be used for junctions of @type="direct" v1.7
+  ContactPointType contact_point = ContactPointType::UNKNOWN;
   std::vector<JunctionLaneLink> lane_links;
 };
 
