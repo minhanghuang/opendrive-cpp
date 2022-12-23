@@ -11,11 +11,11 @@ opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* xml_map,
     set_status(ErrorCode::XML_ROAD_ELEMENT_ERROR, "Input is null.");
     return status();
   }
-  ParseHeaderEle().ParseJunctionEle().ParseRoadEle();
+  HeaderElement().JunctionElement().RoadElement();
   return status();
 }
 
-MapXmlParser& MapXmlParser::ParseHeaderEle() {
+MapXmlParser& MapXmlParser::HeaderElement() {
   if (!IsValid()) return *this;
   // eq 1
   const tinyxml2::XMLElement* xml_header =
@@ -44,7 +44,7 @@ MapXmlParser& MapXmlParser::ParseHeaderEle() {
   return *this;
 }
 
-MapXmlParser& MapXmlParser::ParseJunctionEle() {
+MapXmlParser& MapXmlParser::JunctionElement() {
   if (!IsValid()) return *this;
   // 0~*
   const tinyxml2::XMLElement* curr_xml_junction =
@@ -54,12 +54,23 @@ MapXmlParser& MapXmlParser::ParseJunctionEle() {
     element::Junction ele_junction;
     common::XmlQueryIntAttribute(curr_xml_junction, "id",
                                  ele_junction.attributes.id);
+    common::XmlQueryIntAttribute(curr_xml_junction, "mainRoad",
+                                 ele_junction.attributes.main_road);
+    common::XmlQueryDoubleAttribute(curr_xml_junction, "sStart",
+                                    ele_junction.attributes.s_start);
+    common::XmlQueryDoubleAttribute(curr_xml_junction, "sEnd",
+                                    ele_junction.attributes.s_end);
     common::XmlQueryStringAttribute(curr_xml_junction, "name",
                                     ele_junction.attributes.name);
+    common::XmlQueryEnumAttribute(
+        curr_xml_junction, "orientation", ele_junction.attributes.orientation,
+        std::map<std::string, Dir>{std::make_pair("+", Dir::PLUS),
+                                   std::make_pair("-", Dir::MINUS)});
     common::XmlQueryEnumAttribute(
         curr_xml_junction, "type", ele_junction.attributes.type,
         std::map<std::string, JunctionType>{
             std::make_pair("default", JunctionType::DEFAULT),
+            std::make_pair("direct", JunctionType::DIRECT),
             std::make_pair("virtual", JunctionType::VIRTUAL)});
     // junction connection
     // 1~*
@@ -75,18 +86,20 @@ MapXmlParser& MapXmlParser::ParseJunctionEle() {
       common::XmlQueryIntAttribute(curr_xml_connection, "id", connection.id);
       common::XmlQueryEnumAttribute(
           curr_xml_connection, "type", connection.type,
-          std::map<std::string, JunctionType>{
-              std::make_pair("default", JunctionType::DEFAULT),
-              std::make_pair("virtual", JunctionType::VIRTUAL)});
+          std::map<std::string, JunctionConnectionType>{
+              std::make_pair("default", JunctionConnectionType::DEFAULT),
+              std::make_pair("virtual", JunctionConnectionType::VIRTUAL)});
+      common::XmlQueryIntAttribute(curr_xml_connection, "linkedRoad",
+                                   connection.linked_road);
       common::XmlQueryIntAttribute(curr_xml_connection, "incomingRoad",
                                    connection.incoming_road);
       common::XmlQueryIntAttribute(curr_xml_connection, "connectingRoad",
                                    connection.connecting_road);
       common::XmlQueryEnumAttribute(
           curr_xml_connection, "contactPoint", connection.contact_point,
-          std::map<std::string, JunctionContactPointType>{
-              std::make_pair("start", JunctionContactPointType::START),
-              std::make_pair("end", JunctionContactPointType::END)});
+          std::map<std::string, ContactPointType>{
+              std::make_pair("start", ContactPointType::START),
+              std::make_pair("end", ContactPointType::END)});
       // connection link
       // 0~*
       const tinyxml2::XMLElement* curr_xml_laneLink =
@@ -107,7 +120,7 @@ MapXmlParser& MapXmlParser::ParseJunctionEle() {
   return *this;
 }
 
-MapXmlParser& MapXmlParser::ParseRoadEle() {
+MapXmlParser& MapXmlParser::RoadElement() {
   if (!IsValid()) return *this;
   // 1~*
   const tinyxml2::XMLElement* curr_xml_road =

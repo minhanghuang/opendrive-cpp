@@ -43,18 +43,17 @@ class AdapterMap {
                            core::Lane::Ptr core_lane,
                            const core::Line& reference_line);
   AdapterMap& GenerateTopo();
-  void RoadLinkPreRoad(const element::Road* cur_ele_road,
-                       element::Id pre_road_idx, element::Id cur_section_idx,
-                       const element::Lane* cur_ele_lane,
-                       element::Id pre_lane_idx);
-  void RoadLinkSucRoad(const element::Road* cur_ele_road,
-                       element::Id suc_road_idx, element::Id cur_section_idx,
-                       const element::Lane* cur_ele_lane,
-                       element::Id suc_lane_idx);
-  void RoadLinkJunction(const element::Road* cur_ele_road,
-                        core::Id junction_id);
-  void JunctionLinkRoad(const element::Road* cur_ele_road,
-                        core::Id junction_id);
+  void RoadLinkPreRoad(const element::Road& cur_ele_road,
+                       element::Idx cur_section_idx,
+                       const element::Lane& cur_ele_lane,
+                       element::Idx pre_lane_idx);
+  void RoadLinkSucRoad(const element::Road& cur_ele_road,
+                       element::Idx cur_section_idx,
+                       const element::Lane& cur_ele_lane,
+                       element::Idx suc_lane_idx);
+  void RoadLinkJunction();
+  // void LinkDefaultJunction(const element::JunctionAttributes* ele_attr,
+  //                          const element::JunctionConnections& ele_conns);
   float step_;
   opendrive::Status status_{ErrorCode::OK, "ok"};
   std::unordered_map<core::Id, core::Lane::Ptr> lanes_router_;

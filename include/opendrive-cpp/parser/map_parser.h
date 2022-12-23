@@ -17,9 +17,9 @@ class MapXmlParser : public XmlParser {
                           element::Map* ele_map);
 
  private:
-  MapXmlParser& ParseHeaderEle();
-  MapXmlParser& ParseJunctionEle();
-  MapXmlParser& ParseRoadEle();
+  MapXmlParser& HeaderElement();
+  MapXmlParser& JunctionElement();
+  MapXmlParser& RoadElement();
   const tinyxml2::XMLElement* xml_map_;
   element::Map* ele_map_;
 };

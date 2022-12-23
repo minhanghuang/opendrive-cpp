@@ -85,7 +85,7 @@ enum class RoadMarkLaneChange : std::uint8_t {
   BOTH,
 };
 
-enum class RoadRule { UNKNOWN = 0, RHT, LHT };
+enum class RoadRule { RHT, LHT };
 
 enum class RoadType : std::uint8_t {
   UNKNOWN = 0,
@@ -114,7 +114,7 @@ enum class RoadSpeedUnit {
 
 enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
 
-enum class JunctionType { UNKNOWN = 0, DEFAULT, DIRECT, VIRTUAL };
+enum class JunctionType { DEFAULT, DIRECT, VIRTUAL };
 
 enum class JunctionConnectionType { UNKNOWN = 0, DEFAULT, VIRTUAL };
 

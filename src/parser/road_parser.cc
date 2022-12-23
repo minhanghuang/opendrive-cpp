@@ -1,5 +1,7 @@
 #include "opendrive-cpp/parser/road_parser.h"
 
+#include "opendrive-cpp/geometry/enums.h"
+
 namespace opendrive {
 namespace parser {
 
@@ -62,16 +64,14 @@ RoadXmlParser& RoadXmlParser::LinkElement() {
                 std::make_pair("junction", RoadLinkType::JUNCTION)});
         common::XmlQueryEnumAttribute(
             link_type_ele, "contactPoint",
-            ele_road_->link.predecessor.point_type,
-            std::map<std::string, element::RoadLinkInfo::PointType>{
-                std::make_pair("start",
-                               element::RoadLinkInfo::PointType::START),
-                std::make_pair("end", element::RoadLinkInfo::PointType::END)});
+            ele_road_->link.predecessor.contact_point,
+            std::map<std::string, ContactPointType>{
+                std::make_pair("start", ContactPointType::START),
+                std::make_pair("end", ContactPointType::END)});
         common::XmlQueryEnumAttribute(
             link_type_ele, "elementDir", ele_road_->link.predecessor.dir,
-            std::map<std::string, element::RoadLinkInfo::Dir>{
-                std::make_pair("+", element::RoadLinkInfo::Dir::PLUS),
-                std::make_pair("-", element::RoadLinkInfo::Dir::MINUS)});
+            std::map<std::string, Dir>{std::make_pair("+", Dir::PLUS),
+                                       std::make_pair("-", Dir::MINUS)});
       } else if ("successor" == xml_link_ment) {
         common::XmlQueryIntAttribute(link_type_ele, "elementId",
                                      ele_road_->link.successor.id);
@@ -83,16 +83,15 @@ RoadXmlParser& RoadXmlParser::LinkElement() {
                 std::make_pair("road", RoadLinkType::ROAD),
                 std::make_pair("junction", RoadLinkType::JUNCTION)});
         common::XmlQueryEnumAttribute(
-            link_type_ele, "contactPoint", ele_road_->link.successor.point_type,
-            std::map<std::string, element::RoadLinkInfo::PointType>{
-                std::make_pair("start",
-                               element::RoadLinkInfo::PointType::START),
-                std::make_pair("end", element::RoadLinkInfo::PointType::END)});
+            link_type_ele, "contactPoint",
+            ele_road_->link.successor.contact_point,
+            std::map<std::string, ContactPointType>{
+                std::make_pair("start", ContactPointType::START),
+                std::make_pair("end", ContactPointType::END)});
         common::XmlQueryEnumAttribute(
             link_type_ele, "elementDir", ele_road_->link.successor.dir,
-            std::map<std::string, element::RoadLinkInfo::Dir>{
-                std::make_pair("+", element::RoadLinkInfo::Dir::PLUS),
-                std::make_pair("-", element::RoadLinkInfo::Dir::MINUS)});
+            std::map<std::string, Dir>{std::make_pair("+", Dir::PLUS),
+                                       std::make_pair("-", Dir::MINUS)});
       }
     }
   }

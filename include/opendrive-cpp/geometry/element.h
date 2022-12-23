@@ -20,12 +20,10 @@ namespace opendrive {
 namespace element {
 
 typedef int Id;
+typedef Id Idx;
 typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
-typedef std::array<double, 1> Vec1D;
-typedef std::array<double, 2> Vec2D;
-typedef std::array<double, 3> Vec3D;
 
 struct Point {
   double x = 0.;
@@ -320,14 +318,14 @@ struct RoadAttributes {
   Id id = -1;        // [>=0]
   Id junction = -1;  // -1: Road; other: junction road
   double length = 0.;
-  RoadRule rule = RoadRule::UNKNOWN;
+  RoadRule rule = RoadRule::RHT;
 };
 
 struct RoadLinkInfo {
   Id id = -1;     // [>=0]
   double s = -1;  // [>=0]
   RoadLinkType type = RoadLinkType::UNKNOWN;
-  ContactPointType point_type = ContactPointType::UNKNOWN;
+  ContactPointType contact_point = ContactPointType::UNKNOWN;
   Dir dir = Dir::UNKNOWN;
 };
 
@@ -359,31 +357,33 @@ struct Road {
 struct JunctionAttributes {
   Id id = -1;  // [required]
   std::string name;
-  JunctionType type = JunctionType::UNKNOWN;
-  Id main_road;                    // virtual junctions v1.7
-  double s_start;                  // virtual junctions v1.7
-  double s_end;                    // virtual junctions v1.7
+  JunctionType type = JunctionType::DEFAULT;
+  Id main_road = -1;               // virtual junctions v1.7
+  double s_start = -1;             // virtual junctions v1.7
+  double s_end = -1;               // virtual junctions v1.7
   Dir orientation = Dir::UNKNOWN;  // virtual junctions v1.7
 };
 
 struct JunctionLaneLink {
-  Id from = -1;  // [required]
-  Id to = -1;    // [required]
+  Id from = -1;  // [required] incomingRoad road id
+  Id to = -1;    // [required] connectingRoad road id
 };
+typedef std::vector<JunctionLaneLink> JunctionLaneLinks;
 
 struct JunctionConnection {
   Id id = -1;  // [required]
   JunctionConnectionType type = JunctionConnectionType::UNKNOWN;
   Id incoming_road = -1;
-  Id connecting_road = -1;
+  Id connecting_road = -1;  // @type ="direct" shall not have the attribute v1.7
   Id linked_road = -1;  // Only to be used for junctions of @type="direct" v1.7
   ContactPointType contact_point = ContactPointType::UNKNOWN;
-  std::vector<JunctionLaneLink> lane_links;
+  JunctionLaneLinks lane_links;
 };
+typedef std::vector<JunctionConnection> JunctionConnections;
 
 struct Junction {
   JunctionAttributes attributes;
-  std::vector<JunctionConnection> connections;
+  JunctionConnections connections;
 };
 
 typedef struct Map MapType;

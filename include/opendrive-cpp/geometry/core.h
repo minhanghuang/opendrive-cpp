@@ -7,6 +7,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "opendrive-cpp/geometry/element.h"
@@ -16,7 +17,7 @@ namespace opendrive {
 namespace core {
 
 typedef std::string Id;
-typedef std::set<Id> Ids;
+typedef std::unordered_set<Id> Ids;
 typedef std::vector<Id> Path;
 
 struct Point2D {
@@ -83,6 +84,8 @@ struct Road {
   Id successor;
   RoadLinkType predecessor_type = RoadLinkType::UNKNOWN;
   RoadLinkType successor_type = RoadLinkType::UNKNOWN;
+  ContactPointType predecessor_contact_point = ContactPointType::UNKNOWN;
+  ContactPointType successor_contact_point = ContactPointType::UNKNOWN;
 };
 
 struct JunctionConnection {
@@ -101,7 +104,11 @@ struct Junction {
   typedef std::shared_ptr<JunctionTypedef> Ptr;
   Id id;
   std::string name;
-  JunctionType type = JunctionType::UNKNOWN;
+  Id main_road;                    // virtual junctions v1.7
+  double s_start;                  // virtual junctions v1.7
+  double s_end;                    // virtual junctions v1.7
+  Dir orientation = Dir::UNKNOWN;  // virtual junctions v1.7
+  JunctionType type = JunctionType::DEFAULT;
   JunctionConnections connections;
 };
 
