@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/opendrive.h"
 
 using namespace opendrive;
@@ -58,16 +59,15 @@ TEST_F(TestRoadLinkParser, TestRoadLink) {
   ASSERT_TRUE(11 == ele_roadlink.predecessor.id);
   ASSERT_DOUBLE_EQ(0, ele_roadlink.predecessor.s);
   ASSERT_TRUE(RoadLinkType::ROAD == ele_roadlink.predecessor.type);
-  ASSERT_TRUE(element::RoadLinkInfo::PointType::START ==
-              ele_roadlink.predecessor.point_type);
-  ASSERT_TRUE(element::RoadLinkInfo::Dir::PLUS == ele_roadlink.predecessor.dir);
+  ASSERT_TRUE(ContactPointType::START ==
+              ele_roadlink.predecessor.contact_point);
+  ASSERT_TRUE(Dir::PLUS == ele_roadlink.predecessor.dir);
   ASSERT_TRUE(43 == ele_roadlink.successor.id);
   ASSERT_DOUBLE_EQ(1.0000000000000000e+00, ele_roadlink.successor.s);
   ASSERT_TRUE(RoadLinkType::JUNCTION == ele_roadlink.successor.type);
-  ASSERT_TRUE(element::RoadLinkInfo::PointType::UNKNOWN ==
-              ele_roadlink.successor.point_type);
-  ASSERT_TRUE(element::RoadLinkInfo::Dir::UNKNOWN ==
-              ele_roadlink.successor.dir);
+  ASSERT_TRUE(ContactPointType::UNKNOWN ==
+              ele_roadlink.successor.contact_point);
+  ASSERT_TRUE(Dir::UNKNOWN == ele_roadlink.successor.dir);
 }
 
 int main(int argc, char* argv[]) {

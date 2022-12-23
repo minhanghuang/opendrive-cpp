@@ -1,9 +1,12 @@
+#include "opendrive-cpp/parser/adapter.h"
+
 #include <gtest/gtest.h>
 #include <tinyxml2.h>
 
 #include <cassert>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <utility>
 
@@ -12,7 +15,6 @@
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/opendrive.h"
-#include "opendrive-cpp/parser/adapter.h"
 
 using namespace opendrive;
 
@@ -95,7 +97,7 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   ASSERT_EQ("0", connection_1_1.id);
   ASSERT_EQ("1", connection_1_1.incoming_road);
   ASSERT_EQ("27", connection_1_1.connecting_road);
-  ASSERT_EQ(JunctionContactPointType::END, connection_1_1.contact_point);
+  ASSERT_EQ(ContactPointType::END, connection_1_1.contact_point);
   ASSERT_EQ(1, connection_1_1.lane_links.size());
   auto link_1_1_1 = connection_1_1.lane_links.at(0);
   ASSERT_EQ("-1", link_1_1_1.first);
@@ -116,21 +118,31 @@ TEST_F(TestAdapterMap, TestLaneLink) {
   instance = new (std::nothrow) tinyxml2::XMLDocument();
   instance->LoadFile(file_path.c_str());
   const tinyxml2::XMLElement* xml_root = instance->RootElement();
-  const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
-  ASSERT_TRUE(xml_road != nullptr);
-  opendrive::element::Road ele_road;
   opendrive::element::Map ele_map;
   auto core_map = std::make_shared<opendrive::core::Map>();
 
   /// parse
   auto ret = parser->ParseMap(xml_root, &ele_map);
-  std::cout << "ret msg: " << ret.msg << std::endl;
+  std::cout << "parse ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
   ASSERT_EQ(16, ele_map.roads.size());
+
   /// adapter
   ret = parser->Adapter(&ele_map, core_map);
+  std::cout << "adapte ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
+  /// check
+  auto road_0 = core_map->roads.at("0");
+  ASSERT_TRUE(nullptr != road_0);
+  ASSERT_EQ("", road_0->successor);
+  ASSERT_EQ("1", road_0->predecessor);
+  auto lane_0_0_1 = road_0->sections.front()->left_lanes.at(0); 
+  ASSERT_TRUE(nullptr != lane_0_0_1);
+  std::set<core::Id> ex_lane_0_0_1_sucs = {""};
+  for (const auto& suc_id : lane_0_0_1->successors) {
+     
+  } 
   delete instance;
 }
 

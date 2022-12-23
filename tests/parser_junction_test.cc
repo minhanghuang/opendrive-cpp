@@ -64,7 +64,7 @@ TEST_F(TestJunctionParser, TestJunction) {
   ASSERT_EQ(0, connection_0.id);
   ASSERT_EQ(6, connection_0.incoming_road);
   ASSERT_EQ(2, connection_0.connecting_road);
-  ASSERT_EQ(JunctionContactPointType::START, connection_0.contact_point);
+  ASSERT_EQ(ContactPointType::START, connection_0.contact_point);
   ASSERT_EQ(3, connection_0.lane_links.size());
   auto lane_link_0_0 = connection_0.lane_links.at(0);
   ASSERT_EQ(1, lane_link_0_0.from);
