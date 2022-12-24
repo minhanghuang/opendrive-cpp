@@ -16,11 +16,11 @@ opendrive::Status AdapterMap::Start(const element::Map* ele_map,
   map_ptr_ = map_ptr;
   step_ = step;
   if (!ele_map_ || !map_ptr_ || step_ <= 0) {
-    set_status(ErrorCode::ADAPTER_ROOT_ERROR, "Input Is Null.");
+    set_status(ErrorCode::ADAPTER_ROOT_ERROR, "MAP DATA IS NULL.");
     return status_;
   }
-  Header().Junctions().Roads().GenerateTopo();
-  Clean();
+  set_status(ErrorCode::OK, "ok");
+  Header().Junctions().Roads();
   return status_;
 }
 
@@ -29,13 +29,7 @@ void AdapterMap::set_status(ErrorCode code, const std::string& msg) {
   status_.msg = msg;
 }
 
-bool AdapterMap::IsValid() { return ErrorCode::OK == status_.error_code; }
-
-void AdapterMap::Clean() {
-  status_.error_code = ErrorCode::OK;
-  status_.msg = "ok";
-  lanes_router_.clear();
-}
+bool AdapterMap::IsValid() const { return ErrorCode::OK == status_.error_code; }
 
 AdapterMap& AdapterMap::Header() {
   if (!IsValid()) return *this;
@@ -58,46 +52,46 @@ AdapterMap& AdapterMap::Junctions() {
   if (!IsValid()) return *this;
   for (const auto& ele_junction : ele_map_->junctions) {
     core::Junction::Ptr junction_ptr = std::make_shared<core::Junction>();
-    JunctionAttributes(&ele_junction, junction_ptr)
-        .JunctionConnection(&ele_junction, junction_ptr);
+    JunctionAttributes(ele_junction, junction_ptr)
+        .JunctionConnection(ele_junction, junction_ptr);
     map_ptr_->junctions[junction_ptr->id] = junction_ptr;
   }
   return *this;
 }
 
 AdapterMap& AdapterMap::JunctionAttributes(
-    const element::Junction* ele_junction, core::Junction::Ptr junction_ptr) {
+    const element::Junction& ele_junction, core::Junction::Ptr junction_ptr) {
   if (!IsValid()) return *this;
-  junction_ptr->id = std::to_string(ele_junction->attributes.id);
-  junction_ptr->name = ele_junction->attributes.name;
+  junction_ptr->id = std::to_string(ele_junction.attributes.id);
+  junction_ptr->name = ele_junction.attributes.name;
   junction_ptr->main_road =
-      -1 == ele_junction->attributes.main_road
+      -1 == ele_junction.attributes.main_road
           ? ""
-          : std::to_string(ele_junction->attributes.main_road);
-  junction_ptr->s_start = ele_junction->attributes.s_start;
-  junction_ptr->s_end = ele_junction->attributes.s_end;
-  junction_ptr->orientation = ele_junction->attributes.orientation;
-  junction_ptr->type = ele_junction->attributes.type;
+          : std::to_string(ele_junction.attributes.main_road);
+  junction_ptr->s_start = ele_junction.attributes.s_start;
+  junction_ptr->s_end = ele_junction.attributes.s_end;
+  junction_ptr->orientation = ele_junction.attributes.orientation;
+  junction_ptr->type = ele_junction.attributes.type;
   return *this;
 }
 
 AdapterMap& AdapterMap::JunctionConnection(
-    const element::Junction* ele_junction, core::Junction::Ptr junction_ptr) {
+    const element::Junction& ele_junction, core::Junction::Ptr junction_ptr) {
   if (!IsValid()) return *this;
-  for (const auto& ele_connection : ele_junction->connections) {
-    core::JunctionConnection connection;
-    connection.id = std::to_string(ele_connection.id);
-    connection.type = ele_connection.type;
-    connection.incoming_road = std::to_string(ele_connection.incoming_road);
-    connection.connecting_road = std::to_string(ele_connection.connecting_road);
-    connection.link_id =
-        connection.incoming_road + "_" + connection.connecting_road;
-    connection.contact_point = ele_connection.contact_point;
-    for (const auto& lane_link : ele_connection.lane_links) {
-      connection.lane_links.emplace_back(std::make_pair(
-          std::to_string(lane_link.from), std::to_string(lane_link.to)));
+  for (const auto& ele_conn : ele_junction.connections) {
+    core::JunctionConnection conn;
+    conn.id = std::to_string(ele_conn.id);
+    conn.type = ele_conn.type;
+    conn.incoming_road = std::to_string(ele_conn.incoming_road);
+    conn.connecting_road = std::to_string(ele_conn.connecting_road);
+    conn.link_id = conn.incoming_road + "_" + conn.connecting_road;
+    conn.contact_point = ele_conn.contact_point;
+    for (const auto& ele_lane_link : ele_conn.lane_links) {
+      conn.lane_links.emplace_back(
+          std::make_pair(std::to_string(ele_lane_link.from),
+                         std::to_string(ele_lane_link.to)));
     }
-    junction_ptr->connections[connection.link_id] = connection;
+    junction_ptr->connections[conn.link_id] = conn;
   }
   return *this;
 }
@@ -106,47 +100,46 @@ AdapterMap& AdapterMap::Roads() {
   if (!IsValid()) return *this;
   for (const auto& ele_road : ele_map_->roads) {
     core::Road::Ptr road_ptr = std::make_shared<core::Road>();
-    RoadAttributes(&ele_road, road_ptr).RoadSections(&ele_road, road_ptr);
+    RoadAttributes(ele_road, road_ptr).RoadSections(ele_road, road_ptr);
     map_ptr_->roads[road_ptr->id] = road_ptr;
   }
   return *this;
 }
 
-AdapterMap& AdapterMap::RoadAttributes(const element::Road* ele_road,
+AdapterMap& AdapterMap::RoadAttributes(const element::Road& ele_road,
                                        core::Road::Ptr road_ptr) {
   if (!IsValid()) return *this;
-  road_ptr->id = std::to_string(ele_road->attributes.id);
-  road_ptr->length = ele_road->attributes.length;
-  road_ptr->predecessor = -1 == ele_road->link.predecessor.id
+  road_ptr->id = std::to_string(ele_road.attributes.id);
+  road_ptr->length = ele_road.attributes.length;
+  road_ptr->predecessor = -1 == ele_road.link.predecessor.id
                               ? ""
-                              : std::to_string(ele_road->link.predecessor.id);
-  road_ptr->successor = -1 == ele_road->link.successor.id
+                              : std::to_string(ele_road.link.predecessor.id);
+  road_ptr->successor = -1 == ele_road.link.successor.id
                             ? ""
-                            : std::to_string(ele_road->link.successor.id);
-  road_ptr->predecessor_type = ele_road->link.predecessor.type;
-  road_ptr->successor_type = ele_road->link.successor.type;
-  road_ptr->predecessor_contact_point =
-      ele_road->link.predecessor.contact_point;
-  road_ptr->successor_contact_point = ele_road->link.successor.contact_point;
+                            : std::to_string(ele_road.link.successor.id);
+  road_ptr->predecessor_type = ele_road.link.predecessor.type;
+  road_ptr->successor_type = ele_road.link.successor.type;
+  road_ptr->predecessor_contact_point = ele_road.link.predecessor.contact_point;
+  road_ptr->successor_contact_point = ele_road.link.successor.contact_point;
   return *this;
 }
 
-AdapterMap& AdapterMap::RoadSections(const element::Road* ele_road,
+AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
                                      core::Road::Ptr road_ptr) {
   if (!IsValid()) return *this;
   element::RoadTypeInfo road_type_info;
   double road_ds = 0.;
-  size_t i = 0;
-  for (const auto& ele_section : ele_road->lanes.lane_sections) {
+  size_t section_idx = 0;
+  for (const auto& ele_section : ele_road.lanes.lane_sections) {
     core::Section::Ptr section = std::make_shared<core::Section>();
     road_ptr->sections.emplace_back(section);
-    section->id = road_ptr->id + "_" + std::to_string(i++);
+    section->id = std::to_string(section_idx++);
     section->start_position = ele_section.s0;
     section->length = ele_section.s1 - ele_section.s0;
     int road_type_index =
-        common::GetLeftValuePoloy3(ele_road->type_info, ele_section.s0);
+        common::GetLeftValuePoloy3(ele_road.type_info, ele_section.s0);
     if (road_type_index >= 0) {
-      road_type_info = ele_road->type_info.at(road_type_index);
+      road_type_info = ele_road.type_info.at(road_type_index);
       section->speed_limit = road_type_info.max_speed;
     }
 
@@ -157,19 +150,17 @@ AdapterMap& AdapterMap::RoadSections(const element::Road* ele_road,
       return *this;
     } else {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
-      lane->id = section->id + "_0";
+      lane->id = "0";
       section->center_lane = lane;
-      this->SectionCenterLine(ele_road->plan_view.geometrys,
-                              ele_road->lanes.lane_offsets, section, road_ds);
+      this->SectionCenterLine(ele_road.plan_view.geometrys,
+                              ele_road.lanes.lane_offsets, section, road_ds);
     }
 
     /// left lanes
     for (size_t i = 0; i < ele_section.left.lanes.size(); i++) {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
-      lane->id = section->id + "_" +
-                 std::to_string(ele_section.left.lanes.at(i).attributes.id);
+      lane->id = std::to_string(ele_section.left.lanes.at(i).attributes.id);
       lane->type = ele_section.left.lanes.at(i).attributes.type;
-      lanes_router_[lane->id] = lane;
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.left.lanes.at(i), lane,
                                   section->center_lane->center_line);
@@ -187,10 +178,8 @@ AdapterMap& AdapterMap::RoadSections(const element::Road* ele_road,
     /// right lanes
     for (size_t i = 0; i < ele_section.right.lanes.size(); i++) {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
-      lane->id = section->id + "_" +
-                 std::to_string(ele_section.right.lanes.at(i).attributes.id);
+      lane->id = std::to_string(ele_section.right.lanes.at(i).attributes.id);
       lane->type = ele_section.right.lanes.at(i).attributes.type;
-      lanes_router_[lane->id] = lane;
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.right.lanes.at(i), lane,
                                   section->center_lane->center_line);
@@ -294,147 +283,13 @@ void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,
   size_t index = 0;
   for (const auto& reference_point : reference_line.points) {
     lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
-    center_point = common::GetOffsetPoint(reference_point, lane_width / 2);
-    center_point.id = core_lane->id + "_" + std::to_string(index++);
+    center_point = common::GetOffsetPoint(reference_point, lane_width / 2.0);
     right_point = common::GetOffsetPoint(reference_point, lane_width);
     core_lane->left_boundary.line.points.emplace_back(reference_point);
     core_lane->center_line.points.emplace_back(center_point);
     core_lane->right_boundary.line.points.emplace_back(right_point);
   }
 }
-
-AdapterMap& AdapterMap::GenerateTopo() {
-  if (!IsValid()) return *this;
-  size_t section_idx = 0;
-  for (const auto& ele_road : ele_map_->roads) {
-    section_idx = 0;
-    for (const auto& ele_section : ele_road.lanes.lane_sections) {
-      for (const auto& ele_lane : ele_section.left.lanes) {
-        if (ele_road.link.predecessor.id >= 0) {  // road has predecessor
-          for (const auto& pre_lane_idx : ele_lane.link.predecessors) {
-            this->RoadLinkPreRoad(ele_road, section_idx, ele_lane,
-                                  pre_lane_idx);
-          }
-        }
-        if (ele_road.link.successor.id >= 0) {  // road has successor
-          for (const auto& suc_lane_idx : ele_lane.link.successors) {
-            this->RoadLinkPreRoad(ele_road, section_idx, ele_lane,
-                                  suc_lane_idx);
-          }
-        }
-      }
-      section_idx++;
-    }
-  }
-
-  return *this;
-}
-
-void AdapterMap::RoadLinkPreRoad(const element::Road& cur_ele_road,
-                                 element::Idx cur_section_idx,
-                                 const element::Lane& cur_ele_lane,
-                                 element::Idx pre_lane_idx) {
-  auto road_pre_attr = cur_ele_road.link.predecessor;
-  core::Id cur_lane_id = std::to_string(cur_ele_road.attributes.id) + "_" +
-                         std::to_string(cur_section_idx) + "_" +
-                         std::to_string(cur_ele_lane.attributes.id);
-  core::Id pre_lane_id;
-  if (0 == cur_section_idx &&
-      map_ptr_->roads.count(std::to_string(road_pre_attr.id))) {
-    auto pre_road = map_ptr_->roads.at(std::to_string(road_pre_attr.id));
-    pre_lane_id = pre_road->id + "_" +
-                  std::to_string(pre_road->sections.size() - 1) + "_" +
-                  std::to_string(pre_lane_idx);
-  } else {
-    pre_lane_id = std::to_string(cur_ele_road.attributes.id) + "_" +
-                  std::to_string(cur_section_idx - 1) + "_" +
-                  std::to_string(pre_lane_idx);
-  }
-  if (pre_lane_id.empty() || cur_lane_id.empty() ||
-      0 == lanes_router_.count(pre_lane_id) ||
-      0 == lanes_router_.count(cur_lane_id)) {
-    return;
-  }
-  auto pre_core_lane = lanes_router_.at(pre_lane_id);
-  auto cur_core_lane = lanes_router_.at(cur_lane_id);
-  pre_core_lane->successors.insert(cur_lane_id);
-  cur_core_lane->predecessors.insert(pre_lane_id);
-}
-
-void AdapterMap::RoadLinkSucRoad(const element::Road& cur_ele_road,
-                                 element::Idx cur_section_idx,
-                                 const element::Lane& cur_ele_lane,
-                                 element::Idx suc_lane_idx) {
-  auto road_suc_attr = cur_ele_road.link.successor;
-  core::Id cur_lane_id = std::to_string(cur_ele_road.attributes.id) + "_" +
-                         std::to_string(cur_section_idx) + "_" +
-                         std::to_string(cur_ele_lane.attributes.id);
-  core::Id suc_lane_id;
-  if (cur_ele_road.lanes.lane_sections.size() - 1 == cur_section_idx &&
-      map_ptr_->roads.count(std::to_string(road_suc_attr.id))) {
-    auto suc_road = map_ptr_->roads.at(std::to_string(road_suc_attr.id));
-    suc_lane_id = suc_road->id + "_0_" + std::to_string(suc_lane_idx);
-  } else {
-    suc_lane_id = std::to_string(cur_ele_road.attributes.id) + "_" +
-                  std::to_string(cur_section_idx + 1) + "_" +
-                  std::to_string(suc_lane_idx);
-  }
-  if (suc_lane_id.empty() || cur_lane_id.empty() ||
-      0 == lanes_router_.count(suc_lane_id) ||
-      0 == lanes_router_.count(cur_lane_id)) {
-    return;
-  }
-  auto suc_core_lane = lanes_router_.at(suc_lane_id);
-  auto cur_core_lane = lanes_router_.at(cur_lane_id);
-  cur_core_lane->successors.insert(suc_lane_id);
-  suc_core_lane->predecessors.insert(cur_lane_id);
-}
-
-// void AdapterMap::LinkDefaultJunction(
-//     const element::JunctionAttributes* ele_attr,
-//     const element::JunctionConnections& ele_conns) {
-//   ContactPointType contact_point = ContactPointType::UNKNOWN;
-//   core::Id incoming_lane_id;
-//   core::Id connecting_lane_id;
-//   for (const auto& ele_conn : ele_conns) {
-//     contact_point = ele_conn.contact_point;
-//     if (ele_conn.incoming_road < 0 || ele_conn.connecting_road < 0 ||
-//         0 == map_ptr_->roads.count(std::to_string(ele_conn.incoming_road)) ||
-//         0 == map_ptr_->roads.count(std::to_string(ele_conn.connecting_road)))
-//         {
-//       continue;
-//     }
-//     auto incoming_road =
-//         map_ptr_->roads.at(std::to_string(ele_conn.incoming_road));
-//     auto connecting_road =
-//         map_ptr_->roads.at(std::to_string(ele_conn.connecting_road));
-
-//     for (const auto& ele_link : ele_conn.lane_links) {
-//       incoming_lane_id =
-//           incoming_road->id + "_0_" + std::to_string(ele_link.from);
-//       connecting_lane_id =
-//           connecting_road->id + "_" +
-//           std::to_string(connecting_road->sections.size() - 1) + "_" +
-//           std::to_string(ele_link.to);
-//       if (incoming_lane_id.empty() || connecting_lane_id.empty() ||
-//           0 == lanes_router_.count(incoming_lane_id) ||
-//           0 == lanes_router_.count(connecting_lane_id)) {
-//         continue;
-//       }
-//       if (ContactPointType::END == contact_point) {
-//         auto incoming_lane = lanes_router_.at(incoming_lane_id);
-//         auto connecting_lane = lanes_router_.at(connecting_lane_id);
-//         incoming_lane->predecessors.insert(connecting_lane_id);
-//         connecting_lane->successors.insert(incoming_lane_id);
-//       } else {
-//         auto incoming_lane = lanes_router_.at(incoming_lane_id);
-//         auto connecting_lane = lanes_router_.at(connecting_lane_id);
-//         incoming_lane->successors.insert(connecting_lane_id);
-//         connecting_lane->predecessors.insert(incoming_lane_id);
-//       }
-//     }
-//   }
-// }
 
 }  // namespace adapter
 }  // namespace opendrive
