@@ -22,10 +22,10 @@ class Parser {
   Parser();
   std::string GetOpenDriveVersion() const;
   opendrive::Status ParseMap(const std::string& xml_file,
-                             element::Map* ele_map);
+                             element::Map::Ptr ele_map);
   opendrive::Status ParseMap(const tinyxml2::XMLElement* xml_root,
-                             element::Map* ele_map);
-  opendrive::Status Adapter(const element::Map* ele_map, core::Map::Ptr map_ptr,
+                             element::Map::Ptr ele_map);
+  opendrive::Status Adapter(element::Map::Ptr ele_map, core::Map::Ptr map_ptr,
                             float step = 0.5);
   opendrive::Status SaveData(core::Map::Ptr map_ptr,
                              const std::string& file_path);

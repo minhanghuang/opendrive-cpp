@@ -320,10 +320,12 @@ RoadXmlParser& RoadXmlParser::LanesElement() {
                "ROAD LANES SECTION ELEMENT IS NULL.");
     return *this;
   }
+  size_t section_idx = 0;
   Status status{ErrorCode::OK, "ok"};
   RoadLanesSectionXmlParser section_parser{this->opendrive_version()};
   while (curr_xml_section) {
     element::LaneSection lane_section;
+    lane_section.id = section_idx++;
     status = section_parser.Parse(curr_xml_section, &lane_section);
     CheckStatus(status);
     ele_road_->lanes.lane_sections.emplace_back(lane_section);

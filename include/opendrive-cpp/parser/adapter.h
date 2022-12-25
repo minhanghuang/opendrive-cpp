@@ -16,7 +16,7 @@ namespace adapter {
 class AdapterMap {
  public:
   AdapterMap();
-  opendrive::Status Start(const element::Map* ele_map, core::Map::Ptr map_ptr,
+  opendrive::Status Start(element::Map::Ptr ele_map, core::Map::Ptr map_ptr,
                           float step = 0.5);
 
  private:
@@ -43,7 +43,7 @@ class AdapterMap {
                            const core::Line& reference_line);
   float step_;
   opendrive::Status status_{ErrorCode::OK, "ok"};
-  const element::Map* ele_map_;
+  element::Map::Ptr ele_map_;
   core::Map::Ptr map_ptr_;
 };
 

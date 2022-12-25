@@ -4,7 +4,7 @@ namespace opendrive {
 namespace parser {
 
 opendrive::Status MapXmlParser::Parse(const tinyxml2::XMLElement* xml_map,
-                                      element::Map* ele_map) {
+                                      element::Map::Ptr ele_map) {
   xml_map_ = xml_map;
   ele_map_ = ele_map;
   if (!xml_map_ || !ele_map_) {

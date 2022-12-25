@@ -10,7 +10,7 @@ namespace adapter {
 
 AdapterMap::AdapterMap() {}
 
-opendrive::Status AdapterMap::Start(const element::Map* ele_map,
+opendrive::Status AdapterMap::Start(element::Map::Ptr ele_map,
                                     core::Map::Ptr map_ptr, float step) {
   ele_map_ = ele_map;
   map_ptr_ = map_ptr;
@@ -51,6 +51,9 @@ AdapterMap& AdapterMap::Header() {
 AdapterMap& AdapterMap::Junctions() {
   if (!IsValid()) return *this;
   for (const auto& ele_junction : ele_map_->junctions) {
+    if (ele_junction.attributes.id < 0) {
+      continue;
+    }
     core::Junction::Ptr junction_ptr = std::make_shared<core::Junction>();
     JunctionAttributes(ele_junction, junction_ptr)
         .JunctionConnection(ele_junction, junction_ptr);
@@ -99,6 +102,9 @@ AdapterMap& AdapterMap::JunctionConnection(
 AdapterMap& AdapterMap::Roads() {
   if (!IsValid()) return *this;
   for (const auto& ele_road : ele_map_->roads) {
+    if (ele_road.attributes.id < 0) {
+      continue;
+    }
     core::Road::Ptr road_ptr = std::make_shared<core::Road>();
     RoadAttributes(ele_road, road_ptr).RoadSections(ele_road, road_ptr);
     map_ptr_->roads[road_ptr->id] = road_ptr;
@@ -129,11 +135,10 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
   if (!IsValid()) return *this;
   element::RoadTypeInfo road_type_info;
   double road_ds = 0.;
-  size_t section_idx = 0;
   for (const auto& ele_section : ele_road.lanes.lane_sections) {
     core::Section::Ptr section = std::make_shared<core::Section>();
     road_ptr->sections.emplace_back(section);
-    section->id = std::to_string(section_idx++);
+    section->id = std::to_string(ele_section.id);
     section->start_position = ele_section.s0;
     section->length = ele_section.s1 - ele_section.s0;
     int road_type_index =
@@ -158,6 +163,9 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
 
     /// left lanes
     for (size_t i = 0; i < ele_section.left.lanes.size(); i++) {
+      if (ele_section.left.lanes.at(i).attributes.id < 0) {
+        continue;
+      }
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = std::to_string(ele_section.left.lanes.at(i).attributes.id);
       lane->type = ele_section.left.lanes.at(i).attributes.type;
@@ -177,6 +185,9 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
 
     /// right lanes
     for (size_t i = 0; i < ele_section.right.lanes.size(); i++) {
+      if (ele_section.right.lanes.at(i).attributes.id < 0) {
+        continue;
+      }
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = std::to_string(ele_section.right.lanes.at(i).attributes.id);
       lane->type = ele_section.right.lanes.at(i).attributes.type;

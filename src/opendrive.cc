@@ -13,7 +13,7 @@ std::string Parser::GetOpenDriveVersion() const {
 }
 
 opendrive::Status Parser::ParseMap(const std::string& xml_file,
-                                   element::Map* ele_map) {
+                                   element::Map::Ptr ele_map) {
   tinyxml2::XMLDocument xml_doc;
   xml_doc.LoadFile(xml_file.c_str());
   if (xml_doc.Error()) {
@@ -25,11 +25,11 @@ opendrive::Status Parser::ParseMap(const std::string& xml_file,
 }
 
 opendrive::Status Parser::ParseMap(const tinyxml2::XMLElement* xml_root,
-                                   element::Map* ele_map) {
+                                   element::Map::Ptr ele_map) {
   return map_parser_->Parse(xml_root, ele_map);
 }
 
-opendrive::Status Parser::Adapter(const element::Map* ele_map,
+opendrive::Status Parser::Adapter(element::Map::Ptr ele_map,
                                   core::Map::Ptr map_ptr, float step) {
   return adapter_->Start(ele_map, map_ptr, step);
 }
