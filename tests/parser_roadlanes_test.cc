@@ -52,10 +52,10 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
   ASSERT_TRUE(xml_root != nullptr);
-  opendrive::element::Map ele_map;
-  auto ret = parser->ParseMap(xml_root, &ele_map);
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto ret = parser->ParseMap(xml_root, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
-  auto ele_lanes = ele_map.roads.front().lanes;
+  auto ele_lanes = ele_map->roads.front().lanes;
   /// offset
   ASSERT_TRUE(2 == ele_lanes.lane_offsets.size());
   ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).s);

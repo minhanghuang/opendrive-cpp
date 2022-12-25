@@ -62,16 +62,16 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
   ASSERT_TRUE(xml_road != nullptr);
   opendrive::element::Road ele_road;
-  opendrive::element::Map ele_map;
+  auto ele_map = std::make_shared<opendrive::element::Map>();
   auto core_map = std::make_shared<opendrive::core::Map>();
 
   /// parse
-  auto ret = parser->ParseMap(xml_root, &ele_map);
+  auto ret = parser->ParseMap(xml_root, ele_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  ASSERT_EQ(2, ele_map.roads.size());
+  ASSERT_EQ(2, ele_map->roads.size());
 
   /// adapter
-  ret = parser->Adapter(&ele_map, core_map);
+  ret = parser->Adapter(ele_map, core_map);
   std::cout << "ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
@@ -118,31 +118,42 @@ TEST_F(TestAdapterMap, TestLaneLink) {
   instance = new (std::nothrow) tinyxml2::XMLDocument();
   instance->LoadFile(file_path.c_str());
   const tinyxml2::XMLElement* xml_root = instance->RootElement();
-  opendrive::element::Map ele_map;
+  auto ele_map = std::make_shared<opendrive::element::Map>();
   auto core_map = std::make_shared<opendrive::core::Map>();
 
   /// parse
-  auto ret = parser->ParseMap(xml_root, &ele_map);
+  auto ret = parser->ParseMap(xml_root, ele_map);
   std::cout << "parse ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  ASSERT_EQ(16, ele_map.roads.size());
+  ASSERT_EQ(16, ele_map->roads.size());
 
   /// adapter
-  ret = parser->Adapter(&ele_map, core_map);
+  ret = parser->Adapter(ele_map, core_map);
   std::cout << "adapte ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
   /// check
+  for (const auto& road : core_map->roads) {
+    for (const auto& section : road.second->sections) {
+      for (const auto& lane : section->left_lanes) {
+        ASSERT_TRUE(lane->id > "0");
+      }
+      ASSERT_TRUE(section->center_lane->id == "0");
+      for (const auto& lane : section->right_lanes) {
+        ASSERT_TRUE(lane->id < "0");
+      }
+    }
+  }
+
   auto road_0 = core_map->roads.at("0");
   ASSERT_TRUE(nullptr != road_0);
   ASSERT_EQ("", road_0->successor);
   ASSERT_EQ("1", road_0->predecessor);
-  auto lane_0_0_1 = road_0->sections.front()->left_lanes.at(0); 
+  auto lane_0_0_1 = road_0->sections.front()->left_lanes.at(0);
   ASSERT_TRUE(nullptr != lane_0_0_1);
   std::set<core::Id> ex_lane_0_0_1_sucs = {""};
   for (const auto& suc_id : lane_0_0_1->successors) {
-     
-  } 
+  }
   delete instance;
 }
 

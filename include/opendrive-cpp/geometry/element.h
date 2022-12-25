@@ -302,6 +302,7 @@ struct LaneOffset : public OffsetPoly3 {};
 typedef std::vector<LaneOffset> LaneOffsets;
 
 struct LaneSection {
+  Id id = -1;      // [>=0] (extended)
   double s0 = 0.;  // start position
   double s1 = 0.;  // end position(extended)
   LanesInfo left, center, right;

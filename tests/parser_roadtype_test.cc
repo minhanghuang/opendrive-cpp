@@ -52,10 +52,10 @@ TEST_F(TestRoadTypeParser, TestRoadType) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
   ASSERT_TRUE(xml_root != nullptr);
-  opendrive::element::Map ele_map;
-  auto ret = parser->ParseMap(xml_root, &ele_map);
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto ret = parser->ParseMap(xml_root, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
-  auto ele_roadtype = ele_map.roads.front().type_info.front();
+  auto ele_roadtype = ele_map->roads.front().type_info.front();
   ASSERT_DOUBLE_EQ(0.0000000000000000e+0, ele_roadtype.s);
   ASSERT_TRUE(RoadType::TOWN == ele_roadtype.type);
   ASSERT_TRUE(ele_roadtype.country.empty());

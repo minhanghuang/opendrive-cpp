@@ -52,9 +52,9 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
   ASSERT_TRUE(xml_root != nullptr);
-  opendrive::element::Map ele_map;
-  auto ret = parser->ParseMap(xml_root, &ele_map);
-  auto ele_planview = ele_map.roads.front().plan_view;
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto ret = parser->ParseMap(xml_root, ele_map);
+  auto ele_planview = ele_map->roads.front().plan_view;
   ASSERT_EQ(ele_planview.geometrys.size(), 5);
   ASSERT_EQ(5, ele_planview.geometrys.size());
   auto geometry_info1 = ele_planview.geometrys.at(0);

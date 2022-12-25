@@ -52,10 +52,10 @@ TEST_F(TestRoadParser, TestRoad) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   ASSERT_TRUE(xml != nullptr);
-  opendrive::element::Map ele_map;
-  auto ret = parser->ParseMap(xml, &ele_map);
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto ret = parser->ParseMap(xml, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
-  auto ele_road = ele_map.roads.front();
+  auto ele_road = ele_map->roads.front();
 
   /// attributes
   ASSERT_TRUE("Road 0" == ele_road.attributes.name);
@@ -79,7 +79,21 @@ TEST_F(TestRoadParser, TestRoad) {
   ASSERT_TRUE("DE" == type_info_2.country);
   ASSERT_TRUE(RoadSpeedUnit::KMH == type_info_2.speed_unit);
 
+  for (const auto& road : ele_map->roads) {
+    for (const auto& section : road.lanes.lane_sections) {
+      for (const auto& lane : section.left.lanes) {
+        ASSERT_TRUE(lane.attributes.id > 0);
+      }
+      ASSERT_TRUE(section.center.lanes.front().attributes.id == 0);
+      for (const auto& lane : section.right.lanes) {
+        ASSERT_TRUE(lane.attributes.id < 0);
+      }
+    }
+  }
   ASSERT_TRUE(5 == ele_road.lanes.lane_sections.size());
+  for (int i = 0; i < ele_road.lanes.lane_sections.size(); i++) {
+    ASSERT_EQ(i, ele_road.lanes.lane_sections.at(i).id);
+  }
 }
 
 int main(int argc, char* argv[]) {

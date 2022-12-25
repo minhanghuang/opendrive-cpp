@@ -49,15 +49,15 @@ void TestMapParser::SetUp() {}
 TEST_F(TestMapParser, TestMap) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
-  opendrive::element::Map ele_map;
-  auto ret = parser->ParseMap(xml, &ele_map);
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto ret = parser->ParseMap(xml, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
 }
 
 TEST_F(TestMapParser, TestMapFile) {
   auto parser = GetParser();
-  opendrive::element::Map ele_map;
-  auto ret = parser->ParseMap(xml_file_path, &ele_map);
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto ret = parser->ParseMap(xml_file_path, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
 }
 

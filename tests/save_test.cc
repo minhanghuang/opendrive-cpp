@@ -48,7 +48,7 @@ class TestSaveData : public testing::Test {
 
 std::string TestSaveData::xml_file_path =
     "/Users/cox/work/code/github/opendrive-files/carla-simulator/Town01.xodr";
-    // "./tests/data/Ex_Simple-LaneOffset.xodr";
+// "./tests/data/Ex_Simple-LaneOffset.xodr";
 
 void TestSaveData::SetUpTestCase() {}
 void TestSaveData::TearDownTestCase() {}
@@ -60,16 +60,15 @@ TEST_F(TestSaveData, TestSaveData) {
   const tinyxml2::XMLElement* xml_root = GetXml()->RootElement();
   const tinyxml2::XMLElement* xml_road = xml_root->FirstChildElement("road");
   ASSERT_TRUE(xml_road != nullptr);
-  opendrive::element::Road ele_road;
-  opendrive::element::Map ele_map;
+  auto ele_map = std::make_shared<opendrive::element::Map>();
   auto core_map = std::make_shared<opendrive::core::Map>();
 
   /// parse
-  auto ret = parser->ParseMap(xml_root, &ele_map);
+  auto ret = parser->ParseMap(xml_root, ele_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
   /// adapter
-  ret = parser->Adapter(&ele_map, core_map);
+  ret = parser->Adapter(ele_map, core_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
   // const std::string file_path = "./oxrd.xml";
   const std::string file_path = "./carla-01.xml";
