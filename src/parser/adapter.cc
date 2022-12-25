@@ -163,7 +163,7 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
 
     /// left lanes
     for (size_t i = 0; i < ele_section.left.lanes.size(); i++) {
-      if (ele_section.left.lanes.at(i).attributes.id < 0) {
+      if (ele_section.id < 0) {
         continue;
       }
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
@@ -185,7 +185,7 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
 
     /// right lanes
     for (size_t i = 0; i < ele_section.right.lanes.size(); i++) {
-      if (ele_section.right.lanes.at(i).attributes.id < 0) {
+      if (ele_section.id < 0) {
         continue;
       }
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
