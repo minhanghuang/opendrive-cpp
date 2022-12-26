@@ -102,6 +102,7 @@ typedef std::unordered_map<core::Id, JunctionConnection> JunctionConnections;
 typedef struct Junction JunctionTypedef;
 struct Junction {
   typedef std::shared_ptr<JunctionTypedef> Ptr;
+  typedef std::shared_ptr<JunctionTypedef const> ConstPtr;
   Id id;
   std::string name;
   Id main_road;                    // virtual junctions v1.7
