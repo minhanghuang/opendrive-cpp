@@ -150,7 +150,10 @@ TEST_F(TestAdapterMap, TestLaneLink) {
   ASSERT_EQ("", road_0->successor);
   ASSERT_EQ("1", road_0->predecessor);
   auto lane_0_0_1 = road_0->sections.front()->left_lanes.at(0);
+  auto lane_0_0_0 = road_0->sections.front()->center_lane;
   ASSERT_TRUE(nullptr != lane_0_0_1);
+  ASSERT_TRUE(nullptr != lane_0_0_0);
+  ASSERT_EQ(opendrive::LaneType::DRIVING, lane_0_0_0->type);
   std::set<core::Id> ex_lane_0_0_1_sucs = {""};
   for (const auto& suc_id : lane_0_0_1->successors) {
   }

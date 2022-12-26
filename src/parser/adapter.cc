@@ -156,6 +156,7 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
     } else {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = "0";
+      lane->type = ele_section.center.lanes.front().attributes.type;
       section->center_lane = lane;
       this->SectionCenterLine(ele_road.plan_view.geometrys,
                               ele_road.lanes.lane_offsets, section, road_ds);
