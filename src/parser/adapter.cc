@@ -156,6 +156,7 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
     } else {
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = "0";
+      lane->length = section->length;
       lane->type = ele_section.center.lanes.front().attributes.type;
       section->center_lane = lane;
       this->SectionCenterLine(ele_road.plan_view.geometrys,
@@ -169,6 +170,7 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
       }
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = std::to_string(ele_section.left.lanes.at(i).attributes.id);
+      lane->length = section->length;
       lane->type = ele_section.left.lanes.at(i).attributes.type;
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.left.lanes.at(i), lane,
@@ -191,6 +193,7 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
       }
       core::Lane::Ptr lane = std::make_shared<core::Lane>();
       lane->id = std::to_string(ele_section.right.lanes.at(i).attributes.id);
+      lane->length = section->length;
       lane->type = ele_section.right.lanes.at(i).attributes.type;
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.right.lanes.at(i), lane,

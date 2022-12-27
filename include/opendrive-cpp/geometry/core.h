@@ -50,6 +50,7 @@ struct Lane {
   typedef std::shared_ptr<LaneTypedef const> ConstPtr;
   Id id;  // [required]
   LaneType type = LaneType::UNKNOWN;
+  double length = 0.;
   Line center_line;
   LaneBoundary left_boundary;
   LaneBoundary right_boundary;

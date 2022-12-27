@@ -136,10 +136,13 @@ TEST_F(TestAdapterMap, TestLaneLink) {
   for (const auto& road : core_map->roads) {
     for (const auto& section : road.second->sections) {
       for (const auto& lane : section->left_lanes) {
+        ASSERT_EQ(section->length, lane->length);
         ASSERT_TRUE(lane->id > "0");
       }
       ASSERT_TRUE(section->center_lane->id == "0");
+      ASSERT_EQ(section->length, section->center_lane->length);
       for (const auto& lane : section->right_lanes) {
+        ASSERT_EQ(section->length, lane->length);
         ASSERT_TRUE(lane->id < "0");
       }
     }
