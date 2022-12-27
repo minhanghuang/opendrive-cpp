@@ -252,6 +252,10 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
       center_point.s = section_ds;
     }
     core_section->center_lane->center_line.points.emplace_back(center_point);
+    core_section->center_lane->left_boundary.line.points.emplace_back(
+        center_point);
+    core_section->center_lane->right_boundary.line.points.emplace_back(
+        center_point);
     section_ds += step_;
     road_ds += step_;
   }

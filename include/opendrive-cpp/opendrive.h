@@ -16,8 +16,10 @@
 
 namespace opendrive {
 
+typedef class Parser ParserType;
 class Parser {
  public:
+  typedef std::shared_ptr<ParserType> Ptr;
   ~Parser() = default;
   Parser();
   std::string GetOpenDriveVersion() const;

@@ -30,6 +30,7 @@ struct PointXD : public Point2D {
   Id id;
   double s = 0.;
   double hdg = 0.;
+  Id parent;  // lane id
 };
 typedef std::vector<PointXD> PointXDs;
 
@@ -48,7 +49,8 @@ struct Lane {
   typedef std::shared_ptr<LaneTypedef> Ptr;
   typedef std::vector<Ptr> Ptrs;
   typedef std::shared_ptr<LaneTypedef const> ConstPtr;
-  Id id;  // [required]
+  Id id;      // [required]
+  Id parent;  // section id
   LaneType type = LaneType::UNKNOWN;
   double length = 0.;
   Line center_line;
@@ -65,7 +67,8 @@ struct Section {
   typedef std::shared_ptr<SectionTypedef> Ptr;
   typedef std::vector<Ptr> Ptrs;
   typedef std::shared_ptr<SectionTypedef const> ConstPtr;
-  Id id;  // [required]
+  Id id;      // [required]
+  Id parent;  // road id
   double start_position = 0.;
   double length = 0.;
   double speed_limit = 0.;  // km/h

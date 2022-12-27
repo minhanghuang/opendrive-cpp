@@ -75,6 +75,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
       tinyxml2::XMLElement* ele_section = xml_doc_.NewElement("section");
       ele_road->InsertEndChild(ele_section);
       ele_section->SetAttribute("id", section->id.c_str());
+      
       tinyxml2::XMLElement* ele_reference =
           xml_doc_.NewElement("reference_line");
       ele_section->InsertEndChild(ele_reference);
