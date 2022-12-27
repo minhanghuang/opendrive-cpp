@@ -290,9 +290,7 @@ void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,
   double lane_width = 0.;
   core::PointXD right_point;
   core::PointXD center_point;
-  const int lane_direction =
-      LaneDirection::LEFT == common::GetLaneDirection(core_lane->id) ? 1 : -1;
-  size_t index = 0;
+  const int lane_direction = core_lane->id > "0" ? 1 : -1;
   for (const auto& reference_point : reference_line.points) {
     lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
     center_point = common::GetOffsetPoint(reference_point, lane_width / 2.0);

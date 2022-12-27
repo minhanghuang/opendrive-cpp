@@ -47,8 +47,8 @@ class TestSaveData : public testing::Test {
 };
 
 std::string TestSaveData::xml_file_path =
-    "/Users/cox/work/code/github/opendrive-files/carla-simulator/Town01.xodr";
-// "./tests/data/Ex_Simple-LaneOffset.xodr";
+    // "/Users/cox/work/code/github/opendrive-files/carla-simulator/Town01.xodr";
+"./tests/data/Ex_Simple-LaneOffset.xodr";
 
 void TestSaveData::SetUpTestCase() {}
 void TestSaveData::TearDownTestCase() {}
@@ -70,8 +70,8 @@ TEST_F(TestSaveData, TestSaveData) {
   /// adapter
   ret = parser->Adapter(ele_map, core_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  // const std::string file_path = "./oxrd.xml";
-  const std::string file_path = "./carla-01.xml";
+  const std::string file_path = "./oxrd.xml";
+  // const std::string file_path = "./carla-01.xml";
   parser->SaveData(core_map, file_path);
 }
 

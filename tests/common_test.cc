@@ -54,18 +54,6 @@ void TestCommon::TearDownTestCase() {}
 void TestCommon::TearDown() {}
 void TestCommon::SetUp() {}
 
-TEST_F(TestCommon, TestIsLeftLane) {
-  std::string lane_id = "1_1_1";
-  auto ret = common::GetLaneDirection(lane_id);
-  ASSERT_EQ(ret, LaneDirection::LEFT);
-  lane_id = "1_1_0";
-  ret = common::GetLaneDirection(lane_id);
-  ASSERT_EQ(ret, LaneDirection::CENTER);
-  lane_id = "1_1_-2";
-  ret = common::GetLaneDirection(lane_id);
-  ASSERT_EQ(ret, LaneDirection::RIGHT);
-}
-
 TEST_F(TestCommon, TestVectorSort) {
   std::vector<element::LaneOffset> lane_offsets;
   element::LaneOffset l1, l2, l3, l4, l5;

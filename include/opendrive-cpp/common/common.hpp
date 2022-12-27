@@ -113,20 +113,6 @@ static std::vector<std::string> Split(const std::string& str,
   return res;
 }
 
-static LaneDirection GetLaneDirection(const std::string& lane_id) {
-  auto ret = Split(lane_id, "_");
-  if (3 == ret.size()) {
-    if (ret.at(2) > "0") {
-      return LaneDirection::LEFT;
-    } else if ("0" == ret.at(2)) {
-      return LaneDirection::CENTER;
-    } else if (ret.at(2) < "0") {
-      return LaneDirection::RIGHT;
-    }
-  }
-  return LaneDirection::UNKNOWN;
-}
-
 static void Assert(bool r, const std::string& msg = "fault") {
   if (!r) {
     std::cout << "assert msg: " << msg << std::endl;
