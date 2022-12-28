@@ -33,6 +33,8 @@ class RoadLanesSectionXmlParser : public XmlParser {
       const tinyxml2::XMLElement* xml_lane, element::Lane& ele_lane);
   RoadLanesSectionXmlParser& ParseLaneRoadMarkEle(
       const tinyxml2::XMLElement* xml_lane, element::Lane& ele_lane);
+  RoadLanesSectionXmlParser& ParseLaneSpeedEle(
+      const tinyxml2::XMLElement* xml_lane, element::Lane& ele_lane);
   const tinyxml2::XMLElement* xml_section_;
   element::LaneSection* ele_section_;
 };

@@ -65,7 +65,8 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneEle(
       .ParseLaneWidthEle(xml_lane, ele_lane)
       .ParseLaneLinkEle(xml_lane, ele_lane)
       .ParseLaneBorderEle(xml_lane, ele_lane)
-      .ParseLaneRoadMarkEle(xml_lane, ele_lane);
+      .ParseLaneRoadMarkEle(xml_lane, ele_lane)
+      .ParseLaneSpeedEle(xml_lane, ele_lane);
   return *this;
 }
 
@@ -240,6 +241,27 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneRoadMarkEle(
     curr_xml_mark = common::XmlNextSiblingElement(curr_xml_mark);
   }
   common::VectorSortPoloy3(ele_lane.road_marks);
+  return *this;
+}
+
+RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneSpeedEle(
+    const tinyxml2::XMLElement* xml_lane, element::Lane& ele_lane) {
+  if (!IsValid()) return *this;
+  const tinyxml2::XMLElement* curr_xml_speed =
+      xml_lane->FirstChildElement("speed");
+  while (curr_xml_speed) {
+    element::LaneSpeed lane_speed;
+    common::XmlQueryDoubleAttribute(curr_xml_speed, "sOffset", lane_speed.s);
+    common::XmlQueryFloatAttribute(curr_xml_speed, "max", lane_speed.max);
+    common::XmlQueryEnumAttribute(curr_xml_speed, "unit", lane_speed.unit,
+                                  std::map<std::string, SpeedUnit>{
+                                      std::make_pair("km/h", SpeedUnit::KMH),
+                                      std::make_pair("m/s", SpeedUnit::MS),
+                                      std::make_pair("mph", SpeedUnit::MPH)});
+    ele_lane.max_speeds.emplace_back(lane_speed);
+    curr_xml_speed = common::XmlNextSiblingElement(curr_xml_speed);
+  }
+  common::VectorSortPoloy3(ele_lane.max_speeds);
   return *this;
 }
 

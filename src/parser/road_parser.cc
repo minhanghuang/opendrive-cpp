@@ -126,15 +126,13 @@ RoadXmlParser& RoadXmlParser::TypeElement() {
     const tinyxml2::XMLElement* speed_ele =
         curr_xml_type->FirstChildElement("speed");
     if (speed_ele) {
-      common::XmlQueryDoubleAttribute(speed_ele, "max",
-                                      ele_road_type.max_speed);
-      common::XmlQueryEnumAttribute(
-          speed_ele, "unit", ele_road_type.speed_unit,
-          std::map<std::string, RoadSpeedUnit>{
-              std::make_pair("m/s", RoadSpeedUnit::MS),
-              std::make_pair("mph", RoadSpeedUnit::MPH),
-              std::make_pair("km/h", RoadSpeedUnit::KMH),
-          });
+      common::XmlQueryFloatAttribute(speed_ele, "max", ele_road_type.max_speed);
+      common::XmlQueryEnumAttribute(speed_ele, "unit", ele_road_type.speed_unit,
+                                    std::map<std::string, SpeedUnit>{
+                                        std::make_pair("m/s", SpeedUnit::MS),
+                                        std::make_pair("mph", SpeedUnit::MPH),
+                                        std::make_pair("km/h", SpeedUnit::KMH),
+                                    });
     }
     ele_road_->type_info.emplace_back(ele_road_type);
     curr_xml_type = common::XmlNextSiblingElement(curr_xml_type);

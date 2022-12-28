@@ -40,7 +40,7 @@ class AdapterMap {
                                      double road_ds);
   void GenerateLaneSamples(const element::Lane& ele_lane,
                            core::Lane::Ptr core_lane,
-                           const core::Line& reference_line);
+                           const core::Lane::Points& reference_line);
   float step_;
   opendrive::Status status_{ErrorCode::OK, "ok"};
   element::Map::Ptr ele_map_;

@@ -82,7 +82,7 @@ AdapterMap& AdapterMap::JunctionConnection(
     const element::Junction& ele_junction, core::Junction::Ptr junction_ptr) {
   if (!IsValid()) return *this;
   for (const auto& ele_conn : ele_junction.connections) {
-    core::JunctionConnection conn;
+    core::Junction::Connection conn;
     conn.id = std::to_string(ele_conn.id);
     conn.type = ele_conn.type;
     conn.incoming_road = std::to_string(ele_conn.incoming_road);
@@ -117,6 +117,7 @@ AdapterMap& AdapterMap::RoadAttributes(const element::Road& ele_road,
   if (!IsValid()) return *this;
   road_ptr->id = std::to_string(ele_road.attributes.id);
   road_ptr->length = ele_road.attributes.length;
+
   road_ptr->predecessor = -1 == ele_road.link.predecessor.id
                               ? ""
                               : std::to_string(ele_road.link.predecessor.id);
@@ -139,13 +140,12 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
     core::Section::Ptr section = std::make_shared<core::Section>();
     road_ptr->sections.emplace_back(section);
     section->id = std::to_string(ele_section.id);
-    section->start_position = ele_section.s0;
+    section->s = ele_section.s0;
     section->length = ele_section.s1 - ele_section.s0;
     int road_type_index =
         common::GetLeftValuePoloy3(ele_road.type_info, ele_section.s0);
     if (road_type_index >= 0) {
       road_type_info = ele_road.type_info.at(road_type_index);
-      section->speed_limit = road_type_info.max_speed;
     }
 
     /// center lane
@@ -174,14 +174,14 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
       lane->type = ele_section.left.lanes.at(i).attributes.type;
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.left.lanes.at(i), lane,
-                                  section->center_lane->center_line);
+                                  section->center_lane->central_curve);
       } else {
         this->GenerateLaneSamples(
             ele_section.left.lanes.at(i), lane,
             section->left_lanes.back()->right_boundary.line);
         /// lane left right lane
-        lane->left_lane = section->left_lanes.back()->id;
-        section->left_lanes.back()->right_lane = lane->id;
+        lane->left_neighbor = section->left_lanes.back()->id;
+        section->left_lanes.back()->right_neighbor = lane->id;
       }
       section->left_lanes.emplace_back(lane);
     }
@@ -197,14 +197,14 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
       lane->type = ele_section.right.lanes.at(i).attributes.type;
       if (0 == i) {
         this->GenerateLaneSamples(ele_section.right.lanes.at(i), lane,
-                                  section->center_lane->center_line);
+                                  section->center_lane->central_curve);
       } else {
         this->GenerateLaneSamples(
             ele_section.right.lanes.at(i), lane,
             section->right_lanes.back()->right_boundary.line);
         /// lane left right lane
-        lane->left_lane = section->right_lanes.back()->id;
-        section->right_lanes.back()->right_lane = lane->id;
+        lane->left_neighbor = section->right_lanes.back()->id;
+        section->right_lanes.back()->right_neighbor = lane->id;
       }
       section->right_lanes.emplace_back(lane);
     }
@@ -217,20 +217,20 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
                                    core::Section::Ptr core_section,
                                    double& road_ds) {
   double section_ds = 0.;
-  core_section->center_lane->center_line.points.clear();
+  core_section->center_lane->central_curve.clear();
 
   /// lane_offset
   int laneoffset_index =
-      common::GetLeftValuePoloy3(lane_offsets, core_section->start_position);
+      common::GetLeftValuePoloy3(lane_offsets, core_section->s);
   element::LaneOffset lane_offset;
   if (laneoffset_index >= 0) {
     lane_offset = lane_offsets.at(laneoffset_index);
   }
 
   element::Geometry::Ptr geometry = nullptr;
-  core::PointXD center_point;
   element::Point reference_point;
   element::Point center_offset_point;
+  core::Lane::Point center_point;
   double offset = 0.;
   while (section_ds <= core_section->length) {
     geometry = this->GetGeometry(geometrys, road_ds);
@@ -251,11 +251,9 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
       center_point.hdg = reference_point.hdg;
       center_point.s = section_ds;
     }
-    core_section->center_lane->center_line.points.emplace_back(center_point);
-    core_section->center_lane->left_boundary.line.points.emplace_back(
-        center_point);
-    core_section->center_lane->right_boundary.line.points.emplace_back(
-        center_point);
+    core_section->center_lane->central_curve.emplace_back(center_point);
+    core_section->center_lane->left_boundary.line.emplace_back(center_point);
+    core_section->center_lane->right_boundary.line.emplace_back(center_point);
     section_ds += step_;
     road_ds += step_;
   }
@@ -293,18 +291,18 @@ element::Geometry::Ptr AdapterMap::GetGeometry(
 
 void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,
                                      core::Lane::Ptr core_lane,
-                                     const core::Line& reference_line) {
+                                     const core::Lane::Points& reference_line) {
   double lane_width = 0.;
-  core::PointXD right_point;
-  core::PointXD center_point;
+  core::Lane::Point right_point;
+  core::Lane::Point center_point;
   const int lane_direction = core_lane->id > "0" ? 1 : -1;
-  for (const auto& reference_point : reference_line.points) {
+  for (const auto& reference_point : reference_line) {
     lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
     center_point = common::GetOffsetPoint(reference_point, lane_width / 2.0);
     right_point = common::GetOffsetPoint(reference_point, lane_width);
-    core_lane->left_boundary.line.points.emplace_back(reference_point);
-    core_lane->center_line.points.emplace_back(center_point);
-    core_lane->right_boundary.line.points.emplace_back(right_point);
+    core_lane->left_boundary.line.emplace_back(reference_point);
+    core_lane->central_curve.emplace_back(center_point);
+    core_lane->right_boundary.line.emplace_back(right_point);
   }
 }
 

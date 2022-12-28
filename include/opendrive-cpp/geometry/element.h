@@ -251,22 +251,34 @@ struct RoadMark {
   std::string material = "standard";
   RoadMarkLaneChange lane_change = RoadMarkLaneChange::UNKNOWN;
 };
+typedef std::vector<RoadMark> RoadMarks;
 
 struct LaneWidth : public OffsetPoly3 {};
+typedef std::vector<LaneWidth> LaneWidths;
 
 struct LaneBorder : public OffsetPoly3 {};
+typedef std::vector<LaneBorder> LaneBorders;
 
 struct LaneLink {
   Ids predecessors;
   Ids successors;
 };
+typedef std::vector<LaneLink> LaneLinks;
+
+struct LaneSpeed {
+  double s = 0.;
+  float max = 0.;
+  SpeedUnit unit = SpeedUnit::UNKNOWN;
+};
+typedef std::vector<LaneSpeed> LaneSpeeds;
 
 struct Lane {
   LaneAttributes attributes;
   LaneLink link;
-  std::vector<LaneWidth> widths;
-  std::vector<LaneBorder> borders;
-  std::vector<RoadMark> road_marks;
+  LaneWidths widths;
+  LaneBorders borders;
+  RoadMarks road_marks;
+  LaneSpeeds max_speeds;
   double GetLaneWidth(double ds) const {
     // width >> border
     if (ds < 0) {
@@ -339,8 +351,8 @@ struct RoadTypeInfo {
   double s = 0.;
   RoadType type = RoadType::UNKNOWN;
   std::string country;
-  double max_speed = 0.;
-  RoadSpeedUnit speed_unit = RoadSpeedUnit::UNKNOWN;
+  float max_speed = 0.;
+  SpeedUnit speed_unit = SpeedUnit::UNKNOWN;
 };
 
 struct RoadPlanView {

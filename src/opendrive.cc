@@ -75,11 +75,11 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
       tinyxml2::XMLElement* ele_section = xml_doc_.NewElement("section");
       ele_road->InsertEndChild(ele_section);
       ele_section->SetAttribute("id", section->id.c_str());
-      
+
       tinyxml2::XMLElement* ele_reference =
           xml_doc_.NewElement("reference_line");
       ele_section->InsertEndChild(ele_reference);
-      for (const auto& point : section->center_lane->center_line.points) {
+      for (const auto& point : section->center_lane->central_curve) {
         tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");
         ele_reference->InsertEndChild(ele_point);
         ele_point->SetAttribute("x", point.x);
@@ -97,7 +97,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
         tinyxml2::XMLElement* ele_right_boundary =
             xml_doc_.NewElement("right_boundary");
         ele_lane->InsertEndChild(ele_right_boundary);
-        for (const auto& point : lane->left_boundary.line.points) {
+        for (const auto& point : lane->left_boundary.line) {
           tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");
           ele_left_boundary->InsertEndChild(ele_point);
           ele_point->SetAttribute("x", point.x);
@@ -105,7 +105,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
           ele_point->SetAttribute("s", point.s);
           ele_point->SetAttribute("heading", point.hdg);
         }
-        for (const auto& point : lane->right_boundary.line.points) {
+        for (const auto& point : lane->right_boundary.line) {
           tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");
           ele_right_boundary->InsertEndChild(ele_point);
           ele_point->SetAttribute("x", point.x);
@@ -124,7 +124,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
         tinyxml2::XMLElement* ele_right_boundary =
             xml_doc_.NewElement("right_boundary");
         ele_lane->InsertEndChild(ele_right_boundary);
-        for (const auto& point : lane->left_boundary.line.points) {
+        for (const auto& point : lane->left_boundary.line) {
           tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");
           ele_left_boundary->InsertEndChild(ele_point);
           ele_point->SetAttribute("x", point.x);
@@ -132,7 +132,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
           ele_point->SetAttribute("s", point.s);
           ele_point->SetAttribute("heading", point.hdg);
         }
-        for (const auto& point : lane->right_boundary.line.points) {
+        for (const auto& point : lane->right_boundary.line) {
           tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");
           ele_right_boundary->InsertEndChild(ele_point);
           ele_point->SetAttribute("x", point.x);

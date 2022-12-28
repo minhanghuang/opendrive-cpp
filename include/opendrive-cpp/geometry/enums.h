@@ -118,7 +118,7 @@ enum class RoadType : std::uint8_t {
 
 enum class RoadLinkType { UNKNOWN = 0, ROAD, JUNCTION };
 
-enum class RoadSpeedUnit {
+enum class SpeedUnit {
   UNKNOWN = 0,
   MS,   // m/s
   MPH,  // mph
