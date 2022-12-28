@@ -60,7 +60,7 @@ TEST_F(TestRoadTypeParser, TestRoadType) {
   ASSERT_TRUE(RoadType::TOWN == ele_roadtype.type);
   ASSERT_TRUE(ele_roadtype.country.empty());
   ASSERT_DOUBLE_EQ(25, ele_roadtype.max_speed);
-  ASSERT_TRUE(RoadSpeedUnit::MPH == ele_roadtype.speed_unit);
+  ASSERT_TRUE(SpeedUnit::MPH == ele_roadtype.speed_unit);
 }
 
 int main(int argc, char* argv[]) {

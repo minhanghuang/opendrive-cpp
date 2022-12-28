@@ -71,13 +71,13 @@ TEST_F(TestRoadParser, TestRoad) {
   ASSERT_DOUBLE_EQ(25, type_info_1.max_speed);
   ASSERT_TRUE(RoadType::TOWN == type_info_1.type);
   ASSERT_TRUE("" == type_info_1.country);
-  ASSERT_TRUE(RoadSpeedUnit::MPH == type_info_1.speed_unit);
+  ASSERT_TRUE(SpeedUnit::MPH == type_info_1.speed_unit);
   auto type_info_2 = ele_road.type_info.at(1);
   ASSERT_DOUBLE_EQ(2.0601003600277540e+01, type_info_2.s);
   ASSERT_DOUBLE_EQ(25, type_info_2.max_speed);
   ASSERT_TRUE(RoadType::TOWN == type_info_2.type);
   ASSERT_TRUE("DE" == type_info_2.country);
-  ASSERT_TRUE(RoadSpeedUnit::KMH == type_info_2.speed_unit);
+  ASSERT_TRUE(SpeedUnit::KMH == type_info_2.speed_unit);
 
   for (const auto& road : ele_map->roads) {
     for (const auto& section : road.lanes.lane_sections) {
