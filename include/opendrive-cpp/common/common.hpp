@@ -22,6 +22,10 @@
 namespace opendrive {
 namespace common {
 
+static float SpeedMPH2KMH(float mph) { return mph * 1.60934; }
+
+static float SpeedMS2KMH(float ms) { return ms * 3.6; }
+
 /**
  * @brief 计算偏离点
  *
