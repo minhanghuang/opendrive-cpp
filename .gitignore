@@ -14,7 +14,7 @@ build/
 cmake-build-debug/
 thirdparty/
 build_thirdparty.sh
-compile_commands.jso
+compile_commands.json
 
 __pycache__
 log/*
