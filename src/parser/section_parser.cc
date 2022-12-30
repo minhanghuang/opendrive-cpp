@@ -1,5 +1,7 @@
 #include "opendrive-cpp/parser/section_parser.h"
 
+#include "opendrive-cpp/common/choices.h"
+
 namespace opendrive {
 namespace parser {
 
@@ -78,41 +80,10 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneAttributes(
   common::XmlQueryIntAttribute(xml_lane, "id", ele_lane.attributes.id);
   common::XmlQueryStringAttribute(xml_lane, "type", lane_type);
   common::XmlQueryStringAttribute(xml_lane, "level", lane_level);
-  common::XmlQueryEnumAttribute(
-      xml_lane, "type", ele_lane.attributes.type,
-      std::map<std::string, LaneType>{
-          std::make_pair("shoulder", LaneType::SHOULDER),
-          std::make_pair("border", LaneType::BORDER),
-          std::make_pair("driving", LaneType::DRIVING),
-          std::make_pair("stop", LaneType::STOP),
-          std::make_pair("none", LaneType::NONE),
-          std::make_pair("restricted", LaneType::RESTRICTED),
-          std::make_pair("parking", LaneType::PARKING),
-          std::make_pair("median", LaneType::MEDIAN),
-          std::make_pair("biking", LaneType::BIKING),
-          std::make_pair("sidewalk", LaneType::SIDEWALK),
-          std::make_pair("curb", LaneType::CURB),
-          std::make_pair("exit", LaneType::EXIT),
-          std::make_pair("entry", LaneType::ENTRY),
-          std::make_pair("onRamp", LaneType::ONRAMP),
-          std::make_pair("offRamp", LaneType::OFFRAMP),
-          std::make_pair("connectingRamp", LaneType::CONNECTINGRAMP),
-          std::make_pair("bidirectional", LaneType::BIDIRECTIONAL),
-          std::make_pair("special1", LaneType::SPECIAL1),
-          std::make_pair("special2", LaneType::SPECIAL2),
-          std::make_pair("special3", LaneType::SPECIAL3),
-          std::make_pair("roadWorks", LaneType::ROADWORKS),
-          std::make_pair("tram", LaneType::TRAM),
-          std::make_pair("bus", LaneType::BUS),
-          std::make_pair("taxi", LaneType::TAXI),
-          std::make_pair("HOV", LaneType::HOV),
-          std::make_pair("mwyEntry", LaneType::MWYENTRY),
-          std::make_pair("mwyExit", LaneType::MWYEXIT)});
+  common::XmlQueryEnumAttribute(xml_lane, "type", ele_lane.attributes.type,
+                                LANE_TYPE_CHOICES);
   common::XmlQueryEnumAttribute(xml_lane, "level", ele_lane.attributes.level,
-                                std::map<std::string, Boolean>{
-                                    std::make_pair("false", Boolean::FALSE),
-                                    std::make_pair("true", Boolean::TRUE),
-                                });
+                                BOOLEAN_CHOICES);
   return *this;
 }
 
@@ -200,43 +171,15 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneRoadMarkEle(
     common::XmlQueryDoubleAttribute(curr_xml_mark, "height", road_mark.height);
     common::XmlQueryStringAttribute(curr_xml_mark, "material",
                                     road_mark.material);
-    common::XmlQueryEnumAttribute(
-        curr_xml_mark, "type", road_mark.type,
-        std::map<std::string, RoadMarkType>{
-            std::make_pair("none", RoadMarkType::NONE),
-            std::make_pair("solid", RoadMarkType::SOLID),
-            std::make_pair("broken", RoadMarkType::BROKEN),
-            std::make_pair("solid solid", RoadMarkType::SOLIDSOLID),
-            std::make_pair("solid broken", RoadMarkType::SOLIDBROKEN),
-            std::make_pair("broken solid", RoadMarkType::BROKENSOLID),
-            std::make_pair("broken broken", RoadMarkType::BROKENBROKEN),
-            std::make_pair("botts dots", RoadMarkType::BOTTSDOTS),
-            std::make_pair("grass", RoadMarkType::GRASS),
-            std::make_pair("curb", RoadMarkType::CURB),
-            std::make_pair("custom", RoadMarkType::CUSTOM),
-            std::make_pair("edge", RoadMarkType::EDGE)});
-    common::XmlQueryEnumAttribute(
-        curr_xml_mark, "color", road_mark.color,
-        std::map<std::string, RoadMarkColor>{
-            std::make_pair("standard", RoadMarkColor::STANDARD),
-            std::make_pair("blue", RoadMarkColor::BLUE),
-            std::make_pair("green", RoadMarkColor::GREEN),
-            std::make_pair("red", RoadMarkColor::RED),
-            std::make_pair("white", RoadMarkColor::WHITE),
-            std::make_pair("yellow", RoadMarkColor::YELLOW),
-            std::make_pair("orange", RoadMarkColor::ORANGE)});
-    common::XmlQueryEnumAttribute(
-        curr_xml_mark, "weight", road_mark.weigth,
-        std::map<std::string, RoadMarkWeight>{
-            std::make_pair("bold", RoadMarkWeight::BOLD),
-            std::make_pair("standard", RoadMarkWeight::STANDARD)});
-    common::XmlQueryEnumAttribute(
-        curr_xml_mark, "laneChange", road_mark.lane_change,
-        std::map<std::string, RoadMarkLaneChange>{
-            std::make_pair("increase", RoadMarkLaneChange::INCREASE),
-            std::make_pair("decrease", RoadMarkLaneChange::DECREASE),
-            std::make_pair("both", RoadMarkLaneChange::BOTH),
-            std::make_pair("none", RoadMarkLaneChange::NONE)});
+    common::XmlQueryEnumAttribute(curr_xml_mark, "type", road_mark.type,
+                                  ROADMARK_TYPE_CHOICES);
+    common::XmlQueryEnumAttribute(curr_xml_mark, "color", road_mark.color,
+                                  ROAD_MARK_COLOR_CHOICES);
+    common::XmlQueryEnumAttribute(curr_xml_mark, "weight", road_mark.weigth,
+                                  ROAD_MARK_WEIGHT_CHOICES);
+    common::XmlQueryEnumAttribute(curr_xml_mark, "laneChange",
+                                  road_mark.lane_change,
+                                  ROAD_MARK_LANE_CHANGE_CHOICES);
     ele_lane.road_marks.emplace_back(road_mark);
     curr_xml_mark = common::XmlNextSiblingElement(curr_xml_mark);
   }
@@ -254,10 +197,7 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneSpeedEle(
     common::XmlQueryDoubleAttribute(curr_xml_speed, "sOffset", lane_speed.s);
     common::XmlQueryFloatAttribute(curr_xml_speed, "max", lane_speed.max);
     common::XmlQueryEnumAttribute(curr_xml_speed, "unit", lane_speed.unit,
-                                  std::map<std::string, SpeedUnit>{
-                                      std::make_pair("km/h", SpeedUnit::KMH),
-                                      std::make_pair("m/s", SpeedUnit::MS),
-                                      std::make_pair("mph", SpeedUnit::MPH)});
+                                  SPEEDUNIT_CHOICES);
     ele_lane.max_speeds.emplace_back(lane_speed);
     curr_xml_speed = common::XmlNextSiblingElement(curr_xml_speed);
   }

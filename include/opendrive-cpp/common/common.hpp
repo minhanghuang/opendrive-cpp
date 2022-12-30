@@ -15,6 +15,7 @@
 #include <set>
 #include <string>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 #include "opendrive-cpp/geometry/enums.h"
@@ -213,7 +214,8 @@ static tinyxml2::XMLError XmlQueryDoubleAttribute(
 template <typename T>
 static tinyxml2::XMLError XmlQueryEnumAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name, T& value,
-    const std::map<std::string, T>& items, bool enable_exit = false) {
+    const std::unordered_map<T, std::string>& choices,
+    bool enable_exit = false) {
   std::string var;
   tinyxml2::XMLError ret =
       XmlQueryStringAttribute(xml_node, name, var, enable_exit);
@@ -224,9 +226,9 @@ static tinyxml2::XMLError XmlQueryEnumAttribute(
     return ret;
   }
   ret = tinyxml2::XMLError::XML_ERROR_PARSING_TEXT;
-  for (const auto& item : items) {
-    if (StrEquals(item.first, var)) {
-      value = item.second;
+  for (const auto& choice : choices) {
+    if (StrEquals(choice.second, var)) {
+      value = choice.first;
       ret = tinyxml2::XMLError::XML_SUCCESS;
       break;
     }

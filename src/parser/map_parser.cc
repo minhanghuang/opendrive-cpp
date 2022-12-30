@@ -62,16 +62,12 @@ MapXmlParser& MapXmlParser::JunctionElement() {
                                     ele_junction.attributes.s_end);
     common::XmlQueryStringAttribute(curr_xml_junction, "name",
                                     ele_junction.attributes.name);
-    common::XmlQueryEnumAttribute(
-        curr_xml_junction, "orientation", ele_junction.attributes.orientation,
-        std::map<std::string, Dir>{std::make_pair("+", Dir::PLUS),
-                                   std::make_pair("-", Dir::MINUS)});
-    common::XmlQueryEnumAttribute(
-        curr_xml_junction, "type", ele_junction.attributes.type,
-        std::map<std::string, JunctionType>{
-            std::make_pair("default", JunctionType::DEFAULT),
-            std::make_pair("direct", JunctionType::DIRECT),
-            std::make_pair("virtual", JunctionType::VIRTUAL)});
+    common::XmlQueryEnumAttribute(curr_xml_junction, "orientation",
+                                  ele_junction.attributes.orientation,
+                                  DIR_CHOICES);
+    common::XmlQueryEnumAttribute(curr_xml_junction, "type",
+                                  ele_junction.attributes.type,
+                                  JUNCTION_TYPE_CHOICES);
     // junction connection
     // 1~*
     const tinyxml2::XMLElement* curr_xml_connection =
@@ -84,22 +80,18 @@ MapXmlParser& MapXmlParser::JunctionElement() {
     while (curr_xml_connection) {
       element::JunctionConnection connection;
       common::XmlQueryIntAttribute(curr_xml_connection, "id", connection.id);
-      common::XmlQueryEnumAttribute(
-          curr_xml_connection, "type", connection.type,
-          std::map<std::string, JunctionConnectionType>{
-              std::make_pair("default", JunctionConnectionType::DEFAULT),
-              std::make_pair("virtual", JunctionConnectionType::VIRTUAL)});
+      common::XmlQueryEnumAttribute(curr_xml_connection, "type",
+                                    connection.type,
+                                    JUNCTION_CONNECTION_TYPE_CHOICES);
       common::XmlQueryIntAttribute(curr_xml_connection, "linkedRoad",
                                    connection.linked_road);
       common::XmlQueryIntAttribute(curr_xml_connection, "incomingRoad",
                                    connection.incoming_road);
       common::XmlQueryIntAttribute(curr_xml_connection, "connectingRoad",
                                    connection.connecting_road);
-      common::XmlQueryEnumAttribute(
-          curr_xml_connection, "contactPoint", connection.contact_point,
-          std::map<std::string, ContactPointType>{
-              std::make_pair("start", ContactPointType::START),
-              std::make_pair("end", ContactPointType::END)});
+      common::XmlQueryEnumAttribute(curr_xml_connection, "contactPoint",
+                                    connection.contact_point,
+                                    CONTACT_POINT_TYPE_CHOICES);
       // connection link
       // 0~*
       const tinyxml2::XMLElement* curr_xml_laneLink =

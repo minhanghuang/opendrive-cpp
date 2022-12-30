@@ -5,6 +5,7 @@
 #include <memory>
 #include <mutex>
 
+#include "opendrive-cpp/common/choices.h"
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/element.h"

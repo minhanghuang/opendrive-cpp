@@ -195,8 +195,7 @@ TEST_F(TestCommon, TestXml2) {
   ASSERT_TRUE(road_ptr->attributes.rule == RoadRule::RHT);
   auto ret = opendrive::common::XmlQueryEnumAttribute(
       road_ele, "rule", road_ptr->attributes.rule,
-      std::map<std::string, RoadRule>{std::make_pair("LHT", RoadRule::LHT),
-                                      std::make_pair("RHT", RoadRule::RHT)});
+      opendrive::ROAD_RULE_CHOICES);
   ASSERT_TRUE(road_ptr->attributes.rule == RoadRule::RHT);
 }
 

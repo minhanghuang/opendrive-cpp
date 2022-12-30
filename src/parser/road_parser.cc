@@ -1,5 +1,8 @@
 #include "opendrive-cpp/parser/road_parser.h"
 
+#include <unordered_map>
+
+#include "opendrive-cpp/common/choices.h"
 #include "opendrive-cpp/geometry/enums.h"
 
 namespace opendrive {
@@ -29,10 +32,8 @@ RoadXmlParser& RoadXmlParser::Attributes() {
   std::string rule;
   common::XmlQueryStringAttribute(xml_road_, "name",
                                   ele_road_->attributes.name);
-  common::XmlQueryEnumAttribute(
-      xml_road_, "rule", ele_road_->attributes.rule,
-      std::map<std::string, RoadRule>{std::make_pair("LHT", RoadRule::LHT),
-                                      std::make_pair("RHT", RoadRule::RHT)});
+  common::XmlQueryEnumAttribute(xml_road_, "rule", ele_road_->attributes.rule,
+                                ROAD_RULE_CHOICES);
   common::XmlQueryDoubleAttribute(xml_road_, "length",
                                   ele_road_->attributes.length);
   common::XmlQueryIntAttribute(xml_road_, "id", ele_road_->attributes.id);
@@ -57,41 +58,29 @@ RoadXmlParser& RoadXmlParser::LinkElement() {
                                      ele_road_->link.predecessor.id);
         common::XmlQueryDoubleAttribute(link_type_ele, "elementS",
                                         ele_road_->link.predecessor.s);
-        common::XmlQueryEnumAttribute(
-            link_type_ele, "elementType", ele_road_->link.predecessor.type,
-            std::map<std::string, RoadLinkType>{
-                std::make_pair("road", RoadLinkType::ROAD),
-                std::make_pair("junction", RoadLinkType::JUNCTION)});
-        common::XmlQueryEnumAttribute(
-            link_type_ele, "contactPoint",
-            ele_road_->link.predecessor.contact_point,
-            std::map<std::string, ContactPointType>{
-                std::make_pair("start", ContactPointType::START),
-                std::make_pair("end", ContactPointType::END)});
-        common::XmlQueryEnumAttribute(
-            link_type_ele, "elementDir", ele_road_->link.predecessor.dir,
-            std::map<std::string, Dir>{std::make_pair("+", Dir::PLUS),
-                                       std::make_pair("-", Dir::MINUS)});
+        common::XmlQueryEnumAttribute(link_type_ele, "elementType",
+                                      ele_road_->link.predecessor.type,
+                                      ROAD_LINK_TYPE_CHOICES);
+        common::XmlQueryEnumAttribute(link_type_ele, "contactPoint",
+                                      ele_road_->link.predecessor.contact_point,
+                                      CONTACT_POINT_TYPE_CHOICES);
+        common::XmlQueryEnumAttribute(link_type_ele, "elementDir",
+                                      ele_road_->link.predecessor.dir,
+                                      DIR_CHOICES);
       } else if ("successor" == xml_link_ment) {
         common::XmlQueryIntAttribute(link_type_ele, "elementId",
                                      ele_road_->link.successor.id);
         common::XmlQueryDoubleAttribute(link_type_ele, "elementS",
                                         ele_road_->link.successor.s);
-        common::XmlQueryEnumAttribute(
-            link_type_ele, "elementType", ele_road_->link.successor.type,
-            std::map<std::string, RoadLinkType>{
-                std::make_pair("road", RoadLinkType::ROAD),
-                std::make_pair("junction", RoadLinkType::JUNCTION)});
-        common::XmlQueryEnumAttribute(
-            link_type_ele, "contactPoint",
-            ele_road_->link.successor.contact_point,
-            std::map<std::string, ContactPointType>{
-                std::make_pair("start", ContactPointType::START),
-                std::make_pair("end", ContactPointType::END)});
-        common::XmlQueryEnumAttribute(
-            link_type_ele, "elementDir", ele_road_->link.successor.dir,
-            std::map<std::string, Dir>{std::make_pair("+", Dir::PLUS),
-                                       std::make_pair("-", Dir::MINUS)});
+        common::XmlQueryEnumAttribute(link_type_ele, "elementType",
+                                      ele_road_->link.successor.type,
+                                      ROAD_LINK_TYPE_CHOICES);
+        common::XmlQueryEnumAttribute(link_type_ele, "contactPoint",
+                                      ele_road_->link.successor.contact_point,
+                                      CONTACT_POINT_TYPE_CHOICES);
+        common::XmlQueryEnumAttribute(link_type_ele, "elementDir",
+                                      ele_road_->link.successor.dir,
+                                      DIR_CHOICES);
       }
     }
   }
@@ -106,21 +95,8 @@ RoadXmlParser& RoadXmlParser::TypeElement() {
   while (curr_xml_type) {
     element::RoadTypeInfo ele_road_type;
     common::XmlQueryDoubleAttribute(curr_xml_type, "s", ele_road_type.s);
-    common::XmlQueryEnumAttribute(
-        curr_xml_type, "type", ele_road_type.type,
-        std::map<std::string, RoadType>{
-            std::make_pair("unknown", RoadType::UNKNOWN),
-            std::make_pair("rural", RoadType::RURAL),
-            std::make_pair("motorway", RoadType::MOTORWAY),
-            std::make_pair("town", RoadType::TOWN),
-            std::make_pair("pedestrian", RoadType::PEDESTRIAN),
-            std::make_pair("bicycle", RoadType::BICYCLE),
-            std::make_pair("townExpressway", RoadType::TOWNEXPRESSWAY),
-            std::make_pair("townCollector", RoadType::TOWNCOLLECTOR),
-            std::make_pair("townArterial", RoadType::TOWNARTERIAL),
-            std::make_pair("townPrivate", RoadType::TOWNPRIVATE),
-            std::make_pair("townLocal", RoadType::TOWNLOCAL),
-            std::make_pair("townPlayStreet", RoadType::TOWNPLAYSTREET)});
+    common::XmlQueryEnumAttribute(curr_xml_type, "type", ele_road_type.type,
+                                  ROAD_TYPE_CHOICES);
     common::XmlQueryStringAttribute(curr_xml_type, "country",
                                     ele_road_type.country);
     const tinyxml2::XMLElement* speed_ele =
@@ -128,11 +104,7 @@ RoadXmlParser& RoadXmlParser::TypeElement() {
     if (speed_ele) {
       common::XmlQueryFloatAttribute(speed_ele, "max", ele_road_type.max_speed);
       common::XmlQueryEnumAttribute(speed_ele, "unit", ele_road_type.speed_unit,
-                                    std::map<std::string, SpeedUnit>{
-                                        std::make_pair("m/s", SpeedUnit::MS),
-                                        std::make_pair("mph", SpeedUnit::MPH),
-                                        std::make_pair("km/h", SpeedUnit::KMH),
-                                    });
+                                    SPEEDUNIT_CHOICES);
     }
     ele_road_->type_info.emplace_back(ele_road_type);
     curr_xml_type = common::XmlNextSiblingElement(curr_xml_type);
@@ -261,11 +233,11 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
       common::XmlQueryDoubleAttribute(ele_geometry_type, "dV", dv);
       common::XmlQueryEnumAttribute(
           ele_geometry_type, "pRange", p_range,
-          std::map<std::string, element::GeometryParamPoly3::PRange>{
-              std::make_pair("arcLength",
-                             element::GeometryParamPoly3::PRange::ARCLENGTH),
-              std::make_pair("normalized",
-                             element::GeometryParamPoly3::PRange::NORMALIZED),
+          std::unordered_map<element::GeometryParamPoly3::PRange, std::string>{
+              std::make_pair(element::GeometryParamPoly3::PRange::ARCLENGTH,
+                             "arcLength"),
+              std::make_pair(element::GeometryParamPoly3::PRange::NORMALIZED,
+                             "normalized"),
           });
       std::shared_ptr<element::GeometryParamPoly3> geometry_ptr =
           std::make_shared<element::GeometryParamPoly3>(

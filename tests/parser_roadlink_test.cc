@@ -57,7 +57,7 @@ TEST_F(TestRoadLinkParser, TestRoadLink) {
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
   auto ele_roadlink = ele_map->roads.front().link;
   ASSERT_TRUE(11 == ele_roadlink.predecessor.id);
-  ASSERT_DOUBLE_EQ(0, ele_roadlink.predecessor.s);
+  ASSERT_DOUBLE_EQ(-1, ele_roadlink.predecessor.s);
   ASSERT_TRUE(RoadLinkType::ROAD == ele_roadlink.predecessor.type);
   ASSERT_TRUE(ContactPointType::START ==
               ele_roadlink.predecessor.contact_point);
