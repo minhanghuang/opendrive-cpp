@@ -1,5 +1,6 @@
 #include "opendrive-cpp/parser/adapter.h"
 
+#include <cmath>
 #include <string>
 #include <utility>
 
@@ -256,6 +257,12 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
     core_section->center_lane->right_boundary.line.emplace_back(center_point);
     section_ds += step_;
     road_ds += step_;
+    if (section_ds > core_section->length &&
+        section_ds - core_section->length < step_) {
+      /// 处理section衔接处的缝隙
+      section_ds = core_section->length;
+      road_ds -= (section_ds - core_section->length);
+    }
   }
 }
 
