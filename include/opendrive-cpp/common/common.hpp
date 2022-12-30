@@ -22,6 +22,12 @@
 namespace opendrive {
 namespace common {
 
+template <typename ChoicesMap, typename Type>
+static std::string FormatChoices(const ChoicesMap& choices, Type type) {
+  if (choices.count(type)) return choices.at(type);
+  return "";
+}
+
 static float SpeedMPH2KMH(float mph) { return mph * 1.60934; }
 
 static float SpeedMS2KMH(float ms) { return ms * 3.6; }

@@ -10,6 +10,7 @@
 #include <utility>
 #include <vector>
 
+#include "opendrive-cpp/common/choices.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/opendrive.h"
@@ -53,6 +54,12 @@ void TestCommon::SetUpTestCase() {}
 void TestCommon::TearDownTestCase() {}
 void TestCommon::TearDown() {}
 void TestCommon::SetUp() {}
+
+TEST_F(TestCommon, TestFormatChoices) {
+  opendrive::LaneType type = opendrive::LaneType::DRIVING;
+  ASSERT_EQ("DRIVING",
+            common::FormatChoices(opendrive::LANE_TYPE_CHOICES, type));
+}
 
 TEST_F(TestCommon, TestVectorSort) {
   std::vector<element::LaneOffset> lane_offsets;
