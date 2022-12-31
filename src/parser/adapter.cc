@@ -233,9 +233,13 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
   element::Point center_offset_point;
   core::Lane::Point center_point;
   double offset = 0.;
-  while (section_ds <= core_section->length) {
+  bool last = false;
+  while (!last) {
+    if (section_ds >= core_section->length) {
+      last = true;
+    }
     geometry = this->GetGeometry(geometrys, road_ds);
-    if (nullptr == geometry) {
+    if (!geometry) {
       break;
     }
     reference_point = geometry->GetPoint(road_ds);
@@ -255,13 +259,13 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
     core_section->center_lane->central_curve.emplace_back(center_point);
     core_section->center_lane->left_boundary.line.emplace_back(center_point);
     core_section->center_lane->right_boundary.line.emplace_back(center_point);
-    section_ds += step_;
-    road_ds += step_;
-    if (section_ds > core_section->length &&
-        section_ds - core_section->length < step_) {
-      /// 处理section衔接处的缝隙
+    if (last) {
       section_ds = core_section->length;
       road_ds -= (section_ds - core_section->length);
+      break;
+    } else {
+      section_ds += step_;
+      road_ds += step_;
     }
   }
 }
