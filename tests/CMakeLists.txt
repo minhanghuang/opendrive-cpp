@@ -31,6 +31,7 @@ SET(TEST_SOURCES
   parser_roadtype_test
   adapter_test
   save_test
+  case
 )
 
 FOREACH(test_src ${TEST_SOURCES})

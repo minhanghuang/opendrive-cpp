@@ -219,15 +219,6 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
                                    double& road_ds) {
   double section_ds = 0.;
   core_section->center_lane->central_curve.clear();
-
-  /// lane_offset
-  int laneoffset_index =
-      common::GetLeftValuePoloy3(lane_offsets, core_section->s);
-  element::LaneOffset lane_offset;
-  if (laneoffset_index >= 0) {
-    lane_offset = lane_offsets.at(laneoffset_index);
-  }
-
   element::Geometry::Ptr geometry = nullptr;
   element::Point reference_point;
   element::Point center_offset_point;
@@ -236,6 +227,10 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
   bool last = false;
   while (!last) {
     if (section_ds >= core_section->length) {
+      section_ds = section_ds - step_;
+      road_ds = road_ds - step_;
+      road_ds = road_ds + (core_section->length - section_ds);
+      section_ds = 0;  // next section point, so section_ds = 0;
       last = true;
     }
     geometry = this->GetGeometry(geometrys, road_ds);
@@ -243,8 +238,8 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
       break;
     }
     reference_point = geometry->GetPoint(road_ds);
-    if (laneoffset_index >= 0) {
-      offset = lane_offset.GetOffset(section_ds);
+    offset = this->GetLaneOffsetValue(lane_offsets, road_ds, section_ds);
+    if (offset != 0) {
       center_offset_point = common::GetOffsetPoint(reference_point, offset);
       center_point.x = center_offset_point.x;
       center_point.y = center_offset_point.y;
@@ -260,8 +255,6 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
     core_section->center_lane->left_boundary.line.emplace_back(center_point);
     core_section->center_lane->right_boundary.line.emplace_back(center_point);
     if (last) {
-      section_ds = core_section->length;
-      road_ds -= (section_ds - core_section->length);
       break;
     } else {
       section_ds += step_;
@@ -298,6 +291,15 @@ element::Geometry::Ptr AdapterMap::GetGeometry(
         std::dynamic_pointer_cast<element::GeometryParamPoly3>(geometry_base);
   }
   return geometry;
+}
+
+double AdapterMap::GetLaneOffsetValue(const element::LaneOffsets& offsets,
+                                      double road_ds, double section_ds) {
+  int offset_idx = common::GetLeftValuePoloy3(offsets, road_ds);
+  if (offset_idx >= 0) {
+    return offsets.at(offset_idx).GetOffset(section_ds);
+  }
+  return 0;
 }
 
 void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,

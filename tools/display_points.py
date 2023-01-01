@@ -38,7 +38,7 @@ def ParseMapFile(file_path):
                                         float(point.attrib.get("y")))
                                 right_xs.append(right_x)
                                 right_ys.append(right_y)
-                    if lane.tag == "reference_line":
+                    if lane.tag == "center_lane":
                         reference_x = []
                         reference_y = []
                         for point in lane:
@@ -62,11 +62,11 @@ if __name__ == "__main__":
     left = ret[1]
     right = ret[2]
 
-    for index in range(0, len(reference[0])):
-        plt.plot(reference[0][index], reference[1][index], color='blue')
-
     for index in range(0, len(left[0])):
         plt.plot(right[0][index], right[1][index], color='black')
         plt.plot(left[0][index], left[1][index], color='black')
+
+    for index in range(0, len(reference[0])):
+        plt.plot(reference[0][index], reference[1][index], color='blue')
 
     plt.show()

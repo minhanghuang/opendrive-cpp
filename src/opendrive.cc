@@ -77,7 +77,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
       ele_section->SetAttribute("id", section->id.c_str());
 
       tinyxml2::XMLElement* ele_reference =
-          xml_doc_.NewElement("reference_line");
+          xml_doc_.NewElement("center_lane");
       ele_section->InsertEndChild(ele_reference);
       for (const auto& point : section->center_lane->central_curve) {
         tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");

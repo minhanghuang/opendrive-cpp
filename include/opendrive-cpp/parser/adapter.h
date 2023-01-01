@@ -38,6 +38,8 @@ class AdapterMap {
                          core::Section::Ptr core_section, double& road_ds);
   element::Geometry::Ptr GetGeometry(const element::Geometry::Ptrs& geometrys,
                                      double road_ds);
+  double GetLaneOffsetValue(const element::LaneOffsets& offsets, double road_ds,
+                            double section_ds);
   void GenerateLaneSamples(const element::Lane& ele_lane,
                            core::Lane::Ptr core_lane,
                            const core::Lane::Points& reference_line);
