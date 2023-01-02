@@ -66,7 +66,7 @@ static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
 }
 
 /**
- * @brief 获取第一个小于目标值的元素
+ * @brief 获取目标值左边的元素(包括目标值)
  *
  * @tparam T1 element::Poloy3
  * @tparam T2 number
@@ -75,29 +75,50 @@ static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
  * @return sequence index or -1
  */
 template <typename T1, typename T2>
-static int GetLeftValuePoloy3(const std::vector<T1>& items, T2 target) {
-  if (items.empty() || target < items.at(0).s) {
-    return -1;
+static int GetGEValuePoloy3(const std::vector<T1>& items, T2 target) {
+  if (items.empty() || target < items.at(0).s) return -1;
+  for (int i = items.size() - 1; i >= 0; i--) {
+    if (target >= items.at(i).s) return i;
   }
-  for (size_t i = items.size() - 1; i >= 0; i--) {
-    if (items.at(i).s <= target) {
-      return i;
-    }
+  return -1;
+}
+
+/**
+ * @brief 获取目标值左边的元素(不包括目标值)
+ *
+ * @tparam T1 element::Poloy3
+ * @tparam T2 number
+ * @param items ascending sequence
+ * @param target target value
+ * @return sequence index or -1
+ */
+template <typename T1, typename T2>
+static int GetGTValuePoloy3(const std::vector<T1>& items, T2 target) {
+  if (items.empty() || target < items.at(0).s) return -1;
+  if (target < items.at(0).s) return -1;
+  for (int i = items.size() - 1; i >= 0; i--) {
+    if (target > items.at(i).s) return i;
+  }
+  return 0;
+}
+
+template <typename T1, typename T2>
+static int GetGEPtrPoloy3(const std::vector<T1>& items, T2 target) {
+  if (items.empty() || target < items.at(0)->s) return -1;
+  for (int i = items.size() - 1; i >= 0; i--) {
+    if (target >= items.at(i)->s) return i;
   }
   return -1;
 }
 
 template <typename T1, typename T2>
-static int GetLeftPtrPoloy3(const std::vector<T1>& items, T2 target) {
-  if (items.empty() || target < items.at(0)->s) {
-    return -1;
+static int GetGTPtrPoloy3(const std::vector<T1>& items, T2 target) {
+  if (items.empty() || target < items.at(0)->s) return -1;
+  if (target < items.at(0)->s) return -1;
+  for (int i = items.size() - 1; i >= 0; i--) {
+    if (target > items.at(i)->s) return i;
   }
-  for (size_t i = items.size() - 1; i >= 0; i--) {
-    if (items.at(i)->s <= target) {
-      return i;
-    }
-  }
-  return -1;
+  return 0;
 }
 
 static bool FileExists(const std::string& path) {
@@ -158,23 +179,17 @@ static bool StrEquals(const std::string& a, const std::string& b) {
 }
 
 static tinyxml2::XMLError XmlQueryBoolAttribute(
-    const tinyxml2::XMLElement* xml_node, const std::string& name, bool& value,
-    bool enable_exit = false) {
+    const tinyxml2::XMLElement* xml_node, const std::string& name,
+    bool& value) {
   tinyxml2::XMLError ret = xml_node->QueryBoolAttribute(name.c_str(), &value);
-  if (tinyxml2::XML_SUCCESS != ret && enable_exit) {
-    Assert(false, "xml query int attribute fault.");
-  }
   return ret;
 }
 
 static tinyxml2::XMLError XmlQueryStringAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name,
-    std::string& value, bool enable_exit = false) {
+    std::string& value) {
   const char* val = xml_node->Attribute(name.c_str());
-  if (val == nullptr) {
-    if (enable_exit) {
-      Assert(false, "xml query attribute fault.");
-    }
+  if (nullptr == val) {
     return tinyxml2::XML_NO_ATTRIBUTE;
   }
   value = val;
@@ -182,47 +197,32 @@ static tinyxml2::XMLError XmlQueryStringAttribute(
 }
 
 static tinyxml2::XMLError XmlQueryIntAttribute(
-    const tinyxml2::XMLElement* xml_node, const std::string& name, int& value,
-    bool enable_exit = false) {
+    const tinyxml2::XMLElement* xml_node, const std::string& name, int& value) {
   tinyxml2::XMLError ret = xml_node->QueryIntAttribute(name.c_str(), &value);
-  if (tinyxml2::XML_SUCCESS != ret && enable_exit) {
-    Assert(false, "xml query int attribute fault.");
-  }
   return ret;
 }
 
 static tinyxml2::XMLError XmlQueryFloatAttribute(
-    const tinyxml2::XMLElement* xml_node, const std::string& name, float& value,
-    bool enable_exit = false) {
+    const tinyxml2::XMLElement* xml_node, const std::string& name,
+    float& value) {
   tinyxml2::XMLError ret = xml_node->QueryFloatAttribute(name.c_str(), &value);
-  if (tinyxml2::XML_SUCCESS != ret && enable_exit) {
-    Assert(false, "xml query float attribute fault.");
-  }
   return ret;
 }
 
 static tinyxml2::XMLError XmlQueryDoubleAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name,
-    double& value, bool enable_exit = false) {
+    double& value) {
   tinyxml2::XMLError ret = xml_node->QueryDoubleAttribute(name.c_str(), &value);
-  if (tinyxml2::XML_SUCCESS != ret && enable_exit) {
-    Assert(false, "xml query double attribute fault.");
-  }
   return ret;
 }
 
 template <typename T>
 static tinyxml2::XMLError XmlQueryEnumAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name, T& value,
-    const std::unordered_map<T, std::string>& choices,
-    bool enable_exit = false) {
+    const std::unordered_map<T, std::string>& choices) {
   std::string var;
-  tinyxml2::XMLError ret =
-      XmlQueryStringAttribute(xml_node, name, var, enable_exit);
+  tinyxml2::XMLError ret = XmlQueryStringAttribute(xml_node, name, var);
   if (tinyxml2::XMLError::XML_SUCCESS != ret) {
-    if (enable_exit) {
-      Assert(false, "xml query enum attribute fault.");
-    }
     return ret;
   }
   ret = tinyxml2::XMLError::XML_ERROR_PARSING_TEXT;
