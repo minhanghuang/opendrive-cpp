@@ -57,14 +57,14 @@ void TestCommon::SetUp() {}
 
 TEST_F(TestCommon, TestFormatChoices) {
   opendrive::LaneType type = opendrive::LaneType::DRIVING;
-  ASSERT_EQ("DRIVING",
+  ASSERT_EQ("driving",
             common::FormatChoices(opendrive::LANE_TYPE_CHOICES, type));
 }
 
 TEST_F(TestCommon, TestVectorSort) {
   std::vector<element::LaneOffset> lane_offsets;
   element::LaneOffset l1, l2, l3, l4, l5;
-  int ret = common::GetLeftValuePoloy3(lane_offsets, 11);
+  int ret = common::GetGEValuePoloy3(lane_offsets, 11);
   ASSERT_EQ(-1, ret);
   l1.s = 11;
   l2.s = 13;
@@ -86,7 +86,7 @@ TEST_F(TestCommon, TestVectorSort) {
 TEST_F(TestCommon, TestLeftValue) {
   std::vector<element::LaneOffset> lane_offsets;
   element::LaneOffset l1, l2, l3, l4, l5;
-  int ret = common::GetLeftValuePoloy3(lane_offsets, 11);
+  int ret = common::GetGEValuePoloy3(lane_offsets, 11);
   ASSERT_EQ(-1, ret);
   l1.s = 11;
   l2.s = 13;
@@ -98,16 +98,26 @@ TEST_F(TestCommon, TestLeftValue) {
   lane_offsets.emplace_back(l3);
   lane_offsets.emplace_back(l4);
   lane_offsets.emplace_back(l5);
-  ret = common::GetLeftValuePoloy3(lane_offsets, 0);
+  ret = common::GetGEValuePoloy3(lane_offsets, 0);
   ASSERT_EQ(-1, ret);
-  ret = common::GetLeftValuePoloy3(lane_offsets, 11);
+  ret = common::GetGEValuePoloy3(lane_offsets, 11);
   ASSERT_EQ(0, ret);
-  ret = common::GetLeftValuePoloy3(lane_offsets, 15);
+  ret = common::GetGEValuePoloy3(lane_offsets, 15);
   ASSERT_EQ(2, ret);
-  ret = common::GetLeftValuePoloy3(lane_offsets, 19);
+  ret = common::GetGEValuePoloy3(lane_offsets, 19);
   ASSERT_EQ(4, ret);
-  ret = common::GetLeftValuePoloy3(lane_offsets, 100);
+  ret = common::GetGEValuePoloy3(lane_offsets, 100);
   ASSERT_EQ(4, ret);
+  ret = common::GetGTValuePoloy3(lane_offsets, 15);
+  ASSERT_EQ(1, ret);
+  ret = common::GetGTValuePoloy3(lane_offsets, 19);
+  ASSERT_EQ(3, ret);
+  ret = common::GetGTValuePoloy3(lane_offsets, 20);
+  ASSERT_EQ(4, ret);
+  ret = common::GetGTValuePoloy3(lane_offsets, 11);
+  ASSERT_EQ(0, ret);
+  ret = common::GetGTValuePoloy3(lane_offsets, 10);
+  ASSERT_EQ(-1, ret);
 }
 
 TEST_F(TestCommon, TestLeftPtr) {
@@ -127,13 +137,13 @@ TEST_F(TestCommon, TestLeftPtr) {
   geometrys.emplace_back(g3);
   geometrys.emplace_back(g4);
   geometrys.emplace_back(g5);
-  auto ret = common::GetLeftPtrPoloy3(geometrys, 0);
+  auto ret = common::GetGEPtrPoloy3(geometrys, 0);
   ASSERT_EQ(-1, ret);
-  ret = common::GetLeftPtrPoloy3(geometrys, 11);
+  ret = common::GetGEPtrPoloy3(geometrys, 11);
   ASSERT_EQ(0, ret);
-  ret = common::GetLeftPtrPoloy3(geometrys, 19);
+  ret = common::GetGEPtrPoloy3(geometrys, 19);
   ASSERT_EQ(4, ret);
-  ret = common::GetLeftPtrPoloy3(geometrys, 100);
+  ret = common::GetGEPtrPoloy3(geometrys, 100);
   ASSERT_EQ(4, ret);
 }
 
