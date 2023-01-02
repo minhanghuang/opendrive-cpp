@@ -235,9 +235,9 @@ struct OffsetPoly3 {
   double c = 0.;  // c
   double d = 0.;  // d
   bool operator<(const OffsetPoly3& obj) const { return this->s > obj.s; }
-  virtual double GetOffset(double section_ds) const final {
-    return a + b * section_ds + c * std::pow(section_ds, 2) +
-           d * std::pow(section_ds, 3);
+  virtual double GetOffsetValue(double road_ds) const final {
+    const double ds = road_ds - s;
+    return a + b * ds + c * std::pow(ds, 2) + d * std::pow(ds, 3);
   }
 };
 
@@ -279,9 +279,9 @@ struct Lane {
   LaneBorders borders;
   RoadMarks road_marks;
   LaneSpeeds max_speeds;
-  double GetLaneWidth(double ds) const {
+  double GetLaneWidth(double road_ds) const {
     // width >> border
-    if (ds < 0) {
+    if (road_ds < 0) {
       return GetLaneWidth(0.);
     }
     if (widths.empty()) {
@@ -289,18 +289,20 @@ struct Lane {
         return 0.;
       }
       /// border
-      int border_index = common::GetLeftValuePoloy3(borders, ds);
+      int border_index = common::GetGTValuePoloy3(borders, road_ds);
       if (border_index < 0) {
         return 0.;
       }
-      return borders.at(border_index).GetOffset(ds);
+      auto border = widths.at(border_index);
+      return border.GetOffsetValue(road_ds);
     } else {
       /// width
-      int width_index = common::GetLeftValuePoloy3(widths, ds);
+      int width_index = common::GetGTValuePoloy3(widths, road_ds);
       if (width_index < 0) {
         return 0.;
       }
-      return widths.at(width_index).GetOffset(ds);
+      auto width = widths.at(width_index);
+      return width.GetOffsetValue(road_ds);
     }
     return 0.;
   }

@@ -141,10 +141,11 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
     core::Section::Ptr section = std::make_shared<core::Section>();
     road_ptr->sections.emplace_back(section);
     section->id = std::to_string(ele_section.id);
-    section->s = ele_section.s0;
+    section->s0 = ele_section.s0;
+    section->s1 = ele_section.s1;
     section->length = ele_section.s1 - ele_section.s0;
     int road_type_index =
-        common::GetLeftValuePoloy3(ele_road.type_info, ele_section.s0);
+        common::GetGEValuePoloy3(ele_road.type_info, ele_section.s0);
     if (road_type_index >= 0) {
       road_type_info = ele_road.type_info.at(road_type_index);
     }
@@ -220,41 +221,43 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
   double section_ds = 0.;
   core_section->center_lane->central_curve.clear();
   element::Geometry::Ptr geometry = nullptr;
-  element::Point reference_point;
+  element::Point refe_point;
   element::Point center_offset_point;
   core::Lane::Point center_point;
   double offset = 0.;
   bool last = false;
   while (!last) {
     if (section_ds >= core_section->length) {
-      section_ds = section_ds - step_;
-      road_ds = road_ds - step_;
-      road_ds = road_ds + (core_section->length - section_ds);
-      section_ds = 0;  // next section point, so section_ds = 0;
+      section_ds = core_section->length;
+      road_ds = std::fabs(core_section->s1 - 0.001);
       last = true;
     }
     geometry = this->GetGeometry(geometrys, road_ds);
     if (!geometry) {
       break;
     }
-    reference_point = geometry->GetPoint(road_ds);
-    offset = this->GetLaneOffsetValue(lane_offsets, road_ds, section_ds);
+    refe_point = geometry->GetPoint(road_ds);
+    offset = this->GetLaneOffsetValue(lane_offsets, road_ds);
+    // std::cout << std::setprecision(15) << "[debug] offset:" << road_ds << ":
+    // "
+    // << offset << std::endl;
     if (offset != 0) {
-      center_offset_point = common::GetOffsetPoint(reference_point, offset);
+      center_offset_point = common::GetOffsetPoint(refe_point, offset);
       center_point.x = center_offset_point.x;
       center_point.y = center_offset_point.y;
       center_point.hdg = center_offset_point.hdg;
       center_point.s = section_ds;
     } else {
-      center_point.x = reference_point.x;
-      center_point.y = reference_point.y;
-      center_point.hdg = reference_point.hdg;
+      center_point.x = refe_point.x;
+      center_point.y = refe_point.y;
+      center_point.hdg = refe_point.hdg;
       center_point.s = section_ds;
     }
     core_section->center_lane->central_curve.emplace_back(center_point);
     core_section->center_lane->left_boundary.line.emplace_back(center_point);
     core_section->center_lane->right_boundary.line.emplace_back(center_point);
     if (last) {
+      road_ds = core_section->s1;
       break;
     } else {
       section_ds += step_;
@@ -266,7 +269,7 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
 element::Geometry::Ptr AdapterMap::GetGeometry(
     const element::Geometry::Ptrs& geometrys, double road_ds) {
   element::Geometry::Ptr geometry = nullptr;
-  auto geometry_index = common::GetLeftPtrPoloy3(geometrys, road_ds);
+  auto geometry_index = common::GetGTPtrPoloy3(geometrys, road_ds);
   if (geometry_index < 0) {
     set_status(ErrorCode::ADAPTER_GEOMETRY_ERROR, "GEOMETRY INDEX Execption.");
     return geometry;
@@ -294,26 +297,27 @@ element::Geometry::Ptr AdapterMap::GetGeometry(
 }
 
 double AdapterMap::GetLaneOffsetValue(const element::LaneOffsets& offsets,
-                                      double road_ds, double section_ds) {
-  int offset_idx = common::GetLeftValuePoloy3(offsets, road_ds);
+                                      double road_ds) {
+  int offset_idx = common::GetGEValuePoloy3(offsets, road_ds);
   if (offset_idx >= 0) {
-    return offsets.at(offset_idx).GetOffset(section_ds);
+    auto offset = offsets.at(offset_idx);
+    return offset.GetOffsetValue(road_ds);
   }
   return 0;
 }
 
 void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,
                                      core::Lane::Ptr core_lane,
-                                     const core::Lane::Points& reference_line) {
+                                     const core::Lane::Points& refe_line) {
   double lane_width = 0.;
   core::Lane::Point right_point;
   core::Lane::Point center_point;
   const int lane_direction = core_lane->id > "0" ? 1 : -1;
-  for (const auto& reference_point : reference_line) {
-    lane_width = ele_lane.GetLaneWidth(reference_point.s) * lane_direction;
-    center_point = common::GetOffsetPoint(reference_point, lane_width / 2.0);
-    right_point = common::GetOffsetPoint(reference_point, lane_width);
-    core_lane->left_boundary.line.emplace_back(reference_point);
+  for (const auto& refe_point : refe_line) {
+    lane_width = ele_lane.GetLaneWidth(refe_point.s) * lane_direction;
+    center_point = common::GetOffsetPoint(refe_point, lane_width / 2.0);
+    right_point = common::GetOffsetPoint(refe_point, lane_width);
+    core_lane->left_boundary.line.emplace_back(refe_point);
     core_lane->central_curve.emplace_back(center_point);
     core_lane->right_boundary.line.emplace_back(right_point);
   }
