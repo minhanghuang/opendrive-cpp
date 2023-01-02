@@ -66,9 +66,10 @@ struct Section {
   typedef std::shared_ptr<SectionTypedef> Ptr;
   typedef std::vector<Ptr> Ptrs;
   typedef std::shared_ptr<SectionTypedef const> ConstPtr;
-  Id id;      // [required]
-  Id parent;  // road id
-  double s = 0.;
+  Id id;           // [required]
+  Id parent;       // road id
+  double s0 = 0.;  // start position
+  double s1 = 0.;  // end position
   double length = 0.;
   Lane::Ptr center_lane;
   Lane::Ptrs left_lanes;
