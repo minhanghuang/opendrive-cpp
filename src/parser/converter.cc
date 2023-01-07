@@ -1,18 +1,12 @@
-#include "opendrive-cpp/parser/adapter.h"
-
-#include <cmath>
-#include <string>
-#include <utility>
-
-#include "opendrive-cpp/geometry/enums.h"
+#include "opendrive-cpp/parser/converter.h"
 
 namespace opendrive {
-namespace adapter {
+namespace converter {
 
-AdapterMap::AdapterMap() {}
+ConverterMap::ConverterMap() {}
 
-opendrive::Status AdapterMap::Start(element::Map::Ptr ele_map,
-                                    core::Map::Ptr map_ptr, float step) {
+opendrive::Status ConverterMap::Start(element::Map::Ptr ele_map,
+                                      core::Map::Ptr map_ptr, float step) {
   ele_map_ = ele_map;
   map_ptr_ = map_ptr;
   step_ = step;
@@ -25,14 +19,16 @@ opendrive::Status AdapterMap::Start(element::Map::Ptr ele_map,
   return status_;
 }
 
-void AdapterMap::set_status(ErrorCode code, const std::string& msg) {
+void ConverterMap::set_status(ErrorCode code, const std::string& msg) {
   status_.error_code = code;
   status_.msg = msg;
 }
 
-bool AdapterMap::IsValid() const { return ErrorCode::OK == status_.error_code; }
+bool ConverterMap::IsValid() const {
+  return ErrorCode::OK == status_.error_code;
+}
 
-AdapterMap& AdapterMap::Header() {
+ConverterMap& ConverterMap::Header() {
   if (!IsValid()) return *this;
   core::Header::Ptr header = std::make_shared<core::Header>();
   header->rev_major = ele_map_->header.rev_major;
@@ -49,7 +45,7 @@ AdapterMap& AdapterMap::Header() {
   return *this;
 }
 
-AdapterMap& AdapterMap::Junctions() {
+ConverterMap& ConverterMap::Junctions() {
   if (!IsValid()) return *this;
   for (const auto& ele_junction : ele_map_->junctions) {
     if (ele_junction.attributes.id < 0) {
@@ -63,7 +59,7 @@ AdapterMap& AdapterMap::Junctions() {
   return *this;
 }
 
-AdapterMap& AdapterMap::JunctionAttributes(
+ConverterMap& ConverterMap::JunctionAttributes(
     const element::Junction& ele_junction, core::Junction::Ptr junction_ptr) {
   if (!IsValid()) return *this;
   junction_ptr->id = std::to_string(ele_junction.attributes.id);
@@ -79,7 +75,7 @@ AdapterMap& AdapterMap::JunctionAttributes(
   return *this;
 }
 
-AdapterMap& AdapterMap::JunctionConnection(
+ConverterMap& ConverterMap::JunctionConnection(
     const element::Junction& ele_junction, core::Junction::Ptr junction_ptr) {
   if (!IsValid()) return *this;
   for (const auto& ele_conn : ele_junction.connections) {
@@ -100,7 +96,7 @@ AdapterMap& AdapterMap::JunctionConnection(
   return *this;
 }
 
-AdapterMap& AdapterMap::Roads() {
+ConverterMap& ConverterMap::Roads() {
   if (!IsValid()) return *this;
   for (const auto& ele_road : ele_map_->roads) {
     if (ele_road.attributes.id < 0) {
@@ -113,8 +109,8 @@ AdapterMap& AdapterMap::Roads() {
   return *this;
 }
 
-AdapterMap& AdapterMap::RoadAttributes(const element::Road& ele_road,
-                                       core::Road::Ptr road_ptr) {
+ConverterMap& ConverterMap::RoadAttributes(const element::Road& ele_road,
+                                           core::Road::Ptr road_ptr) {
   if (!IsValid()) return *this;
   road_ptr->id = std::to_string(ele_road.attributes.id);
   road_ptr->length = ele_road.attributes.length;
@@ -132,8 +128,8 @@ AdapterMap& AdapterMap::RoadAttributes(const element::Road& ele_road,
   return *this;
 }
 
-AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
-                                     core::Road::Ptr road_ptr) {
+ConverterMap& ConverterMap::RoadSections(const element::Road& ele_road,
+                                         core::Road::Ptr road_ptr) {
   if (!IsValid()) return *this;
   element::RoadTypeInfo road_type_info;
   double road_ds = 0.;
@@ -214,10 +210,10 @@ AdapterMap& AdapterMap::RoadSections(const element::Road& ele_road,
   return *this;
 }
 
-void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
-                                   const element::LaneOffsets& lane_offsets,
-                                   core::Section::Ptr core_section,
-                                   double& road_ds) {
+void ConverterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
+                                     const element::LaneOffsets& lane_offsets,
+                                     core::Section::Ptr core_section,
+                                     double& road_ds) {
   double section_ds = 0.;
   core_section->center_lane->central_curve.clear();
   element::Geometry::Ptr geometry = nullptr;
@@ -226,6 +222,7 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
   core::Lane::Point center_point;
   double offset = 0.;
   bool last = false;
+  // std::cout << "[debug] ---  " << core_section->id << std::endl;
   while (!last) {
     if (section_ds >= core_section->length) {
       section_ds = core_section->length;
@@ -238,8 +235,7 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
     }
     refe_point = geometry->GetPoint(road_ds);
     offset = this->GetLaneOffsetValue(lane_offsets, road_ds);
-    // std::cout << std::setprecision(15) << "[debug] offset:" << road_ds << ":
-    // "
+    // std::cout << std::setprecision(15) << "[debug] offset:" << road_ds << ":"
     // << offset << std::endl;
     if (offset != 0) {
       center_offset_point = common::GetOffsetPoint(refe_point, offset);
@@ -266,7 +262,7 @@ void AdapterMap::SectionCenterLine(const element::Geometry::Ptrs& geometrys,
   }
 }
 
-element::Geometry::Ptr AdapterMap::GetGeometry(
+element::Geometry::Ptr ConverterMap::GetGeometry(
     const element::Geometry::Ptrs& geometrys, double road_ds) {
   element::Geometry::Ptr geometry = nullptr;
   auto geometry_index = common::GetGTPtrPoloy3(geometrys, road_ds);
@@ -296,8 +292,8 @@ element::Geometry::Ptr AdapterMap::GetGeometry(
   return geometry;
 }
 
-double AdapterMap::GetLaneOffsetValue(const element::LaneOffsets& offsets,
-                                      double road_ds) {
+double ConverterMap::GetLaneOffsetValue(const element::LaneOffsets& offsets,
+                                        double road_ds) {
   int offset_idx = common::GetGEValuePoloy3(offsets, road_ds);
   if (offset_idx >= 0) {
     auto offset = offsets.at(offset_idx);
@@ -306,9 +302,9 @@ double AdapterMap::GetLaneOffsetValue(const element::LaneOffsets& offsets,
   return 0;
 }
 
-void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,
-                                     core::Lane::Ptr core_lane,
-                                     const core::Lane::Points& refe_line) {
+void ConverterMap::GenerateLaneSamples(const element::Lane& ele_lane,
+                                       core::Lane::Ptr core_lane,
+                                       const core::Lane::Points& refe_line) {
   double lane_width = 0.;
   core::Lane::Point right_point;
   core::Lane::Point center_point;
@@ -323,5 +319,5 @@ void AdapterMap::GenerateLaneSamples(const element::Lane& ele_lane,
   }
 }
 
-}  // namespace adapter
+}  // namespace converter
 }  // namespace opendrive

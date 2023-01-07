@@ -11,7 +11,7 @@
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
 #include "opendrive-cpp/opendrive.h"
-#include "opendrive-cpp/parser/adapter.h"
+#include "opendrive-cpp/parser/converter.h"
 
 using namespace opendrive;
 
@@ -48,7 +48,7 @@ class TestSaveData : public testing::Test {
 
 std::string TestSaveData::xml_file_path =
     // "/Users/cox/work/code/github/opendrive-files/carla-simulator/Town01.xodr";
-"./tests/data/Ex_Simple-LaneOffset.xodr";
+    "./tests/data/Ex_Simple-LaneOffset.xodr";
 
 void TestSaveData::SetUpTestCase() {}
 void TestSaveData::TearDownTestCase() {}
@@ -68,7 +68,7 @@ TEST_F(TestSaveData, TestSaveData) {
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
   /// adapter
-  ret = parser->Adapter(ele_map, core_map);
+  ret = parser->Convert(ele_map, core_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
   const std::string file_path = "./oxrd.xml";
   // const std::string file_path = "./carla-01.xml";

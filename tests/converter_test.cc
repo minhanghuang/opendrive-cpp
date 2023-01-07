@@ -1,4 +1,4 @@
-#include "opendrive-cpp/parser/adapter.h"
+#include "opendrive-cpp/parser/converter.h"
 
 #include <gtest/gtest.h>
 #include <tinyxml2.h>
@@ -71,7 +71,7 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   ASSERT_EQ(2, ele_map->roads.size());
 
   /// adapter
-  ret = parser->Adapter(ele_map, core_map);
+  ret = parser->Convert(ele_map, core_map);
   std::cout << "ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
@@ -128,7 +128,7 @@ TEST_F(TestAdapterMap, TestLaneLink) {
   ASSERT_EQ(16, ele_map->roads.size());
 
   /// adapter
-  ret = parser->Adapter(ele_map, core_map);
+  ret = parser->Convert(ele_map, core_map);
   std::cout << "adapte ret msg: " << ret.msg << std::endl;
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
 
@@ -161,6 +161,32 @@ TEST_F(TestAdapterMap, TestLaneLink) {
   for (const auto& suc_id : lane_0_0_1->successors) {
   }
   delete instance;
+}
+
+TEST_F(TestAdapterMap, TestTopo) {
+  const std::string file_path =
+      "/opt/owner/share/xodr/carla-simulator/Town06.xodr";
+  std::shared_ptr<opendrive::Parser> parser =
+      std::make_shared<opendrive::Parser>();
+  tinyxml2::XMLDocument* instance = nullptr;
+  instance = new (std::nothrow) tinyxml2::XMLDocument();
+  instance->LoadFile(file_path.c_str());
+  const tinyxml2::XMLElement* xml_root = instance->RootElement();
+  auto ele_map = std::make_shared<opendrive::element::Map>();
+  auto core_map = std::make_shared<opendrive::core::Map>();
+  /// parse
+  auto ret = parser->ParseMap(xml_root, ele_map);
+  std::cout << "parse ret msg: " << ret.msg << std::endl;
+  ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+  ASSERT_EQ(167, ele_map->roads.size());
+
+  /// adapter
+  ret = parser->Convert(ele_map, core_map);
+  std::cout << "adapte ret msg: " << ret.msg << std::endl;
+  ASSERT_TRUE(ret.error_code == ErrorCode::OK);
+
+  ASSERT_TRUE(core_map->roads.count("317") == 1);
+  ASSERT_TRUE(nullptr != core_map->roads.at("317"));
 }
 
 int main(int argc, char* argv[]) {

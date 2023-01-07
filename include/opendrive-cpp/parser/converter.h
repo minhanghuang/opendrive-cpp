@@ -1,5 +1,5 @@
-#ifndef OPENDRIVE_CPP_ADAPTER_H_
-#define OPENDRIVE_CPP_ADAPTER_H_
+#ifndef OPENDRIVE_CPP_CONVERTER_H_
+#define OPENDRIVE_CPP_CONVERTER_H_
 
 #include <cmath>
 #include <iomanip>
@@ -9,31 +9,32 @@
 #include "opendrive-cpp/common/status.h"
 #include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
+#include "opendrive-cpp/geometry/enums.h"
 #include "opendrive-cpp/parser/road_parser.h"
 
 namespace opendrive {
-namespace adapter {
+namespace converter {
 
-class AdapterMap {
+class ConverterMap {
  public:
-  AdapterMap();
+  ConverterMap();
   opendrive::Status Start(element::Map::Ptr ele_map, core::Map::Ptr map_ptr,
                           float step = 0.5);
 
  private:
   void set_status(ErrorCode code, const std::string& msg);
   bool IsValid() const;
-  AdapterMap& Header();
-  AdapterMap& Junctions();
-  AdapterMap& JunctionAttributes(const element::Junction& ele_junction,
-                                 core::Junction::Ptr junction_ptr);
-  AdapterMap& JunctionConnection(const element::Junction& ele_junction,
-                                 core::Junction::Ptr junction_ptr);
-  AdapterMap& Roads();
-  AdapterMap& RoadAttributes(const element::Road& ele_road,
+  ConverterMap& Header();
+  ConverterMap& Junctions();
+  ConverterMap& JunctionAttributes(const element::Junction& ele_junction,
+                                   core::Junction::Ptr junction_ptr);
+  ConverterMap& JunctionConnection(const element::Junction& ele_junction,
+                                   core::Junction::Ptr junction_ptr);
+  ConverterMap& Roads();
+  ConverterMap& RoadAttributes(const element::Road& ele_road,
+                               core::Road::Ptr road_ptr);
+  ConverterMap& RoadSections(const element::Road& ele_road,
                              core::Road::Ptr road_ptr);
-  AdapterMap& RoadSections(const element::Road& ele_road,
-                           core::Road::Ptr road_ptr);
   void SectionCenterLine(const element::Geometry::Ptrs& geometrys,
                          const element::LaneOffsets& lane_offsets,
                          core::Section::Ptr core_section, double& road_ds);
@@ -50,7 +51,7 @@ class AdapterMap {
   core::Map::Ptr map_ptr_;
 };
 
-}  // namespace adapter
+}  // namespace converter
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_ADAPTER_H_
+#endif  // OPENDRIVE_CPP_CONVERTER_H_

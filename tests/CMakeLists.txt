@@ -29,7 +29,7 @@ SET(TEST_SOURCES
   parser_roadlink_test
   parser_roadplanview_test
   parser_roadtype_test
-  adapter_test
+  converter_test
   save_test
   case
 )

@@ -6,7 +6,7 @@ namespace opendrive {
 
 Parser::Parser()
     : map_parser_(std::make_unique<parser::MapXmlParser>()),
-      adapter_(std::make_unique<adapter::AdapterMap>()) {}
+      converter_(std::make_unique<converter::ConverterMap>()) {}
 
 std::string Parser::GetOpenDriveVersion() const {
   return map_parser_->opendrive_version();
@@ -29,9 +29,9 @@ opendrive::Status Parser::ParseMap(const tinyxml2::XMLElement* xml_root,
   return map_parser_->Parse(xml_root, ele_map);
 }
 
-opendrive::Status Parser::Adapter(element::Map::Ptr ele_map,
+opendrive::Status Parser::Convert(element::Map::Ptr ele_map,
                                   core::Map::Ptr map_ptr, float step) {
-  return adapter_->Start(ele_map, map_ptr, step);
+  return converter_->Start(ele_map, map_ptr, step);
 }
 
 opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
@@ -76,8 +76,7 @@ opendrive::Status Parser::SaveData(core::Map::Ptr map_ptr,
       ele_road->InsertEndChild(ele_section);
       ele_section->SetAttribute("id", section->id.c_str());
 
-      tinyxml2::XMLElement* ele_reference =
-          xml_doc_.NewElement("center_lane");
+      tinyxml2::XMLElement* ele_reference = xml_doc_.NewElement("center_lane");
       ele_section->InsertEndChild(ele_reference);
       for (const auto& point : section->center_lane->central_curve) {
         tinyxml2::XMLElement* ele_point = xml_doc_.NewElement("point");
