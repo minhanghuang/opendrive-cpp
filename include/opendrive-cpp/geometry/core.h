@@ -81,14 +81,21 @@ struct Road {
   typedef std::shared_ptr<RoadTypedef> Ptr;
   typedef std::shared_ptr<RoadTypedef const> ConstPtr;
   Id id;  // [required]
+  std::string name;
+  Id junction_id;
   double length = 0.;
   Section::Ptrs sections;
+  RoadRule rule =
+      RoadRule::RHT;  // RHT=right-hand traffic, LHT=left-hand traffic. When
+                      // this attribute is missing, RHT is assumed
   Id predecessor;
   Id successor;
   RoadLinkType predecessor_type = RoadLinkType::UNKNOWN;
   RoadLinkType successor_type = RoadLinkType::UNKNOWN;
-  ContactPointType predecessor_contact_point = ContactPointType::UNKNOWN;
-  ContactPointType successor_contact_point = ContactPointType::UNKNOWN;
+  ContactPointType predecessor_contact_point =
+      ContactPointType::UNKNOWN;  // Contact point of link on the linked element
+  ContactPointType successor_contact_point =
+      ContactPointType::UNKNOWN;  // Contact point of link on the linked element
 };
 
 typedef struct Junction JunctionTypedef;
@@ -120,6 +127,7 @@ struct Junction {
 typedef struct Header HeaderTypedef;
 struct Header {
   typedef std::shared_ptr<HeaderTypedef> Ptr;
+  typedef std::shared_ptr<HeaderTypedef const> ConstPtr;
   std::string rev_major;
   std::string rev_minor;
   std::string name;

@@ -113,14 +113,18 @@ ConverterMap& ConverterMap::RoadAttributes(const element::Road& ele_road,
                                            core::Road::Ptr road_ptr) {
   if (!IsValid()) return *this;
   road_ptr->id = std::to_string(ele_road.attributes.id);
+  road_ptr->id = ele_road.attributes.name;
+  road_ptr->junction_id = -1 == ele_road.attributes.junction
+                              ? ""
+                              : std::to_string(ele_road.attributes.junction);
   road_ptr->length = ele_road.attributes.length;
-
   road_ptr->predecessor = -1 == ele_road.link.predecessor.id
                               ? ""
                               : std::to_string(ele_road.link.predecessor.id);
   road_ptr->successor = -1 == ele_road.link.successor.id
                             ? ""
                             : std::to_string(ele_road.link.successor.id);
+  road_ptr->rule = ele_road.attributes.rule;
   road_ptr->predecessor_type = ele_road.link.predecessor.type;
   road_ptr->successor_type = ele_road.link.successor.type;
   road_ptr->predecessor_contact_point = ele_road.link.predecessor.contact_point;

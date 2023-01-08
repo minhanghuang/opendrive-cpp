@@ -333,14 +333,17 @@ struct RoadAttributes {
   Id id = -1;        // [>=0]
   Id junction = -1;  // -1: Road; other: junction road
   double length = 0.;
-  RoadRule rule = RoadRule::RHT;
+  RoadRule rule =
+      RoadRule::RHT;  // RHT=right-hand traffic, LHT=left-hand traffic. When
+                      // this attribute is missing, RHT is assumed
 };
 
 struct RoadLinkInfo {
   Id id = -1;     // [>=0]
   double s = -1;  // [>=0]
   RoadLinkType type = RoadLinkType::UNKNOWN;
-  ContactPointType contact_point = ContactPointType::UNKNOWN;
+  ContactPointType contact_point =
+      ContactPointType::UNKNOWN;  // Contact point of link on the linked element
   Dir dir = Dir::UNKNOWN;
 };
 
