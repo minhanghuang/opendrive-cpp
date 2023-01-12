@@ -10,10 +10,10 @@ function test() {
   for file in $bin_path/*
   do
     case "$file" in
-	*test )
-          $file
-          ;;
-	* );;
+      *test )
+        $file
+        ;;
+      * );;
     esac
   done
 }

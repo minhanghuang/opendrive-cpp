@@ -165,12 +165,13 @@ TEST_F(TestAdapterMap, TestLaneLink) {
 
 TEST_F(TestAdapterMap, TestTopo) {
   const std::string file_path =
-      "/opt/owner/share/xodr/carla-simulator/Town06.xodr";
+      "/opt/xodr/share/xodr/carla-simulator/Town06.xodr";
   std::shared_ptr<opendrive::Parser> parser =
       std::make_shared<opendrive::Parser>();
   tinyxml2::XMLDocument* instance = nullptr;
   instance = new (std::nothrow) tinyxml2::XMLDocument();
-  instance->LoadFile(file_path.c_str());
+  ASSERT_EQ(tinyxml2::XMLError::XML_SUCCESS,
+            instance->LoadFile(file_path.c_str()));
   const tinyxml2::XMLElement* xml_root = instance->RootElement();
   auto ele_map = std::make_shared<opendrive::element::Map>();
   auto core_map = std::make_shared<opendrive::core::Map>();
