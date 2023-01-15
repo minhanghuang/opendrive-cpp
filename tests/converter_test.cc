@@ -106,7 +106,7 @@ TEST_F(TestAdapterMap, TestAdapterMap) {
   /// check roads
   ASSERT_EQ(2, core_map->roads.size());
 
-  const std::string file_path = "./oxrd.xml";
+  const std::string file_path = "./build/oxrd.xml";
   parser->SaveData(core_map, file_path);
 }
 

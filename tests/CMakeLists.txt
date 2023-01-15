@@ -51,7 +51,3 @@ file(COPY
   "data/"
   DESTINATION "${PROJECT_BINARY_DIR}/data"
 )
-file(COPY
-  "script/"
-  DESTINATION "${PROJECT_BINARY_DIR}/script"
-)

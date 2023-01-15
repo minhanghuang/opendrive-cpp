@@ -70,7 +70,7 @@ TEST_F(TestSaveData, TestSaveData) {
   /// adapter
   ret = parser->Convert(ele_map, core_map);
   ASSERT_TRUE(ret.error_code == ErrorCode::OK);
-  const std::string file_path = "./oxrd.xml";
+  const std::string file_path = "./build/oxrd.xml";
   // const std::string file_path = "./carla-01.xml";
   parser->SaveData(core_map, file_path);
 }
