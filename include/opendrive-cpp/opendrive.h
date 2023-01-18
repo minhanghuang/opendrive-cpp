@@ -7,9 +7,7 @@
 
 #include "opendrive-cpp/common/common.hpp"
 #include "opendrive-cpp/common/status.h"
-#include "opendrive-cpp/geometry/core.h"
 #include "opendrive-cpp/geometry/element.h"
-#include "opendrive-cpp/parser/converter.h"
 #include "opendrive-cpp/parser/map_parser.h"
 #include "opendrive-cpp/parser/road_parser.h"
 #include "opendrive-cpp/parser/section_parser.h"
@@ -27,15 +25,10 @@ class Parser {
                              element::Map::Ptr ele_map);
   opendrive::Status ParseMap(const tinyxml2::XMLElement* xml_root,
                              element::Map::Ptr ele_map);
-  opendrive::Status Convert(element::Map::Ptr ele_map, core::Map::Ptr map_ptr,
-                            float step = 0.5);
-  opendrive::Status SaveData(core::Map::Ptr map_ptr,
-                             const std::string& file_path);
 
  private:
   tinyxml2::XMLDocument xml_doc_;
   std::unique_ptr<parser::MapXmlParser> map_parser_;
-  std::unique_ptr<converter::ConverterMap> converter_;
 };
 
 }  // namespace opendrive

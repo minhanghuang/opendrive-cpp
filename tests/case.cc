@@ -35,12 +35,9 @@ TEST_F(TestCase, TestCase1) {
   const std::string file_path = "./tests/data/case1.xodr";
   opendrive::Parser parser;
   auto ele_map = std::make_shared<opendrive::element::Map>();
-  auto core_map = std::make_shared<opendrive::core::Map>();
   auto ret = parser.ParseMap(file_path, ele_map);
   ASSERT_EQ(opendrive::ErrorCode::OK, ret.error_code);
-  ret = parser.Convert(ele_map, core_map);
   ASSERT_EQ(opendrive::ErrorCode::OK, ret.error_code);
-  parser.SaveData(core_map, "./case1.xml");
 }
 
 TEST_F(TestCase, TestCase2) {
@@ -48,12 +45,8 @@ TEST_F(TestCase, TestCase2) {
   const std::string file_path = "./tests/data/case2.xodr";
   opendrive::Parser parser;
   auto ele_map = std::make_shared<opendrive::element::Map>();
-  auto core_map = std::make_shared<opendrive::core::Map>();
   auto ret = parser.ParseMap(file_path, ele_map);
   ASSERT_EQ(opendrive::ErrorCode::OK, ret.error_code);
-  ret = parser.Convert(ele_map, core_map);
-  ASSERT_EQ(opendrive::ErrorCode::OK, ret.error_code);
-  parser.SaveData(core_map, "./case2.xml");
 }
 
 int main(int argc, char* argv[]) {

@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
 project(opendrive-cpp VERSION 1.0.0)
-# MAJOR: 主版本号; 大量重写,这些重写使得无法实现向后兼容性
-# MINOR: 次版本号; API接口修改,修正版或完全向后兼容的新版本
-# PATCH: 补丁版本; 内部函数的修改而不影响API接口 
 
 set(TARGET_NAME ${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 14)
@@ -11,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
 option(BUILD_SHARED_LIBS "Build opendrive-cpp shared library" ON)
-option(BUILD_OPENDRIVECPP_TEST "Build opendrive-cpp unittest" ON)
+option(BUILD_OPENDRIVECPP_TEST "Build opendrive-cpp unittest" OFF)
 
 set(opendrive-cpp-type SHARED)
 if (NOT BUILD_SHARED_LIBS)
