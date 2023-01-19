@@ -16,7 +16,6 @@ static const std::unordered_map<Boolean, std::string> BOOLEAN_CHOICES{
 
 static const std::unordered_map<GeometryType, std::string>
     GEOMETRY_TYPE_CHOICES{
-        std::make_pair(GeometryType::UNKNOWN, "UNKNOWN"),
         std::make_pair(GeometryType::ARC, "ARC"),
         std::make_pair(GeometryType::LINE, "LINE"),
         std::make_pair(GeometryType::SPIRAL, "SPIRAL"),
@@ -25,7 +24,6 @@ static const std::unordered_map<GeometryType, std::string>
     };
 
 static const std::unordered_map<LaneType, std::string> LANE_TYPE_CHOICES{
-    std::make_pair(LaneType::UNKNOWN, "UNKNOWN"),
     std::make_pair(LaneType::SHOULDER, "shouldeR"),
     std::make_pair(LaneType::BORDER, "border"),
     std::make_pair(LaneType::DRIVING, "driving"),
@@ -58,7 +56,6 @@ static const std::unordered_map<LaneType, std::string> LANE_TYPE_CHOICES{
 
 static const std::unordered_map<RoadMarkType, std::string>
     ROADMARK_TYPE_CHOICES{
-        std::make_pair(RoadMarkType::UNKNOWN, "UNKNOWN"),
         std::make_pair(RoadMarkType::NONE, "none"),
         std::make_pair(RoadMarkType::SOLID, "solid"),
         std::make_pair(RoadMarkType::BROKEN, "broken"),
@@ -75,7 +72,6 @@ static const std::unordered_map<RoadMarkType, std::string>
 
 static const std::unordered_map<RoadMarkColor, std::string>
     ROAD_MARK_COLOR_CHOICES{
-        std::make_pair(RoadMarkColor::UNKNOWN, "UNKNOWN"),
         std::make_pair(RoadMarkColor::STANDARD, "standard"),
         std::make_pair(RoadMarkColor::BLUE, "blue"),
         std::make_pair(RoadMarkColor::GREEN, "green"),
@@ -107,7 +103,6 @@ static const std::unordered_map<RoadRule, std::string> ROAD_RULE_CHOICES{
 };
 
 static const std::unordered_map<RoadType, std::string> ROAD_TYPE_CHOICES{
-    std::make_pair(RoadType::UNKNOWN, "UNKNOWN"),
     std::make_pair(RoadType::RURAL, "rural"),
     std::make_pair(RoadType::MOTORWAY, "motorway"),
     std::make_pair(RoadType::TOWN, "town"),
@@ -124,13 +119,11 @@ static const std::unordered_map<RoadType, std::string> ROAD_TYPE_CHOICES{
 
 static const std::unordered_map<RoadLinkType, std::string>
     ROAD_LINK_TYPE_CHOICES{
-        std::make_pair(RoadLinkType::UNKNOWN, "UNKNOWN"),
         std::make_pair(RoadLinkType::ROAD, "road"),
         std::make_pair(RoadLinkType::JUNCTION, "junction"),
     };
 
 static const std::unordered_map<SpeedUnit, std::string> SPEEDUNIT_CHOICES{
-    std::make_pair(SpeedUnit::UNKNOWN, "UNKNOWN"),
     std::make_pair(SpeedUnit::MS, "m/s"),
     std::make_pair(SpeedUnit::MPH, "mph"),
     std::make_pair(SpeedUnit::KMH, "km/h"),

@@ -223,7 +223,7 @@ class GeometryParamPoly3 final : public Geometry {
 
 struct LaneAttributes {
   Id id = std::numeric_limits<Id>::max();
-  LaneType type = LaneType::UNKNOWN;
+  LaneType type = LaneType::DRIVING;
   Boolean level = Boolean::UNKNOWN;
 };
 
@@ -243,8 +243,8 @@ struct OffsetPoly3 {
 
 struct RoadMark {
   double s = 0.;
-  RoadMarkType type = RoadMarkType::UNKNOWN;
-  RoadMarkColor color = RoadMarkColor::UNKNOWN;
+  RoadMarkType type = RoadMarkType::NONE;
+  RoadMarkColor color = RoadMarkColor::STANDARD;
   RoadMarkWeight weigth = RoadMarkWeight::UNKNOWN;
   double width = 0.;
   double height = 0.;
@@ -268,7 +268,7 @@ typedef std::vector<LaneLink> LaneLinks;
 struct LaneSpeed {
   double s = 0.;
   float max = 0.;
-  SpeedUnit unit = SpeedUnit::UNKNOWN;
+  SpeedUnit unit = SpeedUnit::MS;
 };
 typedef std::vector<LaneSpeed> LaneSpeeds;
 
@@ -341,7 +341,7 @@ struct RoadAttributes {
 struct RoadLinkInfo {
   Id id = -1;     // [>=0]
   double s = -1;  // [>=0]
-  RoadLinkType type = RoadLinkType::UNKNOWN;
+  RoadLinkType type = RoadLinkType::ROAD;
   ContactPointType contact_point =
       ContactPointType::UNKNOWN;  // Contact point of link on the linked element
   Dir dir = Dir::UNKNOWN;
@@ -354,10 +354,10 @@ struct RoadLink {
 
 struct RoadTypeInfo {
   double s = 0.;
-  RoadType type = RoadType::UNKNOWN;
+  RoadType type = RoadType::TOWN;
   std::string country;
   float max_speed = 0.;
-  SpeedUnit speed_unit = SpeedUnit::UNKNOWN;
+  SpeedUnit speed_unit = SpeedUnit::MS;
 };
 
 struct RoadPlanView {

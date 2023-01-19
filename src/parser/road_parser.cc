@@ -154,7 +154,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
     y = 0.;
     hdg = 0.;
     length = 0.;
-    type = GeometryType::UNKNOWN;
+    type = GeometryType::LINE;
     common::XmlQueryDoubleAttribute(curr_ele_geometry, "s", s);
     common::XmlQueryDoubleAttribute(curr_ele_geometry, "x", x);
     common::XmlQueryDoubleAttribute(curr_ele_geometry, "y", y);

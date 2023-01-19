@@ -5,7 +5,6 @@ project(opendrive-cpp VERSION 1.0.0)
 set(TARGET_NAME ${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Debug)
 
 option(BUILD_SHARED_LIBS "Build opendrive-cpp shared library" ON)
 option(BUILD_OPENDRIVECPP_TEST "Build opendrive-cpp unittest" OFF)

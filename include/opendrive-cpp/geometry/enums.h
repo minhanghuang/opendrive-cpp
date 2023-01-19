@@ -8,7 +8,6 @@ namespace opendrive {
 enum class Boolean : std::uint8_t { FALSE = 0, TRUE, UNKNOWN };
 
 enum class GeometryType : std::uint8_t {
-  UNKNOWN = 0,
   ARC,
   LINE,
   SPIRAL,
@@ -17,13 +16,12 @@ enum class GeometryType : std::uint8_t {
 };
 
 enum class LaneType : std::uint8_t {
-  UNKNOWN = 0,
-  SHOULDER,  // Describes a soft border at the edge of the road.
-  BORDER,    // Describes a hard border at the edge of the road. It has the same
-             // height as the drivable lane.
-  DRIVING,   // Describes a "normal" drivable road that is not one of the other
-             // types.
-  STOP,      // Hard shoulder on motorways for emergency stops
+  SHOULDER = 0,  // Describes a soft border at the edge of the road.
+  BORDER,   // Describes a hard border at the edge of the road. It has the same
+            // height as the drivable lane.
+  DRIVING,  // Describes a "normal" drivable road that is not one of the other
+            // types.
+  STOP,     // Hard shoulder on motorways for emergency stops
   NONE,  // Describes the space on the outermost edge of the road and does not
          // have actual content Its only purpose is for applications to register
          // that ASAM OpenDRIVE is still present in case the (human) driver
@@ -62,8 +60,7 @@ enum class LaneType : std::uint8_t {
 };
 
 enum class RoadMarkType : std::uint8_t {
-  UNKNOWN = 0,
-  NONE,
+  NONE = 0,
   SOLID,
   BROKEN,
   SOLIDSOLID,
@@ -78,8 +75,7 @@ enum class RoadMarkType : std::uint8_t {
 };
 
 enum class RoadMarkColor : std::uint8_t {
-  UNKNOWN = 0,
-  STANDARD,
+  STANDARD = 0,
   BLUE,
   GREEN,
   RED,
@@ -101,8 +97,7 @@ enum class RoadMarkLaneChange : std::uint8_t {
 enum class RoadRule { RHT, LHT };
 
 enum class RoadType : std::uint8_t {
-  UNKNOWN = 0,
-  RURAL,
+  RURAL = 0,
   MOTORWAY,
   TOWN,
   LOWSPEED,
@@ -116,13 +111,12 @@ enum class RoadType : std::uint8_t {
   TOWNPLAYSTREET
 };
 
-enum class RoadLinkType { UNKNOWN = 0, ROAD, JUNCTION };
+enum class RoadLinkType { ROAD = 0, JUNCTION };
 
 enum class SpeedUnit {
-  UNKNOWN = 0,
-  MS,   // m/s
-  MPH,  // mph
-  KMH   // km/h
+  MS = 0,  // m/s
+  MPH,     // mph
+  KMH      // km/h
 };
 
 enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
