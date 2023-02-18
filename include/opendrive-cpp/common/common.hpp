@@ -29,9 +29,25 @@ static std::string FormatChoices(const ChoicesMap& choices, Type type) {
   return "";
 }
 
-static float SpeedMPH2KMH(float mph) { return mph * 1.60934; }
+template <typename T>
+static T SpeedMPH2KMH(T mph) {
+  return mph * 1.60934;
+}
 
-static float SpeedMS2KMH(float ms) { return ms * 3.6; }
+template <typename T>
+static T SpeedMS2KMH(T ms) {
+  return ms * 3.6;
+}
+
+template <typename T>
+static T SpeedMPH2MS(T mph) {
+  return mph * 0.44704;
+}
+
+template <typename T>
+static T SpeedKMH2MS(T kmh) {
+  return kmh * 0.27778;
+}
 
 /**
  * @brief 计算偏离点
