@@ -289,7 +289,7 @@ struct Lane {
         return 0.;
       }
       /// border
-      int border_index = common::GetGTValuePoloy3(borders, road_ds);
+      int border_index = common::GetGtValuePoloy3(borders, road_ds);
       if (border_index < 0) {
         return 0.;
       }
@@ -297,7 +297,7 @@ struct Lane {
       return border.GetOffsetValue(road_ds);
     } else {
       /// width
-      int width_index = common::GetGTValuePoloy3(widths, road_ds);
+      int width_index = common::GetGtValuePoloy3(widths, road_ds);
       if (width_index < 0) {
         return 0.;
       }

@@ -91,7 +91,7 @@ static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
  * @return sequence index or -1
  */
 template <typename T1, typename T2>
-static int GetGEValuePoloy3(const std::vector<T1>& items, T2 target) {
+static int GetGeValuePoloy3(const std::vector<T1>& items, T2 target) {
   if (items.empty() || target < items.at(0).s) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
     if (target >= items.at(i).s) return i;
@@ -109,7 +109,7 @@ static int GetGEValuePoloy3(const std::vector<T1>& items, T2 target) {
  * @return sequence index or -1
  */
 template <typename T1, typename T2>
-static int GetGTValuePoloy3(const std::vector<T1>& items, T2 target) {
+static int GetGtValuePoloy3(const std::vector<T1>& items, T2 target) {
   if (items.empty() || target < items.at(0).s) return -1;
   if (target < items.at(0).s) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
@@ -119,7 +119,7 @@ static int GetGTValuePoloy3(const std::vector<T1>& items, T2 target) {
 }
 
 template <typename T1, typename T2>
-static int GetGEPtrPoloy3(const std::vector<T1>& items, T2 target) {
+static int GetGePtrPoloy3(const std::vector<T1>& items, T2 target) {
   if (items.empty() || target < items.at(0)->s) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
     if (target >= items.at(i)->s) return i;
@@ -128,7 +128,7 @@ static int GetGEPtrPoloy3(const std::vector<T1>& items, T2 target) {
 }
 
 template <typename T1, typename T2>
-static int GetGTPtrPoloy3(const std::vector<T1>& items, T2 target) {
+static int GetGtPtrPoloy3(const std::vector<T1>& items, T2 target) {
   if (items.empty() || target < items.at(0)->s) return -1;
   if (target < items.at(0)->s) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
@@ -159,13 +159,6 @@ static std::vector<std::string> Split(const std::string& str,
   token = str.substr(index);
   res.emplace_back(token);
   return res;
-}
-
-static void Assert(bool r, const std::string& msg = "fault") {
-  if (!r) {
-    std::cout << "assert msg: " << msg << std::endl;
-    assert(false);
-  }
 }
 
 template <typename T>
