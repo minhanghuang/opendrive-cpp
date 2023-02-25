@@ -1,7 +1,3 @@
-# https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Configuration
-# https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators
-
-# 查找命令, 获取系统参数
 find_program(LSB_RELEASE_EXEC lsb_release)
 execute_process(
   COMMAND ${LSB_RELEASE_EXEC} -c -s
@@ -42,11 +38,11 @@ set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(CPACK_OUTPUT_FILE_PREFIX packages)
 
 # 描述
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "openDRIVE cpp")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OpenDRIVE cpp")
 
 # 供应商信息
-set(CPACK_PACKAGE_VENDOR huangminhang)
-set(CPACK_PACKAGE_CONTACT job@minhang.me)
+set(CPACK_PACKAGE_VENDOR "huangminhang")
+set(CPACK_PACKAGE_CONTACT "job@minhang.me")
 
 # 版本相关
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
