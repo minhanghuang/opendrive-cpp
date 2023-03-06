@@ -272,11 +272,11 @@ RoadXmlParser& RoadXmlParser::LanesElement() {
   auto curr_xml_offset = xml_lanes->FirstChildElement("laneOffset");
   while (curr_xml_offset) {
     element::LaneOffset offset;
-    common::XmlQueryDoubleAttribute(curr_xml_offset, "s", offset.s);
-    common::XmlQueryDoubleAttribute(curr_xml_offset, "a", offset.a);
-    common::XmlQueryDoubleAttribute(curr_xml_offset, "b", offset.b);
-    common::XmlQueryDoubleAttribute(curr_xml_offset, "c", offset.c);
-    common::XmlQueryDoubleAttribute(curr_xml_offset, "d", offset.d);
+    common::XmlQueryDoubleAttribute(curr_xml_offset, "s", offset.mutable_s());
+    common::XmlQueryDoubleAttribute(curr_xml_offset, "a", offset.mutable_d());
+    common::XmlQueryDoubleAttribute(curr_xml_offset, "b", offset.mutable_b());
+    common::XmlQueryDoubleAttribute(curr_xml_offset, "c", offset.mutable_c());
+    common::XmlQueryDoubleAttribute(curr_xml_offset, "d", offset.mutable_d());
     ele_road_->lanes.lane_offsets.emplace_back(offset);
     curr_xml_offset = common::XmlNextSiblingElement(curr_xml_offset);
   }

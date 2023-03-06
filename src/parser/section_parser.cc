@@ -125,11 +125,16 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneWidthEle(
       xml_lane->FirstChildElement("width");
   while (curr_xml_width) {
     element::LaneWidth lane_width;
-    common::XmlQueryDoubleAttribute(curr_xml_width, "sOffset", lane_width.s);
-    common::XmlQueryDoubleAttribute(curr_xml_width, "a", lane_width.a);
-    common::XmlQueryDoubleAttribute(curr_xml_width, "b", lane_width.b);
-    common::XmlQueryDoubleAttribute(curr_xml_width, "c", lane_width.c);
-    common::XmlQueryDoubleAttribute(curr_xml_width, "d", lane_width.d);
+    common::XmlQueryDoubleAttribute(curr_xml_width, "sOffset",
+                                    lane_width.mutable_s());
+    common::XmlQueryDoubleAttribute(curr_xml_width, "a",
+                                    lane_width.mutable_a());
+    common::XmlQueryDoubleAttribute(curr_xml_width, "b",
+                                    lane_width.mutable_b());
+    common::XmlQueryDoubleAttribute(curr_xml_width, "c",
+                                    lane_width.mutable_c());
+    common::XmlQueryDoubleAttribute(curr_xml_width, "d",
+                                    lane_width.mutable_d());
     ele_lane.widths.emplace_back(lane_width);
     curr_xml_width = common::XmlNextSiblingElement(curr_xml_width);
   }
@@ -144,11 +149,16 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneBorderEle(
       xml_lane->FirstChildElement("border");
   while (curr_xml_border) {
     element::LaneBorder lane_border;
-    common::XmlQueryDoubleAttribute(curr_xml_border, "sOffset", lane_border.s);
-    common::XmlQueryDoubleAttribute(curr_xml_border, "a", lane_border.a);
-    common::XmlQueryDoubleAttribute(curr_xml_border, "b", lane_border.b);
-    common::XmlQueryDoubleAttribute(curr_xml_border, "c", lane_border.c);
-    common::XmlQueryDoubleAttribute(curr_xml_border, "d", lane_border.d);
+    common::XmlQueryDoubleAttribute(curr_xml_border, "sOffset",
+                                    lane_border.mutable_s());
+    common::XmlQueryDoubleAttribute(curr_xml_border, "a",
+                                    lane_border.mutable_a());
+    common::XmlQueryDoubleAttribute(curr_xml_border, "b",
+                                    lane_border.mutable_b());
+    common::XmlQueryDoubleAttribute(curr_xml_border, "c",
+                                    lane_border.mutable_c());
+    common::XmlQueryDoubleAttribute(curr_xml_border, "d",
+                                    lane_border.mutable_d());
     ele_lane.borders.emplace_back(lane_border);
     curr_xml_border = common::XmlNextSiblingElement(curr_xml_border);
   }
@@ -167,19 +177,24 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneRoadMarkEle(
     std::string mark_color;
     std::string mark_weight;
     std::string mark_lane_change;
-    common::XmlQueryDoubleAttribute(curr_xml_mark, "sOffset", road_mark.s);
-    common::XmlQueryDoubleAttribute(curr_xml_mark, "width", road_mark.width);
-    common::XmlQueryDoubleAttribute(curr_xml_mark, "height", road_mark.height);
+    common::XmlQueryDoubleAttribute(curr_xml_mark, "sOffset",
+                                    road_mark.mutable_s());
+    common::XmlQueryDoubleAttribute(curr_xml_mark, "width",
+                                    road_mark.mutable_width());
+    common::XmlQueryDoubleAttribute(curr_xml_mark, "height",
+                                    road_mark.mutable_height());
     common::XmlQueryStringAttribute(curr_xml_mark, "material",
-                                    road_mark.material);
-    common::XmlQueryEnumAttribute(curr_xml_mark, "type", road_mark.type,
-                                  ROADMARK_TYPE_CHOICES);
-    common::XmlQueryEnumAttribute(curr_xml_mark, "color", road_mark.color,
+                                    road_mark.mutable_material());
+    common::XmlQueryEnumAttribute(
+        curr_xml_mark, "type", road_mark.mutable_type(), ROADMARK_TYPE_CHOICES);
+    common::XmlQueryEnumAttribute(curr_xml_mark, "color",
+                                  road_mark.mutable_color(),
                                   ROAD_MARK_COLOR_CHOICES);
-    common::XmlQueryEnumAttribute(curr_xml_mark, "weight", road_mark.weigth,
+    common::XmlQueryEnumAttribute(curr_xml_mark, "weight",
+                                  road_mark.mutable_weigth(),
                                   ROAD_MARK_WEIGHT_CHOICES);
     common::XmlQueryEnumAttribute(curr_xml_mark, "laneChange",
-                                  road_mark.lane_change,
+                                  road_mark.mutable_lane_change(),
                                   ROAD_MARK_LANE_CHANGE_CHOICES);
     ele_lane.road_marks.emplace_back(road_mark);
     curr_xml_mark = common::XmlNextSiblingElement(curr_xml_mark);

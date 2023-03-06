@@ -311,29 +311,84 @@ class LaneAttributes {
   Boolean level_;
 };
 
-struct OffsetPoly3 {
-  // f(s) = a + b*s + c*s*s + d*s*s*s
-  double s = 0.;  // start position (s - start_offset)[meters]]
-  double a = 0.;  // a - polynomial value at start_offset=0
-  double b = 0.;  // b
-  double c = 0.;  // c
-  double d = 0.;  // d
-  bool operator<(const OffsetPoly3& obj) const { return this->s > obj.s; }
+class OffsetPoly3 {
+ public:
+  OffsetPoly3() : s_(0), a_(0), b_(0), c_(0), d_(0) {}
+  bool operator<(const OffsetPoly3& obj) const { return this->s_ > obj.s_; }
   virtual double GetOffsetValue(double road_ds) const final {
-    const double ds = road_ds - s;
-    return a + b * ds + c * std::pow(ds, 2) + d * std::pow(ds, 3);
+    const double ds = road_ds - s_;
+    return a_ + b_ * ds + c_ * std::pow(ds, 2) + d_ * std::pow(ds, 3);
   }
+  void set_s(double d) { s_ = d; }
+  void set_a(double d) { a_ = d; }
+  void set_b(double d) { b_ = d; }
+  void set_c(double d) { c_ = d; }
+  void set_d(double d) { d_ = d; }
+  double& mutable_s() { return s_; }
+  double& mutable_a() { return a_; }
+  double& mutable_b() { return b_; }
+  double& mutable_c() { return c_; }
+  double& mutable_d() { return d_; }
+  double s() const { return s_; }
+  double a() const { return a_; }
+  double b() const { return b_; }
+  double c() const { return c_; }
+  double d() const { return d_; }
+
+ protected:
+  // f(s) = a + b*s + c*s*s + d*s*s*s
+  double s_;  // start position (s - start_offset)[meters]]
+  double a_;  // a - polynomial value at start_offset=0
+  double b_;  // b
+  double c_;  // c
+  double d_;  // d
 };
 
-struct RoadMark {
-  double s = 0.;
-  RoadMarkType type = RoadMarkType::NONE;
-  RoadMarkColor color = RoadMarkColor::STANDARD;
-  RoadMarkWeight weigth = RoadMarkWeight::UNKNOWN;
-  double width = 0.;
-  double height = 0.;
-  std::string material = "standard";
-  RoadMarkLaneChange lane_change = RoadMarkLaneChange::UNKNOWN;
+class RoadMark {
+ public:
+  RoadMark()
+      : s_(0),
+        type_(RoadMarkType::NONE),
+        color_(RoadMarkColor::STANDARD),
+        weigth_(RoadMarkWeight::UNKNOWN),
+        lane_change_(RoadMarkLaneChange::UNKNOWN),
+        width_(0),
+        height_(0),
+        material_("standard") {}
+  void set_s(double d) { s_ = d; }
+  void set_type(RoadMarkType i) { type_ = i; }
+  void set_color(RoadMarkColor i) { color_ = i; }
+  void set_weigth(RoadMarkWeight i) { weigth_ = i; }
+  void set_lane_change(RoadMarkLaneChange i) { lane_change_ = i; }
+  void set_width(double d) { width_ = d; }
+  void set_height(double d) { height_ = d; }
+  void set_material(const std::string& s) { material_ = s; }
+  double& mutable_s() { return s_; }
+  RoadMarkType& mutable_type() { return type_; }
+  RoadMarkColor& mutable_color() { return color_; }
+  RoadMarkWeight& mutable_weigth() { return weigth_; }
+  RoadMarkLaneChange& mutable_lane_change() { return lane_change_; }
+  double& mutable_width() { return width_; }
+  double& mutable_height() { return height_; }
+  std::string& mutable_material() { return material_; }
+  double s() const { return s_; }
+  RoadMarkType type() const { return type_; }
+  RoadMarkColor color() const { return color_; }
+  RoadMarkWeight weigth() const { return weigth_; }
+  RoadMarkLaneChange lane_change() const { return lane_change_; }
+  double width() const { return width_; }
+  double height() const { return height_; }
+  const std::string& material() const { return material_; }
+
+ private:
+  double s_;
+  RoadMarkType type_;
+  RoadMarkColor color_;
+  RoadMarkWeight weigth_;
+  RoadMarkLaneChange lane_change_;
+  double width_;
+  double height_;
+  std::string material_;
 };
 typedef std::vector<RoadMark> RoadMarks;
 
@@ -356,40 +411,44 @@ struct LaneSpeed {
 };
 typedef std::vector<LaneSpeed> LaneSpeeds;
 
-struct Lane {
-  LaneAttributes attributes;
-  LaneLink link;
-  LaneWidths widths;
-  LaneBorders borders;
-  RoadMarks road_marks;
-  LaneSpeeds max_speeds;
+class Lane {
+ public:
+  Lane() {}
   double GetLaneWidth(double road_ds) const {
     // width >> border
     if (road_ds < 0) {
       return GetLaneWidth(0.);
     }
-    if (widths.empty()) {
-      if (borders.empty()) {
+    if (widths_.empty()) {
+      if (borders_.empty()) {
         return 0.;
       }
       /// border
-      int border_index = common::GetGtValuePoloy3(borders, road_ds);
+      int border_index = common::GetGtValuePoloy3(borders_, road_ds);
       if (border_index < 0) {
         return 0.;
       }
-      auto border = widths.at(border_index);
+      auto border = widths_.at(border_index);
       return border.GetOffsetValue(road_ds);
     } else {
       /// width
-      int width_index = common::GetGtValuePoloy3(widths, road_ds);
+      int width_index = common::GetGtValuePoloy3(widths_, road_ds);
       if (width_index < 0) {
         return 0.;
       }
-      auto width = widths.at(width_index);
+      auto width = widths_.at(width_index);
       return width.GetOffsetValue(road_ds);
     }
     return 0.;
   }
+
+ private:
+  LaneAttributes attrs_;
+  LaneLink link_;
+  LaneWidths widths_;
+  LaneBorders borders_;
+  RoadMarks road_marks_;
+  LaneSpeeds max_speeds_;
 };
 
 struct LanesInfo {

@@ -77,7 +77,7 @@ static T GetOffsetPoint(const T& point, double lateral_offset) {
 template <typename T>
 static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
   std::sort(items.begin(), items.end(), [asc](const T& t1, const T& t2) {
-    return asc ? t1.s < t2.s : t1.s > t2.s;
+    return asc ? t1.s() < t2.s() : t1.s() > t2.s();
   });
 }
 
@@ -92,9 +92,9 @@ static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
  */
 template <typename T1, typename T2>
 static int GetGeValuePoloy3(const std::vector<T1>& items, T2 target) {
-  if (items.empty() || target < items.at(0).s) return -1;
+  if (items.empty() || target < items.at(0).s()) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
-    if (target >= items.at(i).s) return i;
+    if (target >= items.at(i).s()) return i;
   }
   return -1;
 }
@@ -110,10 +110,10 @@ static int GetGeValuePoloy3(const std::vector<T1>& items, T2 target) {
  */
 template <typename T1, typename T2>
 static int GetGtValuePoloy3(const std::vector<T1>& items, T2 target) {
-  if (items.empty() || target < items.at(0).s) return -1;
-  if (target < items.at(0).s) return -1;
+  if (items.empty() || target < items.at(0).s()) return -1;
+  if (target < items.at(0).s()) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
-    if (target > items.at(i).s) return i;
+    if (target > items.at(i).s()) return i;
   }
   return 0;
 }
@@ -129,10 +129,10 @@ static int GetGePtrPoloy3(const std::vector<T1>& items, T2 target) {
 
 template <typename T1, typename T2>
 static int GetGtPtrPoloy3(const std::vector<T1>& items, T2 target) {
-  if (items.empty() || target < items.at(0)->s) return -1;
-  if (target < items.at(0)->s) return -1;
+  if (items.empty() || target < items.at(0)->s()) return -1;
+  if (target < items.at(0)->s()) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
-    if (target > items.at(i)->s) return i;
+    if (target > items.at(i)->s()) return i;
   }
   return 0;
 }

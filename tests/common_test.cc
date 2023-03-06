@@ -66,11 +66,11 @@ TEST_F(TestCommon, TestVectorSort) {
   element::LaneOffset l1, l2, l3, l4, l5;
   int ret = common::GetGeValuePoloy3(lane_offsets, 11);
   ASSERT_EQ(-1, ret);
-  l1.s = 11;
-  l2.s = 13;
-  l3.s = 15;
-  l4.s = 16;
-  l5.s = 19;
+  l1.s_ = 11;
+  l2.s_ = 13;
+  l3.s_ = 15;
+  l4.s_ = 16;
+  l5.s_ = 19;
   lane_offsets.emplace_back(l1);
   lane_offsets.emplace_back(l2);
   lane_offsets.emplace_back(l5);
@@ -79,7 +79,7 @@ TEST_F(TestCommon, TestVectorSort) {
   common::VectorSortPoloy3(lane_offsets);
   std::vector<double> e_v{11, 13, 15, 16, 19};
   for (int i = 0; i < lane_offsets.size(); i++) {
-    ASSERT_DOUBLE_EQ(e_v.at(i), lane_offsets.at(i).s);
+    ASSERT_DOUBLE_EQ(e_v.at(i), lane_offsets.at(i).s_);
   }
 }
 
@@ -88,11 +88,11 @@ TEST_F(TestCommon, TestLeftValue) {
   element::LaneOffset l1, l2, l3, l4, l5;
   int ret = common::GetGeValuePoloy3(lane_offsets, 11);
   ASSERT_EQ(-1, ret);
-  l1.s = 11;
-  l2.s = 13;
-  l3.s = 15;
-  l4.s = 16;
-  l5.s = 19;
+  l1.s_ = 11;
+  l2.s_ = 13;
+  l3.s_ = 15;
+  l4.s_ = 16;
+  l5.s_ = 19;
   lane_offsets.emplace_back(l1);
   lane_offsets.emplace_back(l2);
   lane_offsets.emplace_back(l3);

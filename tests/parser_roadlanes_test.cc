@@ -58,16 +58,16 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   auto ele_lanes = ele_map->roads.front().lanes;
   /// offset
   ASSERT_TRUE(2 == ele_lanes.lane_offsets.size());
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).s);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).a);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).b);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).c);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).d);
-  ASSERT_DOUBLE_EQ(7.5000000000000000e+01, ele_lanes.lane_offsets.at(1).s);
-  ASSERT_DOUBLE_EQ(3.2500000000000000e+00, ele_lanes.lane_offsets.at(1).a);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).b);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).c);
-  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).d);
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).s());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).a());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).b());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).c());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(0).d());
+  ASSERT_DOUBLE_EQ(7.5000000000000000e+01, ele_lanes.lane_offsets.at(1).s());
+  ASSERT_DOUBLE_EQ(3.2500000000000000e+00, ele_lanes.lane_offsets.at(1).a());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).b());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).c());
+  ASSERT_DOUBLE_EQ(0, ele_lanes.lane_offsets.at(1).d());
 
   /// section
   ASSERT_DOUBLE_EQ(5.1604964355176435e+00, ele_lanes.lane_sections.at(1).s0);
@@ -94,19 +94,19 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ(-3, lane_section1_l3.link.predecessors.at(0));
   ASSERT_EQ(1, lane_section1_l3.widths.size());
   auto lane_section1_width1 = *lane_section1_l3.widths.begin();
-  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width1.s);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width1.a);
-  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width1.b);
-  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_width1.c);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width1.d);
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width1.s());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width1.a());
+  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width1.b());
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_width1.c());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width1.d());
 
   ASSERT_EQ(1, lane_section1_l3.borders.size());
   auto lane_section1_border1 = *lane_section1_l3.borders.begin();
-  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border1.s);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border1.a);
-  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border1.b);
-  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_border1.c);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border1.d);
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border1.s());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border1.a());
+  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border1.b());
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_border1.c());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border1.d());
 
   ASSERT_EQ(1, lane_section1_l3.road_marks.size());
   auto lane_section1_roadmarks1 = lane_section1_l3.road_marks.front();
@@ -151,19 +151,19 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_EQ(1, lane_section1_right1.link.predecessors.at(0));
   ASSERT_EQ(1, lane_section1_right1.widths.size());
   auto lane_section1_width21 = *lane_section1_right1.widths.begin();
-  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width21.s);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.a);
-  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width21.b);
-  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_width21.c);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.d);
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_width21.s());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.a());
+  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_width21.b());
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_width21.c());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_width21.d());
 
   ASSERT_EQ(1, lane_section1_l3.borders.size());
   auto lane_section1_border21 = *lane_section1_right1.borders.begin();
-  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border21.s);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.a);
-  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border21.b);
-  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_border21.c);
-  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.d);
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_border21.s());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.a());
+  ASSERT_DOUBLE_EQ(2.0000000000000000e+0, lane_section1_border21.b());
+  ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_border21.c());
+  ASSERT_DOUBLE_EQ(4.0000000000000009e+0, lane_section1_border21.d());
 
   ASSERT_EQ(1, lane_section1_right1.road_marks.size());
   auto lane_section1_roadmarks21 = lane_section1_right1.road_marks.front();
