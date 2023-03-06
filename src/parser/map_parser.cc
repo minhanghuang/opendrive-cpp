@@ -25,22 +25,28 @@ MapXmlParser& MapXmlParser::HeaderElement() {
     return *this;
   }
   common::XmlQueryStringAttribute(xml_header, "revMajor",
-                                  ele_map_->header.rev_major);
+                                  ele_map_->header.mutable_rev_major());
   common::XmlQueryStringAttribute(xml_header, "revMinor",
-                                  ele_map_->header.rev_minor);
-  common::XmlQueryStringAttribute(xml_header, "name", ele_map_->header.name);
+                                  ele_map_->header.mutable_rev_minor());
+  common::XmlQueryStringAttribute(xml_header, "name",
+                                  ele_map_->header.mutable_name());
   common::XmlQueryStringAttribute(xml_header, "version",
-                                  ele_map_->header.version);
+                                  ele_map_->header.mutable_version());
   common::XmlQueryStringAttribute(xml_header, "vendor",
-                                  ele_map_->header.vendor);
-  common::XmlQueryStringAttribute(xml_header, "date", ele_map_->header.date);
-  common::XmlQueryDoubleAttribute(xml_header, "north", ele_map_->header.north);
-  common::XmlQueryDoubleAttribute(xml_header, "south", ele_map_->header.south);
-  common::XmlQueryDoubleAttribute(xml_header, "west", ele_map_->header.west);
-  common::XmlQueryDoubleAttribute(xml_header, "east", ele_map_->header.east);
-  this->set_opendrive_version(ele_map_->header.rev_major + "_" +
-                              ele_map_->header.rev_minor + "_" +
-                              ele_map_->header.version);
+                                  ele_map_->header.mutable_vendor());
+  common::XmlQueryStringAttribute(xml_header, "date",
+                                  ele_map_->header.mutable_date());
+  common::XmlQueryDoubleAttribute(xml_header, "north",
+                                  ele_map_->header.mutable_north());
+  common::XmlQueryDoubleAttribute(xml_header, "south",
+                                  ele_map_->header.mutable_south());
+  common::XmlQueryDoubleAttribute(xml_header, "west",
+                                  ele_map_->header.mutable_west());
+  common::XmlQueryDoubleAttribute(xml_header, "east",
+                                  ele_map_->header.mutable_east());
+  this->set_opendrive_version(ele_map_->header.rev_major() + "_" +
+                              ele_map_->header.rev_minor() + "_" +
+                              ele_map_->header.version());
   return *this;
 }
 

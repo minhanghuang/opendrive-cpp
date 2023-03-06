@@ -167,33 +167,34 @@ TEST_F(TestCommon, TestXml) {
   auto header_ptr = std::make_shared<opendrive::element::Header>();
   ASSERT_TRUE(header_node != nullptr);
   opendrive::common::XmlQueryStringAttribute(header_node, "name",
-                                             header_ptr->name);
+                                             header_ptr->mutable_name());
   opendrive::common::XmlQueryStringAttribute(header_node, "revMinor",
-                                             header_ptr->rev_minor);
+                                             header_ptr->mutable_rev_minor());
   opendrive::common::XmlQueryDoubleAttribute(header_node, "north",
-                                             header_ptr->north);
-  ASSERT_TRUE("4" == header_ptr->rev_minor);
-  ASSERT_TRUE("zhichun Rd" == header_ptr->name);
-  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header_ptr->north);
+                                             header_ptr->mutable_north());
+  ASSERT_TRUE("4" == header_ptr->rev_minor());
+  ASSERT_TRUE("zhichun Rd" == header_ptr->name());
+  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header_ptr->north());
 
   /// not found
-  ASSERT_EQ(opendrive::common::XmlQueryStringAttribute(header_node, "aaa",
-                                                       header_ptr->rev_minor),
+  ASSERT_EQ(opendrive::common::XmlQueryStringAttribute(
+                header_node, "aaa", header_ptr->mutable_rev_minor()),
             tinyxml2::XMLError::XML_NO_ATTRIBUTE);
 
   /// default
-  header_ptr->rev_minor = "99";
-  header_ptr->name = "qwert";
-  header_ptr->north = -99.99;
+  header_ptr->set_rev_minor("99");
+  header_ptr->set_name("qwert");
+  header_ptr->set_north(-99.99);
+
   opendrive::common::XmlQueryStringAttribute(header_node, "name__",
-                                             header_ptr->name);
+                                             header_ptr->mutable_name());
   opendrive::common::XmlQueryStringAttribute(header_node, "revMinor___",
-                                             header_ptr->rev_minor);
+                                             header_ptr->mutable_rev_minor());
   opendrive::common::XmlQueryDoubleAttribute(header_node, "north___",
-                                             header_ptr->north);
-  ASSERT_TRUE("99" == header_ptr->rev_minor);
-  ASSERT_TRUE("qwert" == header_ptr->name);
-  ASSERT_DOUBLE_EQ(-99.99, header_ptr->north);
+                                             header_ptr->mutable_north());
+  ASSERT_TRUE("99" == header_ptr->rev_minor());
+  ASSERT_TRUE("qwert" == header_ptr->name());
+  ASSERT_DOUBLE_EQ(-99.99, header_ptr->north());
 }
 
 TEST_F(TestCommon, TestXml2) {

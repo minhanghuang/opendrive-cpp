@@ -54,16 +54,16 @@ TEST_F(TestHeaderParser, TestHeader) {
   auto ret = parser->ParseMap(xml, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
   auto header = ele_map->header;
-  ASSERT_TRUE("1" == header.rev_major);
-  ASSERT_TRUE("4" == header.rev_minor);
-  ASSERT_TRUE("1" == header.version);
-  ASSERT_TRUE("2019-04-06T10:38:28" == header.date);
-  ASSERT_TRUE("zhichun Rd" == header.name);
-  ASSERT_TRUE("VectorZero" == header.vendor);
-  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header.north);
-  ASSERT_DOUBLE_EQ(-3.5690998535156251e+2, header.south);
-  ASSERT_DOUBLE_EQ(-2.8359911988457576e+1, header.west);
-  ASSERT_DOUBLE_EQ(4.2268105762411665e+2, header.east);
+  ASSERT_TRUE("1" == header.rev_major());
+  ASSERT_TRUE("4" == header.rev_minor());
+  ASSERT_TRUE("1" == header.version());
+  ASSERT_TRUE("2019-04-06T10:38:28" == header.date());
+  ASSERT_TRUE("zhichun Rd" == header.name());
+  ASSERT_TRUE("VectorZero" == header.vendor());
+  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header.north());
+  ASSERT_DOUBLE_EQ(-3.5690998535156251e+2, header.south());
+  ASSERT_DOUBLE_EQ(-2.8359911988457576e+1, header.west());
+  ASSERT_DOUBLE_EQ(4.2268105762411665e+2, header.east());
 }
 
 int main(int argc, char* argv[]) {
