@@ -86,11 +86,11 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   auto lane_section1_l3 = lane_section1.left.lanes.at(2);
   auto lane_section1_l2 = lane_section1.left.lanes.at(1);
   auto lane_section1_l1 = lane_section1.left.lanes.at(0);
-  ASSERT_EQ(3, lane_section1_l3.attributes.id);
-  ASSERT_EQ(2, lane_section1_l2.attributes.id);
-  ASSERT_EQ(1, lane_section1_l1.attributes.id);
-  ASSERT_EQ(LaneType::SIDEWALK, lane_section1_l3.attributes.type);
-  ASSERT_EQ(Boolean::FALSE, lane_section1_l3.attributes.level);
+  ASSERT_EQ(3, lane_section1_l3.attributes.id());
+  ASSERT_EQ(2, lane_section1_l2.attributes.id());
+  ASSERT_EQ(1, lane_section1_l1.attributes.id());
+  ASSERT_EQ(LaneType::SIDEWALK, lane_section1_l3.attributes.type());
+  ASSERT_EQ(Boolean::FALSE, lane_section1_l3.attributes.level());
   ASSERT_EQ(-3, lane_section1_l3.link.predecessors.at(0));
   ASSERT_EQ(1, lane_section1_l3.widths.size());
   auto lane_section1_width1 = *lane_section1_l3.widths.begin();
@@ -121,9 +121,9 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
 
   /// ele_lanes sections center
   auto lane_section1_center = lane_section1.center.lanes.at(0);
-  ASSERT_EQ(0, lane_section1_center.attributes.id);
-  ASSERT_EQ(LaneType::NONE, lane_section1_center.attributes.type);
-  ASSERT_EQ(Boolean::FALSE, lane_section1_center.attributes.level);
+  ASSERT_EQ(0, lane_section1_center.attributes.id());
+  ASSERT_EQ(LaneType::NONE, lane_section1_center.attributes.type());
+  ASSERT_EQ(Boolean::FALSE, lane_section1_center.attributes.level());
 
   ASSERT_EQ(1, lane_section1_center.road_marks.size());
   auto lane_section1_center_roadmarks1 =
@@ -143,11 +143,11 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   auto lane_section1_right1 = lane_section1.right.lanes.at(0);
   auto lane_section1_right2 = lane_section1.right.lanes.at(1);
   auto lane_section1_right3 = lane_section1.right.lanes.at(2);
-  ASSERT_EQ(-1, lane_section1_right1.attributes.id);
-  ASSERT_EQ(-2, lane_section1_right2.attributes.id);
-  ASSERT_EQ(-3, lane_section1_right3.attributes.id);
-  ASSERT_EQ(LaneType::DRIVING, lane_section1_right1.attributes.type);
-  ASSERT_EQ(Boolean::FALSE, lane_section1_right1.attributes.level);
+  ASSERT_EQ(-1, lane_section1_right1.attributes.id());
+  ASSERT_EQ(-2, lane_section1_right2.attributes.id());
+  ASSERT_EQ(-3, lane_section1_right3.attributes.id());
+  ASSERT_EQ(LaneType::DRIVING, lane_section1_right1.attributes.type());
+  ASSERT_EQ(Boolean::FALSE, lane_section1_right1.attributes.level());
   ASSERT_EQ(1, lane_section1_right1.link.predecessors.at(0));
   ASSERT_EQ(1, lane_section1_right1.widths.size());
   auto lane_section1_width21 = *lane_section1_right1.widths.begin();

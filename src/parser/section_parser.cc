@@ -55,7 +55,7 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLanesEle() {
   /// sort left lanes
   std::sort(ele_section_->left.lanes.begin(), ele_section_->left.lanes.end(),
             [](const element::Lane& l1, const element::Lane& l2) {
-              return l1.attributes.id < l2.attributes.id;
+              return l1.attributes.id() < l2.attributes.id();
             });
   return *this;
 }
@@ -77,13 +77,14 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneAttributes(
   if (!IsValid()) return *this;
   std::string lane_type;
   std::string lane_level;
-  common::XmlQueryIntAttribute(xml_lane, "id", ele_lane.attributes.id);
+  common::XmlQueryIntAttribute(xml_lane, "id",
+                               ele_lane.attributes.mutable_id());
   common::XmlQueryStringAttribute(xml_lane, "type", lane_type);
   common::XmlQueryStringAttribute(xml_lane, "level", lane_level);
-  common::XmlQueryEnumAttribute(xml_lane, "type", ele_lane.attributes.type,
-                                LANE_TYPE_CHOICES);
-  common::XmlQueryEnumAttribute(xml_lane, "level", ele_lane.attributes.level,
-                                BOOLEAN_CHOICES);
+  common::XmlQueryEnumAttribute(
+      xml_lane, "type", ele_lane.attributes.mutable_type(), LANE_TYPE_CHOICES);
+  common::XmlQueryEnumAttribute(
+      xml_lane, "level", ele_lane.attributes.mutable_level(), BOOLEAN_CHOICES);
   return *this;
 }
 

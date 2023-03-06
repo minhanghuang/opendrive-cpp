@@ -82,11 +82,11 @@ TEST_F(TestRoadParser, TestRoad) {
   for (const auto& road : ele_map->roads) {
     for (const auto& section : road.lanes.lane_sections) {
       for (const auto& lane : section.left.lanes) {
-        ASSERT_TRUE(lane.attributes.id > 0);
+        ASSERT_TRUE(lane.attributes.id() > 0);
       }
-      ASSERT_TRUE(section.center.lanes.front().attributes.id == 0);
+      ASSERT_TRUE(section.center.lanes.front().attributes.id() == 0);
       for (const auto& lane : section.right.lanes) {
-        ASSERT_TRUE(lane.attributes.id < 0);
+        ASSERT_TRUE(lane.attributes.id() < 0);
       }
     }
   }

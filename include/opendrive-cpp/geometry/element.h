@@ -1,5 +1,5 @@
-#ifndef OPENDRIVE_CPP_TYPES_H_
-#define OPENDRIVE_CPP_TYPES_H_
+#ifndef OPENDRIVE_CPP_ELEMENT_H_
+#define OPENDRIVE_CPP_ELEMENT_H_
 
 #include <algorithm>
 #include <array>
@@ -78,131 +78,151 @@ class Header {
   double east_;
 };
 
-typedef struct Geometry GeometryTypedef;
 class Geometry {
  public:
-  typedef std::shared_ptr<GeometryTypedef> Ptr;
+  typedef std::shared_ptr<Geometry> Ptr;
   typedef std::vector<Ptr> Ptrs;
   Geometry(double _s, double _x, double _y, double _hdg, double _length,
            GeometryType _type)
-      : s(_s),
-        x(_x),
-        y(_y),
-        hdg(_hdg),
-        length(_length),
-        type(_type),
-        sin_hdg(std::sin(_hdg)),
-        cos_hdg(std::cos(_hdg)) {}
+      : s_(_s),
+        x_(_x),
+        y_(_y),
+        hdg_(_hdg),
+        length_(_length),
+        type_(_type),
+        sin_hdg_(std::sin(_hdg)),
+        cos_hdg_(std::cos(_hdg)) {}
   virtual ~Geometry() = default;
   virtual Point GetPoint(double ref_line_ds) const = 0;
-  const double s;
-  const double x;
-  const double y;
-  const double hdg;
-  const double length;
-  const GeometryType type;
-  const double sin_hdg;
-  const double cos_hdg;
+  double s() const { return s_; }
+  double x() const { return x_; }
+  double y() const { return y_; }
+  double heading() const { return hdg_; }
+  double length() const { return length_; }
+  GeometryType type() const { return type_; }
+  double sin_hdg() const { return sin_hdg_; }
+  double cos_hdg() const { return cos_hdg_; }
+
+ protected:
+  const double s_;
+  const double x_;
+  const double y_;
+  const double hdg_;
+  const double length_;
+  const double sin_hdg_;
+  const double cos_hdg_;
+  const GeometryType type_;
 };
 
 class GeometryLine final : public Geometry {
  public:
-  GeometryLine(double _s, double _x, double _y, double _hdg, double _length,
-               GeometryType _type)
-      : Geometry(_s, _x, _y, _hdg, _length, _type) {}
+  GeometryLine(double s, double x, double y, double hdg, double length,
+               GeometryType type)
+      : Geometry(s, x, y, hdg, length, type) {}
   virtual Point GetPoint(double road_ds) const override {
-    const double ref_line_ds = road_ds - s;
-    const double xd = x + (cos_hdg * ref_line_ds);
-    const double yd = y + (sin_hdg * ref_line_ds);
-    return Point{.x = xd, .y = yd, .hdg = hdg};
+    const double ref_line_ds = road_ds - s_;
+    const double xd = x_ + (cos_hdg_ * ref_line_ds);
+    const double yd = y_ + (sin_hdg_ * ref_line_ds);
+    return Point{.x = xd, .y = yd, .hdg = hdg_};
   }
 };
 
 class GeometryArc final : public Geometry {
  public:
-  GeometryArc(double _s, double _x, double _y, double _hdg, double _length,
-              GeometryType _type, double _curvature)
-      : Geometry(_s, _x, _y, _hdg, _length, _type),
-        curvature(_curvature),
-        radius(1.0 / _curvature) {}
+  GeometryArc(double s, double x, double y, double hdg, double length,
+              GeometryType type, double curvature)
+      : Geometry(s, x, y, hdg, length, type),
+        curvature_(curvature),
+        radius_(1.0 / curvature) {}
   virtual Point GetPoint(double road_ds) const override {
-    const double ref_line_ds = road_ds - s;
-    const double angle_at_s = ref_line_ds * curvature - M_PI / 2;
-    const double xd = radius * (std::cos(hdg + angle_at_s) - sin_hdg) + x;
-    const double yd = radius * (std::sin(hdg + angle_at_s) + cos_hdg) + y;
-    const double tangent = hdg + ref_line_ds * curvature;
+    const double ref_line_ds = road_ds - s_;
+    const double angle_at_s = ref_line_ds * curvature_ - M_PI / 2;
+    const double xd = radius_ * (std::cos(hdg_ + angle_at_s) - sin_hdg_) + x_;
+    const double yd = radius_ * (std::sin(hdg_ + angle_at_s) + cos_hdg_) + y_;
+    const double tangent = hdg_ + ref_line_ds * curvature_;
     return Point{.x = xd, .y = yd, .hdg = tangent};
   }
-  const double curvature;
-  const double radius;
+  double curvature() const { return curvature_; }
+  double radius() const { return radius_; }
+
+ private:
+  const double curvature_;
+  const double radius_;
 };
 
 class GeometrySpiral final : public Geometry {
  public:
-  GeometrySpiral(double _s, double _x, double _y, double _hdg, double _length,
-                 GeometryType _type, double _curve_start, double _curve_end)
-      : Geometry(_s, _x, _y, _hdg, _length, _type),
-        curve_start(_curve_start),
-        curve_end(_curve_end),
-        curve_dot((_curve_end - _curve_start) / (_length)) {}
+  GeometrySpiral(double s, double x, double y, double hdg, double length,
+                 GeometryType type, double curve_start, double curve_end)
+      : Geometry(s, x, y, hdg, length, type),
+        curve_start_(curve_start),
+        curve_end_(curve_end),
+        curve_dot_((curve_end - curve_start) / (length)) {}
 
   virtual Point GetPoint(double road_ds) const override {
-    const double ref_line_ds = road_ds - s;
-    const double s1 = curve_start / curve_dot + ref_line_ds;
+    const double ref_line_ds = road_ds - s_;
+    const double s1 = curve_start_ / curve_dot_ + ref_line_ds;
     double x1;
     double y1;
     double t1;
-    odrSpiral(s1, curve_dot, &x1, &y1, &t1);
+    odrSpiral(s1, curve_dot_, &x1, &y1, &t1);
 
-    const double s0 = curve_start / curve_dot;
+    const double s0 = curve_start_ / curve_dot_;
     double x0;
     double y0;
     double t0;
-    odrSpiral(s1, curve_dot, &x0, &y0, &t0);
+    odrSpiral(s1, curve_dot_, &x0, &y0, &t0);
 
     x1 -= x0;
     y1 -= y0;
     t1 -= t0;
-    const double angle = hdg - t0;
+    const double angle = hdg_ - t0;
     const double cos_a = std::cos(angle);
     const double sin_a = std::sin(angle);
-    const double xd = x + x1 * cos_a - y1 * sin_a;
-    const double yd = y + y1 * cos_a + x1 * sin_a;
-    const double tangent = hdg + t1;
+    const double xd = x_ + x1 * cos_a - y1 * sin_a;
+    const double yd = y_ + y1 * cos_a + x1 * sin_a;
+    const double tangent = hdg_ + t1;
     return Point{.x = xd, .y = yd, .hdg = tangent};
   }
-  const double curve_start;
-  const double curve_end;
-  const double curve_dot;
+  double curve_start() const { return curve_start_; }
+  double curve_end() const { return curve_end_; }
+  double curve_dot() const { return curve_dot_; }
+
+ private:
+  const double curve_start_;
+  const double curve_end_;
+  const double curve_dot_;
 };
 
 class GeometryPoly3 final : public Geometry {
  public:
-  GeometryPoly3(double _s, double _x, double _y, double _hdg, double _length,
-                GeometryType _type, double _a, double _b, double _c, double _d)
-      : Geometry(_s, _x, _y, _hdg, _length, _type),
-        a(_a),
-        b(_b),
-        c(_c),
-        d(_d) {}
+  GeometryPoly3(double s, double x, double y, double hdg, double length,
+                GeometryType type, double a, double b, double c, double d)
+      : Geometry(s, x, y, hdg, length, type), a_(a), b_(b), c_(c), d_(d) {}
 
   virtual Point GetPoint(double road_ds) const override {
-    const double ref_line_ds = road_ds - s;
+    const double ref_line_ds = road_ds - s_;
     const double u = ref_line_ds;
-    const double v = a + b * u + c * std::pow(u, 2) + d * std::pow(u, 3);
-    const double x1 = u * cos_hdg - v * sin_hdg;
-    const double y1 = u * sin_hdg + v * cos_hdg;
-    const double tangent_v = b + 2.0 * c * u + 3.0 * d * std::pow(u, 2);
+    const double v = a_ + b_ * u + c_ * std::pow(u, 2) + d_ * std::pow(u, 3);
+    const double x1 = u * cos_hdg_ - v * sin_hdg_;
+    const double y1 = u * sin_hdg_ + v * cos_hdg_;
+    const double tangent_v = b_ + 2.0 * c_ * u + 3.0 * d_ * std::pow(u, 2);
     const double theta = std::atan2(tangent_v, 1.0);
-    const double xd = x + x1;
-    const double yd = y + y1;
-    const double tangent = hdg + theta;
+    const double xd = x_ + x1;
+    const double yd = y_ + y1;
+    const double tangent = hdg_ + theta;
     return Point{.x = xd, .y = yd, .hdg = tangent};
   }
-  const double a;
-  const double b;
-  const double c;
-  const double d;
+  double a() const { return a_; }
+  double b() const { return b_; }
+  double c() const { return c_; }
+  double d() const { return d_; }
+
+ private:
+  const double a_;
+  const double b_;
+  const double c_;
+  const double d_;
 };
 
 class GeometryParamPoly3 final : public Geometry {
@@ -212,53 +232,83 @@ class GeometryParamPoly3 final : public Geometry {
     ARCLENGTH = 1,
     NORMALIZED = 2
   };
-  GeometryParamPoly3(double _s, double _x, double _y, double _hdg,
-                     double _length, GeometryType _type, double _au, double _bu,
-                     double _cu, double _du, double _av, double _bv, double _cv,
-                     double _dv, PRange _p_range)
-      : Geometry(_s, _x, _y, _hdg, _length, _type),
-        au(_au),
-        bu(_bu),
-        cu(_cu),
-        du(_du),
-        av(_av),
-        bv(_bv),
-        cv(_cv),
-        dv(_dv),
-        p_range(_p_range) {}
+  GeometryParamPoly3(double s, double x, double y, double hdg, double length,
+                     GeometryType type, double au, double bu, double cu,
+                     double du, double av, double bv, double cv, double dv,
+                     PRange p_range)
+      : Geometry(s, x, y, hdg, length, type),
+        au_(au),
+        bu_(bu),
+        cu_(cu),
+        du_(du),
+        av_(av),
+        bv_(bv),
+        cv_(cv),
+        dv_(dv),
+        p_range_(p_range) {}
   virtual Point GetPoint(double road_ds) const override {
-    const double ref_line_ds = road_ds - s;
+    const double ref_line_ds = road_ds - s_;
     double p = ref_line_ds;
-    if (PRange::NORMALIZED == p_range) {
-      p = std::min(1.0, ref_line_ds / length);
+    if (PRange::NORMALIZED == p_range_) {
+      p = std::min(1.0, ref_line_ds / length_);
     }
-    const double u = au + bu * p + cu * std::pow(p, 2) + du * std::pow(p, 3);
-    const double v = av + bv * p + cv * std::pow(p, 2) + dv * std::pow(p, 3);
-    const double x1 = u * cos_hdg - v * sin_hdg;
-    const double y1 = u * sin_hdg + v * cos_hdg;
-    const double tangent_u = bu + 2 * cu * p + 3 * du * std::pow(p, 2);
-    const double tangent_v = bv + 2 * cv * p + 3 * dv * std::pow(p, 2);
+    const double u =
+        au_ + bu_ * p + cu_ * std::pow(p, 2) + du_ * std::pow(p, 3);
+    const double v =
+        av_ + bv_ * p + cv_ * std::pow(p, 2) + dv_ * std::pow(p, 3);
+    const double x1 = u * cos_hdg_ - v * sin_hdg_;
+    const double y1 = u * sin_hdg_ + v * cos_hdg_;
+    const double tangent_u = bu_ + 2 * cu_ * p + 3 * du_ * std::pow(p, 2);
+    const double tangent_v = bv_ + 2 * cv_ * p + 3 * dv_ * std::pow(p, 2);
     const double theta = std::atan2(tangent_v, tangent_u);
-    const double xd = x + x1;
-    const double yd = y + y1;
-    const double tangent = hdg + theta;
+    const double xd = x_ + x1;
+    const double yd = y_ + y1;
+    const double tangent = hdg_ + theta;
     return Point{.x = xd, .y = yd, .hdg = tangent};
   }
-  const PRange p_range;
-  const double au;
-  const double bu;
-  const double cu;
-  const double du;
-  const double av;
-  const double bv;
-  const double cv;
-  const double dv;
+
+  PRange p_range() const { return p_range_; }
+  double au() const { return au_; }
+  double bu() const { return bu_; }
+  double cu() const { return cu_; }
+  double du() const { return du_; }
+  double av() const { return av_; }
+  double bv() const { return bv_; }
+  double cv() const { return cv_; }
+  double dv() const { return dv_; }
+
+ private:
+  const PRange p_range_;
+  const double au_;
+  const double bu_;
+  const double cu_;
+  const double du_;
+  const double av_;
+  const double bv_;
+  const double cv_;
+  const double dv_;
 };
 
-struct LaneAttributes {
-  Id id = std::numeric_limits<Id>::max();
-  LaneType type = LaneType::DRIVING;
-  Boolean level = Boolean::UNKNOWN;
+class LaneAttributes {
+ public:
+  LaneAttributes()
+      : id_(std::numeric_limits<Id>::max()),
+        type_(LaneType::DRIVING),
+        level_(Boolean::UNKNOWN) {}
+  void set_id(Id i) { id_ = i; }
+  void set_type(LaneType i) { type_ = i; }
+  void set_level(Boolean b) { level_ = b; }
+  Id& mutable_id() { return id_; }
+  LaneType& mutable_type() { return type_; }
+  Boolean& mutable_level() { return level_; }
+  Id id() const { return id_; }
+  LaneType type() const { return type_; }
+  Boolean level() const { return level_; }
+
+ private:
+  Id id_;
+  LaneType type_;
+  Boolean level_;
 };
 
 struct OffsetPoly3 {
@@ -449,4 +499,4 @@ struct Map {
 }  // namespace element
 }  // namespace opendrive
 
-#endif  // OPENDRIVE_CPP_TYPES_H_
+#endif  // OPENDRIVE_CPP_ELEMENT_H_

@@ -66,57 +66,57 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
       ele_planview.geometrys.at(3));
   auto geometry_info5 = std::dynamic_pointer_cast<element::GeometryParamPoly3>(
       ele_planview.geometrys.at(4));
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s);
-  ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x);
-  ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y);
-  ASSERT_DOUBLE_EQ(3.1415926535848282e+00, geometry_info1->hdg);
-  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info1->length);
-  ASSERT_EQ(GeometryType::LINE, geometry_info1->type);
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s());
+  ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x());
+  ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y());
+  ASSERT_DOUBLE_EQ(3.1415926535848282e+00, geometry_info1->heading());
+  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info1->length());
+  ASSERT_EQ(GeometryType::LINE, geometry_info1->type());
 
-  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info2->s);
-  ASSERT_DOUBLE_EQ(1.5085270356448223e+02, geometry_info2->x);
-  ASSERT_DOUBLE_EQ(1.1999995231616649e+02, geometry_info2->y);
-  ASSERT_DOUBLE_EQ(3.1415926535798597e+00, geometry_info2->hdg);
-  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info2->length);
-  ASSERT_EQ(GeometryType::SPIRAL, geometry_info2->type);
-  ASSERT_DOUBLE_EQ(-0.0000000000000000e+00, geometry_info2->curve_start);
-  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info2->curve_end);
+  ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info2->s());
+  ASSERT_DOUBLE_EQ(1.5085270356448223e+02, geometry_info2->x());
+  ASSERT_DOUBLE_EQ(1.1999995231616649e+02, geometry_info2->y());
+  ASSERT_DOUBLE_EQ(3.1415926535798597e+00, geometry_info2->heading());
+  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info2->length());
+  ASSERT_EQ(GeometryType::SPIRAL, geometry_info2->type());
+  ASSERT_DOUBLE_EQ(-0.0000000000000000e+00, geometry_info2->curve_start());
+  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info2->curve_end());
 
-  ASSERT_DOUBLE_EQ(7.2438297688509765e+00, geometry_info3->s);
-  ASSERT_DOUBLE_EQ(1.4877093951784059e+02, geometry_info3->x);
-  ASSERT_DOUBLE_EQ(1.2006020151444957e+02, geometry_info3->y);
-  ASSERT_DOUBLE_EQ(3.0547870980255456e+00, geometry_info3->hdg);
-  ASSERT_DOUBLE_EQ(1.1186223687745517e+01, geometry_info3->length);
-  ASSERT_EQ(GeometryType::ARC, geometry_info3->type);
-  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info3->curvature);
+  ASSERT_DOUBLE_EQ(7.2438297688509765e+00, geometry_info3->s());
+  ASSERT_DOUBLE_EQ(1.4877093951784059e+02, geometry_info3->x());
+  ASSERT_DOUBLE_EQ(1.2006020151444957e+02, geometry_info3->y());
+  ASSERT_DOUBLE_EQ(3.0547870980255456e+00, geometry_info3->heading());
+  ASSERT_DOUBLE_EQ(1.1186223687745517e+01, geometry_info3->length());
+  ASSERT_EQ(GeometryType::ARC, geometry_info3->type());
+  ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info3->curvature());
 
-  ASSERT_DOUBLE_EQ(1.8430053456596493e+01, geometry_info4->s);
-  ASSERT_DOUBLE_EQ(4.9416434943455940e+01, geometry_info4->x);
-  ASSERT_DOUBLE_EQ(7.9753610549006124e+00, geometry_info4->y);
-  ASSERT_DOUBLE_EQ(-3.8812339311141031e-02, geometry_info4->hdg);
-  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info4->length);
-  ASSERT_EQ(GeometryType::POLY3, geometry_info4->type);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->a);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->b);
-  ASSERT_DOUBLE_EQ(7.8270095403552599e-03, geometry_info4->c);
-  ASSERT_DOUBLE_EQ(-1.2981379520556725e-04, geometry_info4->d);
+  ASSERT_DOUBLE_EQ(1.8430053456596493e+01, geometry_info4->s());
+  ASSERT_DOUBLE_EQ(4.9416434943455940e+01, geometry_info4->x());
+  ASSERT_DOUBLE_EQ(7.9753610549006124e+00, geometry_info4->y());
+  ASSERT_DOUBLE_EQ(-3.8812339311141031e-02, geometry_info4->heading());
+  ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info4->length());
+  ASSERT_EQ(GeometryType::POLY3, geometry_info4->type());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->a());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->b());
+  ASSERT_DOUBLE_EQ(7.8270095403552599e-03, geometry_info4->c());
+  ASSERT_DOUBLE_EQ(-1.2981379520556725e-04, geometry_info4->d());
 
-  ASSERT_DOUBLE_EQ(2.0513386789929825e+01, geometry_info5->s);
-  ASSERT_DOUBLE_EQ(1.3860498286986785e+02, geometry_info5->x);
-  ASSERT_DOUBLE_EQ(1.2755802030419328e+02, geometry_info5->y);
-  ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg);
-  ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length);
-  ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type);
+  ASSERT_DOUBLE_EQ(2.0513386789929825e+01, geometry_info5->s());
+  ASSERT_DOUBLE_EQ(1.3860498286986785e+02, geometry_info5->x());
+  ASSERT_DOUBLE_EQ(1.2755802030419328e+02, geometry_info5->y());
+  ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->heading());
+  ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length());
+  ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type());
   ASSERT_EQ(element::GeometryParamPoly3::PRange::ARCLENGTH,
-            geometry_info5->p_range);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->au);
-  ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bu);
-  ASSERT_DOUBLE_EQ(4.1336980395811755e-04, geometry_info5->cu);
-  ASSERT_DOUBLE_EQ(-2.5462421774261008e-04, geometry_info5->du);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->av);
-  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->bv);
-  ASSERT_DOUBLE_EQ(-1.2079506903095295e-02, geometry_info5->cv);
-  ASSERT_DOUBLE_EQ(-6.1084906856370778e-04, geometry_info5->dv);
+            geometry_info5->p_range());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->au());
+  ASSERT_DOUBLE_EQ(1.0000000000000000e+00, geometry_info5->bu());
+  ASSERT_DOUBLE_EQ(4.1336980395811755e-04, geometry_info5->cu());
+  ASSERT_DOUBLE_EQ(-2.5462421774261008e-04, geometry_info5->du());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->av());
+  ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->bv());
+  ASSERT_DOUBLE_EQ(-1.2079506903095295e-02, geometry_info5->cv());
+  ASSERT_DOUBLE_EQ(-6.1084906856370778e-04, geometry_info5->dv());
 }
 
 int main(int argc, char* argv[]) {

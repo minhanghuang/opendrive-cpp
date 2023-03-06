@@ -120,9 +120,9 @@ static int GetGtValuePoloy3(const std::vector<T1>& items, T2 target) {
 
 template <typename T1, typename T2>
 static int GetGePtrPoloy3(const std::vector<T1>& items, T2 target) {
-  if (items.empty() || target < items.at(0)->s) return -1;
+  if (items.empty() || target < items.at(0)->s()) return -1;
   for (int i = items.size() - 1; i >= 0; i--) {
-    if (target >= items.at(i)->s) return i;
+    if (target >= items.at(i)->s()) return i;
   }
   return -1;
 }
