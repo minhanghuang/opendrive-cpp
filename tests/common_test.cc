@@ -83,6 +83,15 @@ TEST_F(TestCommon, TestVectorSort) {
   }
 }
 
+TEST_F(TestCommon, TestGetOffsetPoint) {
+  element::Point p1(1, 0, 0, 0);
+  auto p2 = common::GetOffsetPoint(p1, 1);
+  ASSERT_EQ(p2.x(), 1);
+  ASSERT_EQ(p2.y(), 1);
+  ASSERT_EQ(p2.z(), 0);
+  ASSERT_EQ(p2.heading(), 0);
+}
+
 TEST_F(TestCommon, TestLeftValue) {
   std::vector<element::LaneOffset> lane_offsets;
   element::LaneOffset l1, l2, l3, l4, l5;

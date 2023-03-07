@@ -25,10 +25,31 @@ typedef std::vector<Id> Ids;
 typedef std::string IdStr;
 typedef std::string Name;
 
-struct Point {
-  double x = 0.;
-  double y = 0.;
-  double hdg = 0.;
+class Point {
+ public:
+  Point() : x_(0), y_(0), z_(0), heading_(0) {}
+  Point(double x, double y) : x_(x), y_(y), z_(0), heading_(0) {}
+  Point(double x, double y, double z) : x_(x), y_(y), z_(z), heading_(0) {}
+  Point(double x, double y, double z, double heading)
+      : x_(x), y_(y), z_(z), heading_(heading) {}
+  void set_x(double d) { x_ = d; }
+  void set_y(double d) { y_ = d; }
+  void set_z(double d) { z_ = d; }
+  void set_heading(double d) { heading_ = d; }
+  double& mutable_x() { return x_; }
+  double& mutable_y() { return y_; }
+  double& mutable_z() { return z_; }
+  double& mutable_heading() { return heading_; }
+  double x() const { return x_; }
+  double y() const { return y_; }
+  double z() const { return z_; }
+  double heading() const { return heading_; }
+
+ protected:
+  double x_;
+  double y_;
+  double z_;
+  double heading_;
 };
 
 class Header {
@@ -125,7 +146,7 @@ class GeometryLine final : public Geometry {
     const double ref_line_ds = road_ds - s_;
     const double xd = x_ + (cos_hdg_ * ref_line_ds);
     const double yd = y_ + (sin_hdg_ * ref_line_ds);
-    return Point{.x = xd, .y = yd, .hdg = hdg_};
+    return Point{xd, yd, 0, hdg_};
   }
 };
 
@@ -142,7 +163,7 @@ class GeometryArc final : public Geometry {
     const double xd = radius_ * (std::cos(hdg_ + angle_at_s) - sin_hdg_) + x_;
     const double yd = radius_ * (std::sin(hdg_ + angle_at_s) + cos_hdg_) + y_;
     const double tangent = hdg_ + ref_line_ds * curvature_;
-    return Point{.x = xd, .y = yd, .hdg = tangent};
+    return Point{xd, yd, 0, tangent};
   }
   double curvature() const { return curvature_; }
   double radius() const { return radius_; }
@@ -184,7 +205,7 @@ class GeometrySpiral final : public Geometry {
     const double xd = x_ + x1 * cos_a - y1 * sin_a;
     const double yd = y_ + y1 * cos_a + x1 * sin_a;
     const double tangent = hdg_ + t1;
-    return Point{.x = xd, .y = yd, .hdg = tangent};
+    return Point{xd, yd, 0, tangent};
   }
   double curve_start() const { return curve_start_; }
   double curve_end() const { return curve_end_; }
@@ -213,7 +234,7 @@ class GeometryPoly3 final : public Geometry {
     const double xd = x_ + x1;
     const double yd = y_ + y1;
     const double tangent = hdg_ + theta;
-    return Point{.x = xd, .y = yd, .hdg = tangent};
+    return Point{xd, yd, 0, tangent};
   }
   double a() const { return a_; }
   double b() const { return b_; }
@@ -266,7 +287,7 @@ class GeometryParamPoly3 final : public Geometry {
     const double xd = x_ + x1;
     const double yd = y_ + y1;
     const double tangent = hdg_ + theta;
-    return Point{.x = xd, .y = yd, .hdg = tangent};
+    return Point{xd, yd, 0, tangent};
   }
 
   PRange p_range() const { return p_range_; }

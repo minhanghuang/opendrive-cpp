@@ -59,11 +59,11 @@ static T SpeedKMH2MS(T kmh) {
  */
 template <typename T>
 static T GetOffsetPoint(const T& point, double lateral_offset) {
-  const double x = -std::sin(point.hdg);
-  const double y = std::cos(point.hdg);
+  const double x = -std::sin(point.heading());
+  const double y = std::cos(point.heading());
   T offset_point = point;
-  offset_point.x += lateral_offset * x;
-  offset_point.y += lateral_offset * y;
+  offset_point.mutable_x() += lateral_offset * x;
+  offset_point.mutable_y() += lateral_offset * y;
   return offset_point;
 }
 
