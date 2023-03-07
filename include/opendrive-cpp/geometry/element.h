@@ -392,10 +392,10 @@ class RoadMark {
 };
 typedef std::vector<RoadMark> RoadMarks;
 
-struct LaneWidth : public OffsetPoly3 {};
+class LaneWidth : public OffsetPoly3 {};
 typedef std::vector<LaneWidth> LaneWidths;
 
-struct LaneBorder : public OffsetPoly3 {};
+class LaneBorder : public OffsetPoly3 {};
 typedef std::vector<LaneBorder> LaneBorders;
 
 class LaneLink {
@@ -492,8 +492,15 @@ class Lane {
   LaneSpeeds max_speeds_;
 };
 
-struct LanesInfo {
-  std::vector<Lane> lanes;
+class LanesInfo {
+ public:
+  LanesInfo() {}
+  void set_lanes(const std::vector<Lane>& v) { lanes_ = v; }
+  std::vector<Lane>& mutable_lanes() { return lanes_; }
+  const std::vector<Lane>& lanes() { return lanes_; }
+
+ private:
+  std::vector<Lane> lanes_;
 };
 
 struct LaneOffset : public OffsetPoly3 {};

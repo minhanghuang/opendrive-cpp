@@ -43,17 +43,18 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLanesEle() {
       element::Lane lane;
       this->ParseLaneEle(curr_xml_lane, lane);
       if ("left" == type) {
-        ele_section_->left.lanes.emplace_back(lane);
+        ele_section_->left.mutable_lanes().emplace_back(lane);
       } else if ("center" == type) {
-        ele_section_->center.lanes.emplace_back(lane);
+        ele_section_->center.mutable_lanes().emplace_back(lane);
       } else if ("right" == type) {
-        ele_section_->right.lanes.emplace_back(lane);
+        ele_section_->right.mutable_lanes().emplace_back(lane);
       }
       curr_xml_lane = common::XmlNextSiblingElement(curr_xml_lane);
     }
   }
   /// sort left lanes
-  std::sort(ele_section_->left.lanes.begin(), ele_section_->left.lanes.end(),
+  std::sort(ele_section_->left.lanes().begin(),
+            ele_section_->left.lanes().end(),
             [](const element::Lane& l1, const element::Lane& l2) {
               return l1.attribute().id() < l2.attribute().id();
             });

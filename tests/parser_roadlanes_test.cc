@@ -78,14 +78,14 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_TRUE(5 == ele_lanes.lane_sections.size());
   auto lane_section1 = ele_lanes.lane_sections.front();
   ASSERT_DOUBLE_EQ(0, lane_section1.s0);
-  ASSERT_TRUE(lane_section1.left.lanes.size() == 3);
-  ASSERT_TRUE(lane_section1.center.lanes.size() == 1);
-  ASSERT_TRUE(lane_section1.right.lanes.size() == 3);
+  ASSERT_TRUE(lane_section1.left.lanes().size() == 3);
+  ASSERT_TRUE(lane_section1.center.lanes().size() == 1);
+  ASSERT_TRUE(lane_section1.right.lanes().size() == 3);
 
   /// ele_lanes sections left
-  auto lane_section1_l3 = lane_section1.left.lanes.at(2);
-  auto lane_section1_l2 = lane_section1.left.lanes.at(1);
-  auto lane_section1_l1 = lane_section1.left.lanes.at(0);
+  auto lane_section1_l3 = lane_section1.left.lanes().at(2);
+  auto lane_section1_l2 = lane_section1.left.lanes().at(1);
+  auto lane_section1_l1 = lane_section1.left.lanes().at(0);
   ASSERT_EQ(3, lane_section1_l3.attribute().id());
   ASSERT_EQ(2, lane_section1_l2.attribute().id());
   ASSERT_EQ(1, lane_section1_l1.attribute().id());
@@ -120,7 +120,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(4.0000000000000000e+0, lane_section1_roadmarks1.height());
 
   /// ele_lanes sections center
-  auto lane_section1_center = lane_section1.center.lanes.at(0);
+  auto lane_section1_center = lane_section1.center.lanes().at(0);
   ASSERT_EQ(0, lane_section1_center.attribute().id());
   ASSERT_EQ(LaneType::NONE, lane_section1_center.attribute().type());
   ASSERT_EQ(Boolean::FALSE, lane_section1_center.attribute().level());
@@ -140,9 +140,9 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(0., lane_section1_center_roadmarks1.height());
 
   /// ele_lanes sections right
-  auto lane_section1_right1 = lane_section1.right.lanes.at(0);
-  auto lane_section1_right2 = lane_section1.right.lanes.at(1);
-  auto lane_section1_right3 = lane_section1.right.lanes.at(2);
+  auto lane_section1_right1 = lane_section1.right.lanes().at(0);
+  auto lane_section1_right2 = lane_section1.right.lanes().at(1);
+  auto lane_section1_right3 = lane_section1.right.lanes().at(2);
   ASSERT_EQ(-1, lane_section1_right1.attribute().id());
   ASSERT_EQ(-2, lane_section1_right2.attribute().id());
   ASSERT_EQ(-3, lane_section1_right3.attribute().id());
