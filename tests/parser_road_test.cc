@@ -79,20 +79,20 @@ TEST_F(TestRoadParser, TestRoad) {
   ASSERT_TRUE("DE" == type_info_2.country);
   ASSERT_TRUE(SpeedUnit::KMH == type_info_2.speed_unit);
 
-  for (auto& road : ele_map->roads) {
-    for (auto& section : road.lanes.lane_sections) {
-      for (auto& lane : section.left.lanes()) {
+  for (const auto& road : ele_map->roads) {
+    for (const auto& section : road.lanes.lane_sections) {
+      for (const auto& lane : section.left().lanes()) {
         ASSERT_TRUE(lane.attribute().id() > 0);
       }
-      ASSERT_TRUE(section.center.lanes().front().attribute().id() == 0);
-      for (const auto& lane : section.right.lanes()) {
+      ASSERT_TRUE(section.center().lanes().front().attribute().id() == 0);
+      for (const auto& lane : section.right().lanes()) {
         ASSERT_TRUE(lane.attribute().id() < 0);
       }
     }
   }
   ASSERT_TRUE(5 == ele_road.lanes.lane_sections.size());
   for (int i = 0; i < ele_road.lanes.lane_sections.size(); i++) {
-    ASSERT_EQ(i, ele_road.lanes.lane_sections.at(i).id);
+    ASSERT_EQ(i, ele_road.lanes.lane_sections.at(i).id());
   }
 }
 

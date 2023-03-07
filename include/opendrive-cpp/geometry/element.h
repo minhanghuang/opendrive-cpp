@@ -497,20 +497,44 @@ class LanesInfo {
   LanesInfo() {}
   void set_lanes(const std::vector<Lane>& v) { lanes_ = v; }
   std::vector<Lane>& mutable_lanes() { return lanes_; }
-  const std::vector<Lane>& lanes() { return lanes_; }
+  const std::vector<Lane>& lanes() const { return lanes_; }
 
  private:
   std::vector<Lane> lanes_;
 };
 
-struct LaneOffset : public OffsetPoly3 {};
+class LaneOffset : public OffsetPoly3 {};
 typedef std::vector<LaneOffset> LaneOffsets;
 
-struct LaneSection {
-  Id id = -1;      // [>=0] (extended)
-  double s0 = 0.;  // start position
-  double s1 = 0.;  // end position(extended)
-  LanesInfo left, center, right;
+class LaneSection {
+ public:
+  LaneSection() : id_(-1), start_position_(0), end_position_(0) {}
+  void set_id(Id i) { id_ = i; }
+  void set_start_position(double d) { start_position_ = d; }
+  void set_end_position(double d) { end_position_ = d; }
+  void set_left(const LanesInfo& c) { left_ = c; }
+  void set_center(const LanesInfo& c) { center_ = c; }
+  void set_right(const LanesInfo& c) { right_ = c; }
+  Id& mutable_id() { return id_; }
+  double& mutable_start_position() { return start_position_; }
+  double& mutable_end_position() { return end_position_; }
+  LanesInfo& mutable_left() { return left_; }
+  LanesInfo& mutable_center() { return center_; }
+  LanesInfo& mutable_right() { return right_; }
+  Id id() const { return id_; }
+  double start_position() const { return start_position_; }
+  double end_position() const { return end_position_; }
+  const LanesInfo& left() const { return left_; }
+  const LanesInfo& center() const { return center_; }
+  const LanesInfo& right() const { return right_; }
+
+ private:
+  Id id_;                  // [>=0] (extended)
+  double start_position_;  // start position
+  double end_position_;    // end position(extended)
+  LanesInfo left_;
+  LanesInfo center_;
+  LanesInfo right_;
 };
 typedef std::vector<LaneSection> LaneSections;
 

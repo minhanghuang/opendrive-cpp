@@ -295,7 +295,7 @@ RoadXmlParser& RoadXmlParser::LanesElement() {
   RoadLanesSectionXmlParser section_parser{this->opendrive_version()};
   while (curr_xml_section) {
     element::LaneSection lane_section;
-    lane_section.id = section_idx++;
+    lane_section.set_id(section_idx++);
     status = section_parser.Parse(curr_xml_section, &lane_section);
     CheckStatus(status);
     ele_road_->lanes.lane_sections.emplace_back(lane_section);
@@ -310,9 +310,9 @@ RoadXmlParser& RoadXmlParser::GenerateRoad() {
   for (auto it = ele_road_->lanes.lane_sections.begin();
        it != ele_road_->lanes.lane_sections.end(); ++it) {
     if (it + 1 == ele_road_->lanes.lane_sections.end()) {  // 最后一个section
-      it->s1 = ele_road_->attributes.length;
+      it->set_end_position(ele_road_->attributes.length);
     } else {
-      it->s1 = (it + 1)->s0;
+      it->set_end_position((it + 1)->start_position());
     }
   }
 

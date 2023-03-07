@@ -23,38 +23,40 @@ opendrive::Status RoadLanesSectionXmlParser::Parse(
 
 RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseAttributes() {
   if (!IsValid()) return *this;
-  common::XmlQueryDoubleAttribute(xml_section_, "s", ele_section_->s0);
-  common::XmlQueryDoubleAttribute(xml_section_, "s", ele_section_->s1);
+  common::XmlQueryDoubleAttribute(xml_section_, "s",
+                                  ele_section_->mutable_start_position());
+  common::XmlQueryDoubleAttribute(xml_section_, "s",
+                                  ele_section_->mutable_end_position());
   return *this;
 }
 
 RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLanesEle() {
   if (!IsValid()) return *this;
   std::vector<std::string> lanes_type{"left", "center", "right"};
-  const tinyxml2::XMLElement* curr_xml_lanes;
-  const tinyxml2::XMLElement* curr_xml_lane;
   for (const auto& type : lanes_type) {
-    curr_xml_lanes = xml_section_->FirstChildElement(type.c_str());
+    const tinyxml2::XMLElement* curr_xml_lanes =
+        xml_section_->FirstChildElement(type.c_str());
     if (!curr_xml_lanes) {
       continue;
     }
-    curr_xml_lane = curr_xml_lanes->FirstChildElement("lane");
+    const tinyxml2::XMLElement* curr_xml_lane =
+        curr_xml_lanes->FirstChildElement("lane");
     while (curr_xml_lane) {
       element::Lane lane;
       this->ParseLaneEle(curr_xml_lane, lane);
       if ("left" == type) {
-        ele_section_->left.mutable_lanes().emplace_back(lane);
+        ele_section_->mutable_left().mutable_lanes().emplace_back(lane);
       } else if ("center" == type) {
-        ele_section_->center.mutable_lanes().emplace_back(lane);
+        ele_section_->mutable_center().mutable_lanes().emplace_back(lane);
       } else if ("right" == type) {
-        ele_section_->right.mutable_lanes().emplace_back(lane);
+        ele_section_->mutable_right().mutable_lanes().emplace_back(lane);
       }
       curr_xml_lane = common::XmlNextSiblingElement(curr_xml_lane);
     }
   }
   /// sort left lanes
-  std::sort(ele_section_->left.lanes().begin(),
-            ele_section_->left.lanes().end(),
+  std::sort(ele_section_->mutable_left().mutable_lanes().begin(),
+            ele_section_->mutable_left().mutable_lanes().end(),
             [](const element::Lane& l1, const element::Lane& l2) {
               return l1.attribute().id() < l2.attribute().id();
             });
