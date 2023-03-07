@@ -81,7 +81,9 @@ class Header {
 class Geometry {
  public:
   typedef std::shared_ptr<Geometry> Ptr;
+  typedef std::shared_ptr<Geometry const> ConstPtr;
   typedef std::vector<Ptr> Ptrs;
+  typedef std::vector<ConstPtr> ConstPtrs;
   Geometry(double _s, double _x, double _y, double _hdg, double _length,
            GeometryType _type)
       : s_(_s),
@@ -538,93 +540,305 @@ class LaneSection {
 };
 typedef std::vector<LaneSection> LaneSections;
 
-struct Lanes {
-  LaneOffsets lane_offsets;
-  LaneSections lane_sections;
+class Lanes {
+ public:
+  Lanes() {}
+  void set_lane_offsets(const LaneOffsets& v) { lane_offsets_ = v; }
+  void set_lane_sections(const LaneSections& v) { lane_sections_ = v; }
+  LaneOffsets& mutable_lane_offsets() { return lane_offsets_; }
+  LaneSections& mutable_lane_sections() { return lane_sections_; }
+  const LaneOffsets& lane_offsets() const { return lane_offsets_; }
+  const LaneSections& lane_sections() const { return lane_sections_; }
+
+ private:
+  LaneOffsets lane_offsets_;
+  LaneSections lane_sections_;
 };
 
-struct RoadAttributes {
-  Name name;
-  Id id = -1;        // [>=0]
-  Id junction = -1;  // -1: Road; other: junction road
-  double length = 0.;
-  RoadRule rule =
-      RoadRule::RHT;  // RHT=right-hand traffic, LHT=left-hand traffic. When
-                      // this attribute is missing, RHT is assumed
+class RoadAttribute {
+ public:
+  RoadAttribute()
+      : name_(""),
+        id_(-1),
+        junction_id_(-1),
+        length_(0),
+        rule_(RoadRule::RHT) {}
+  void set_name(const Name& s) { name_ = s; }
+  void set_id(Id i) { id_ = i; }
+  void set_junction_id(Id i) { junction_id_ = i; }
+  void set_length(double d) { length_ = d; }
+  void set_rule(RoadRule i) { rule_ = i; }
+  Name& mutable_name() { return name_; }
+  Id& mutable_id() { return id_; }
+  Id& mutable_junction_id() { return junction_id_; }
+  double& mutable_length() { return length_; }
+  RoadRule& mutable_rule() { return rule_; }
+  const Name& name() const { return name_; }
+  Id id() const { return id_; }
+  Id junction_id() const { return junction_id_; }
+  double length() const { return length_; }
+  RoadRule rule() const { return rule_; }
+
+ private:
+  Name name_;
+  Id id_;           // [>=0]
+  Id junction_id_;  // -1: Road; other: junction road
+  double length_;
+  RoadRule rule_;  // RHT=right-hand traffic, LHT=left-hand traffic. When
+                   // this attribute is missing, RHT is assumed
 };
 
-struct RoadLinkInfo {
-  Id id = -1;     // [>=0]
-  double s = -1;  // [>=0]
-  RoadLinkType type = RoadLinkType::ROAD;
-  ContactPointType contact_point =
-      ContactPointType::UNKNOWN;  // Contact point of link on the linked element
-  Dir dir = Dir::UNKNOWN;
+class RoadLinkInfo {
+ public:
+  RoadLinkInfo()
+      : id_(-1),
+        start_position_(-1),
+        type_(RoadLinkType::ROAD),
+        contact_point_(ContactPointType::UNKNOWN),
+        dir_(Dir::UNKNOWN) {}
+  void set_id(Id i) { id_ = i; }
+  void set_start_position(double d) { start_position_ = d; }
+  void set_type(RoadLinkType i) { type_ = i; }
+  void set_contact_point(ContactPointType i) { contact_point_ = i; }
+  void set_dir(Dir i) { dir_ = i; }
+  Id& mutable_id() { return id_; }
+  double& mutable_start_position() { return start_position_; }
+  RoadLinkType& mutable_type() { return type_; }
+  ContactPointType& mutable_contact_point() { return contact_point_; }
+  Dir& mutable_dir() { return dir_; }
+  Id id() const { return id_; }
+  double start_position() const { return start_position_; }
+  RoadLinkType type() const { return type_; }
+  ContactPointType contact_point() const { return contact_point_; }
+  Dir dir() const { return dir_; }
+
+ private:
+  Id id_;                  // [>=0]
+  double start_position_;  // [>=0]
+  RoadLinkType type_;
+  ContactPointType
+      contact_point_;  // Contact point of link on the linked element
+  Dir dir_;
 };
 
-struct RoadLink {
-  RoadLinkInfo predecessor;
-  RoadLinkInfo successor;
+class RoadLink {
+ public:
+  RoadLink() {}
+  void set_predecessor(const RoadLinkInfo& c) { predecessor_ = c; }
+  void set_successor(const RoadLinkInfo& c) { successor_ = c; }
+  RoadLinkInfo& mutable_predecessor() { return predecessor_; }
+  RoadLinkInfo& mutable_successor() { return successor_; }
+  const RoadLinkInfo& predecessor() const { return predecessor_; }
+  const RoadLinkInfo& successor() const { return successor_; }
+
+ private:
+  RoadLinkInfo predecessor_;
+  RoadLinkInfo successor_;
 };
 
-struct RoadTypeInfo {
-  double s = 0.;
-  RoadType type = RoadType::TOWN;
-  std::string country;
-  float max_speed = 0.;
-  SpeedUnit speed_unit = SpeedUnit::MS;
+class RoadTypeInfo {
+ public:
+  RoadTypeInfo()
+      : start_position_(0),
+        type_(RoadType::TOWN),
+        country_(""),
+        max_speed_(0),
+        speed_unit_(SpeedUnit::MS) {}
+  void set_start_position(double d) { start_position_ = d; }
+  void set_type(RoadType i) { type_ = i; }
+  void set_country(const std::string& s) { country_ = s; }
+  void set_max_speed(float f) { max_speed_ = f; }
+  void set_speed_unit(SpeedUnit i) { speed_unit_ = i; }
+  double& mutable_start_position() { return start_position_; }
+  RoadType& mutable_type() { return type_; }
+  std::string& mutable_country() { return country_; }
+  float& mutable_max_speed() { return max_speed_; }
+  SpeedUnit& mutable_speed_unit() { return speed_unit_; }
+  double start_position() const { return start_position_; }
+  RoadType type() const { return type_; }
+  std::string country() const { return country_; }
+  float max_speed() const { return max_speed_; }
+  SpeedUnit speed_unit() const { return speed_unit_; }
+
+ private:
+  double start_position_;
+  RoadType type_;
+  std::string country_;
+  float max_speed_;
+  SpeedUnit speed_unit_;
 };
 
-struct RoadPlanView {
-  Geometry::Ptrs geometrys;
+class RoadPlanView {
+ public:
+  RoadPlanView() {}
+  void set_geometrys(const Geometry::Ptrs& v) { geometrys_ = v; }
+  Geometry::Ptrs& mutable_geometrys() { return geometrys_; }
+  Geometry::ConstPtrs geometrys() const {
+    Geometry::ConstPtrs ret;
+    for (const auto& g : geometrys_) {
+      ret.emplace_back(g);
+    }
+    return ret;
+  }
+
+ private:
+  Geometry::Ptrs geometrys_;
 };
 
-struct Road {
-  RoadAttributes attributes;
-  RoadLink link;
-  std::vector<RoadTypeInfo> type_info;
-  RoadPlanView plan_view;
-  Lanes lanes;
+class Road {
+ public:
+  Road() {}
+  void set_attribute(const RoadAttribute& c) { attribute_ = c; }
+  void set_link(const RoadLink& c) { link_ = c; }
+  void set_type_info(const std::vector<RoadTypeInfo>& c) { type_info_ = c; }
+  void set_plan_view(const RoadPlanView& c) { plan_view_ = c; }
+  void set_lanes(const Lanes& v) { lanes_ = v; }
+  RoadAttribute& mutable_attribute() { return attribute_; }
+  RoadLink& mutable_link() { return link_; }
+  std::vector<RoadTypeInfo>& mutable_type_info() { return type_info_; }
+  RoadPlanView& mutable_plan_view() { return plan_view_; }
+  Lanes& mutable_lanes() { return lanes_; }
+  const RoadAttribute& attribute() const { return attribute_; }
+  const RoadLink& link() const { return link_; }
+  const std::vector<RoadTypeInfo>& type_info() const { return type_info_; }
+  const RoadPlanView& plan_view() const { return plan_view_; }
+  const Lanes& lanes() const { return lanes_; }
+
+ private:
+  RoadAttribute attribute_;
+  RoadLink link_;
+  std::vector<RoadTypeInfo> type_info_;
+  RoadPlanView plan_view_;
+  Lanes lanes_;
 };
 
-struct JunctionAttributes {
-  Id id = -1;  // [required]
-  std::string name;
-  JunctionType type = JunctionType::DEFAULT;
-  Id main_road = -1;               // virtual junctions v1.7
-  double s_start = -1;             // virtual junctions v1.7
-  double s_end = -1;               // virtual junctions v1.7
-  Dir orientation = Dir::UNKNOWN;  // virtual junctions v1.7
+class JunctionAttribute {
+ public:
+  JunctionAttribute() {}
+  void set_id(Id i) { id_ = i; }
+  void set_name(const std::string& s) { name_ = s; }
+  void set_type(JunctionType i) { type_ = i; }
+  void set_main_road(Id i) { main_road_ = i; }
+  void set_start_position(double d) { start_position_ = d; }
+  void set_end_position(double d) { end_position_ = d; }
+  void set_dir(Dir i) { dir_ = i; }
+  Id& mutable_id() { return id_; }
+  std::string& mutable_name() { return name_; }
+  JunctionType& mutable_type() { return type_; }
+  Id& mutable_main_road() { return main_road_; }
+  double& mutable_start_position() { return start_position_; }
+  double& mutable_end_position() { return end_position_; }
+  Dir& mutable_dir() { return dir_; }
+  Id id() const { return id_; }
+  const std::string& name() const { return name_; }
+  JunctionType type() const { return type_; }
+  Id main_road() const { return main_road_; }
+  double start_position() const { return start_position_; }
+  double end_position() const { return end_position_; }
+  Dir dir() const { return dir_; }
+
+ private:
+  Id id_ = -1;  // [required]
+  std::string name_;
+  JunctionType type_ = JunctionType::DEFAULT;
+  Id main_road_ = -1;           // virtual junctions v1.7
+  double start_position_ = -1;  // virtual junctions v1.7
+  double end_position_ = -1;    // virtual junctions v1.7
+  Dir dir_ = Dir::UNKNOWN;      // virtual junctions v1.7
 };
 
-struct JunctionLaneLink {
-  Id from = -1;  // [required] incomingRoad road id
-  Id to = -1;    // [required] connectingRoad road id
+class JunctionLaneLink {
+ public:
+  JunctionLaneLink() : from_(-1), to_(-1) {}
+  void set_from(Id i) { from_ = i; }
+  void set_to(Id i) { to_ = i; }
+  Id& mutable_from() { return from_; }
+  Id& mutable_to() { return to_; }
+  Id from() { return from_; }
+  Id to() { return to_; }
+
+ private:
+  Id from_ = -1;  // [required] incomingRoad road id
+  Id to_ = -1;    // [required] connectingRoad road id
 };
 typedef std::vector<JunctionLaneLink> JunctionLaneLinks;
 
-struct JunctionConnection {
-  Id id = -1;  // [required]
-  JunctionConnectionType type = JunctionConnectionType::UNKNOWN;
-  Id incoming_road = -1;
-  Id connecting_road = -1;  // @type ="direct" shall not have the attribute v1.7
-  Id linked_road = -1;  // Only to be used for junctions of @type="direct" v1.7
-  ContactPointType contact_point = ContactPointType::UNKNOWN;
-  JunctionLaneLinks lane_links;
+class JunctionConnection {
+ public:
+  JunctionConnection()
+      : id_(-1),
+        type_(JunctionConnectionType::UNKNOWN),
+        incoming_road_(-1),
+        connecting_road_(-1),
+        linked_road_(-1),
+        contact_point_(ContactPointType::UNKNOWN) {}
+  void set_id(Id i) { id_ = i; }
+  void set_type(JunctionConnectionType i) { type_ = i; }
+  void set_incoming_road(Id i) { incoming_road_ = i; }
+  void set_connecting_road(Id i) { connecting_road_ = i; }
+  void set_linked_road(Id i) { linked_road_ = i; }
+  void set_contact_point(ContactPointType i) { contact_point_ = i; }
+  void set_lane_links(const JunctionLaneLinks& v) { lane_links_ = v; }
+  Id& mutable_id() { return id_; }
+  JunctionConnectionType& mutable_type() { return type_; }
+  Id& mutable_incoming_road() { return incoming_road_; }
+  Id& mutable_connecting_road() { return connecting_road_; }
+  Id& mutable_linked_road() { return linked_road_; }
+  ContactPointType& mutable_contact_point() { return contact_point_; }
+  JunctionLaneLinks& mutable_lane_links() { return lane_links_; }
+  Id id() const { return id_; }
+  JunctionConnectionType type() const { return type_; }
+  Id incoming_road() const { return incoming_road_; }
+  Id connecting_road() const { return connecting_road_; }
+  Id linked_road() const { return linked_road_; }
+  ContactPointType contact_point() const { return contact_point_; }
+  const JunctionLaneLinks& lane_links() const { return lane_links_; }
+
+ private:
+  Id id_;  // [required]
+  JunctionConnectionType type_;
+  Id incoming_road_;
+  Id connecting_road_;  // @type ="direct" shall not have the attribute v1.7
+  Id linked_road_;      // Only to be used for junctions of @type="direct" v1.7
+  ContactPointType contact_point_;
+  JunctionLaneLinks lane_links_;
 };
 typedef std::vector<JunctionConnection> JunctionConnections;
 
-struct Junction {
-  JunctionAttributes attributes;
-  JunctionConnections connections;
+class Junction {
+ public:
+  Junction() {}
+  void set_attribute(const JunctionAttribute& c) { attribute_ = c; }
+  void set_connections(const JunctionConnections& c) { connections_ = c; }
+  JunctionAttribute& mutable_attribute() { return attribute_; }
+  JunctionConnections& mutable_connections() { return connections_; }
+  const JunctionAttribute& attribute() const { return attribute_; }
+  const JunctionConnections& connections() const { return connections_; }
+
+ private:
+  JunctionAttribute attribute_;
+  JunctionConnections connections_;
 };
 
-typedef struct Map MapType;
-struct Map {
-  typedef std::shared_ptr<MapType> Ptr;
-  Header header;
-  std::vector<Road> roads;
-  std::vector<Junction> junctions;
+class Map {
+ public:
+  typedef std::shared_ptr<Map> Ptr;
+  typedef std::shared_ptr<Map const> ConstPtr;
+  Map() {}
+  void set_header(const Header& c) { header_ = c; }
+  void set_roads(const std::vector<Road>& c) { roads_ = c; }
+  void set_junction(const std::vector<Junction>& c) { junctions_ = c; }
+  Header& mutable_header() { return header_; }
+  std::vector<Road>& mutable_roads() { return roads_; }
+  std::vector<Junction>& mutable_junctions() { return junctions_; }
+  const Header& header() const { return header_; }
+  const std::vector<Road>& roads() const { return roads_; }
+  const std::vector<Junction>& junctions() const { return junctions_; }
+
+ private:
+  Header header_;
+  std::vector<Road> roads_;
+  std::vector<Junction> junctions_;
 };
 
 }  // namespace element

@@ -24,29 +24,29 @@ MapXmlParser& MapXmlParser::HeaderElement() {
     set_status(ErrorCode::XML_HEADER_ELEMENT_ERROR, "HEADER ELEMENT IS NULL.");
     return *this;
   }
-  common::XmlQueryStringAttribute(xml_header, "revMajor",
-                                  ele_map_->header.mutable_rev_major());
-  common::XmlQueryStringAttribute(xml_header, "revMinor",
-                                  ele_map_->header.mutable_rev_minor());
+  common::XmlQueryStringAttribute(
+      xml_header, "revMajor", ele_map_->mutable_header().mutable_rev_major());
+  common::XmlQueryStringAttribute(
+      xml_header, "revMinor", ele_map_->mutable_header().mutable_rev_minor());
   common::XmlQueryStringAttribute(xml_header, "name",
-                                  ele_map_->header.mutable_name());
+                                  ele_map_->mutable_header().mutable_name());
   common::XmlQueryStringAttribute(xml_header, "version",
-                                  ele_map_->header.mutable_version());
+                                  ele_map_->mutable_header().mutable_version());
   common::XmlQueryStringAttribute(xml_header, "vendor",
-                                  ele_map_->header.mutable_vendor());
+                                  ele_map_->mutable_header().mutable_vendor());
   common::XmlQueryStringAttribute(xml_header, "date",
-                                  ele_map_->header.mutable_date());
+                                  ele_map_->mutable_header().mutable_date());
   common::XmlQueryDoubleAttribute(xml_header, "north",
-                                  ele_map_->header.mutable_north());
+                                  ele_map_->mutable_header().mutable_north());
   common::XmlQueryDoubleAttribute(xml_header, "south",
-                                  ele_map_->header.mutable_south());
+                                  ele_map_->mutable_header().mutable_south());
   common::XmlQueryDoubleAttribute(xml_header, "west",
-                                  ele_map_->header.mutable_west());
+                                  ele_map_->mutable_header().mutable_west());
   common::XmlQueryDoubleAttribute(xml_header, "east",
-                                  ele_map_->header.mutable_east());
-  this->set_opendrive_version(ele_map_->header.rev_major() + "_" +
-                              ele_map_->header.rev_minor() + "_" +
-                              ele_map_->header.version());
+                                  ele_map_->mutable_header().mutable_east());
+  this->set_opendrive_version(ele_map_->header().rev_major() + "_" +
+                              ele_map_->header().rev_minor() + "_" +
+                              ele_map_->header().version());
   return *this;
 }
 
@@ -59,21 +59,25 @@ MapXmlParser& MapXmlParser::JunctionElement() {
   while (curr_xml_junction) {
     element::Junction ele_junction;
     common::XmlQueryIntAttribute(curr_xml_junction, "id",
-                                 ele_junction.attributes.id);
-    common::XmlQueryIntAttribute(curr_xml_junction, "mainRoad",
-                                 ele_junction.attributes.main_road);
-    common::XmlQueryDoubleAttribute(curr_xml_junction, "sStart",
-                                    ele_junction.attributes.s_start);
-    common::XmlQueryDoubleAttribute(curr_xml_junction, "sEnd",
-                                    ele_junction.attributes.s_end);
-    common::XmlQueryStringAttribute(curr_xml_junction, "name",
-                                    ele_junction.attributes.name);
-    common::XmlQueryEnumAttribute(curr_xml_junction, "orientation",
-                                  ele_junction.attributes.orientation,
-                                  DIR_CHOICES);
-    common::XmlQueryEnumAttribute(curr_xml_junction, "type",
-                                  ele_junction.attributes.type,
-                                  JUNCTION_TYPE_CHOICES);
+                                 ele_junction.mutable_attribute().mutable_id());
+    common::XmlQueryIntAttribute(
+        curr_xml_junction, "mainRoad",
+        ele_junction.mutable_attribute().mutable_main_road());
+    common::XmlQueryDoubleAttribute(
+        curr_xml_junction, "sStart",
+        ele_junction.mutable_attribute().mutable_start_position());
+    common::XmlQueryDoubleAttribute(
+        curr_xml_junction, "sEnd",
+        ele_junction.mutable_attribute().mutable_end_position());
+    common::XmlQueryStringAttribute(
+        curr_xml_junction, "name",
+        ele_junction.mutable_attribute().mutable_name());
+    common::XmlQueryEnumAttribute(
+        curr_xml_junction, "orientation",
+        ele_junction.mutable_attribute().mutable_dir(), DIR_CHOICES);
+    common::XmlQueryEnumAttribute(
+        curr_xml_junction, "type",
+        ele_junction.mutable_attribute().mutable_type(), JUNCTION_TYPE_CHOICES);
     // junction connection
     // 1~*
     const tinyxml2::XMLElement* curr_xml_connection =
@@ -85,18 +89,19 @@ MapXmlParser& MapXmlParser::JunctionElement() {
     }
     while (curr_xml_connection) {
       element::JunctionConnection connection;
-      common::XmlQueryIntAttribute(curr_xml_connection, "id", connection.id);
+      common::XmlQueryIntAttribute(curr_xml_connection, "id",
+                                   connection.mutable_id());
       common::XmlQueryEnumAttribute(curr_xml_connection, "type",
-                                    connection.type,
+                                    connection.mutable_type(),
                                     JUNCTION_CONNECTION_TYPE_CHOICES);
       common::XmlQueryIntAttribute(curr_xml_connection, "linkedRoad",
-                                   connection.linked_road);
+                                   connection.mutable_linked_road());
       common::XmlQueryIntAttribute(curr_xml_connection, "incomingRoad",
-                                   connection.incoming_road);
+                                   connection.mutable_incoming_road());
       common::XmlQueryIntAttribute(curr_xml_connection, "connectingRoad",
-                                   connection.connecting_road);
+                                   connection.mutable_connecting_road());
       common::XmlQueryEnumAttribute(curr_xml_connection, "contactPoint",
-                                    connection.contact_point,
+                                    connection.mutable_contact_point(),
                                     CONTACT_POINT_TYPE_CHOICES);
       // connection link
       // 0~*
@@ -104,15 +109,17 @@ MapXmlParser& MapXmlParser::JunctionElement() {
           curr_xml_connection->FirstChildElement("laneLink");
       while (curr_xml_laneLink) {
         element::JunctionLaneLink lane_link;
-        common::XmlQueryIntAttribute(curr_xml_laneLink, "from", lane_link.from);
-        common::XmlQueryIntAttribute(curr_xml_laneLink, "to", lane_link.to);
-        connection.lane_links.emplace_back(lane_link);
+        common::XmlQueryIntAttribute(curr_xml_laneLink, "from",
+                                     lane_link.mutable_from());
+        common::XmlQueryIntAttribute(curr_xml_laneLink, "to",
+                                     lane_link.mutable_to());
+        connection.mutable_lane_links().emplace_back(lane_link);
         curr_xml_laneLink = common::XmlNextSiblingElement(curr_xml_laneLink);
       }
-      ele_junction.connections.emplace_back(connection);
+      ele_junction.mutable_connections().emplace_back(connection);
       curr_xml_connection = common::XmlNextSiblingElement(curr_xml_connection);
     }
-    ele_map_->junctions.emplace_back(ele_junction);
+    ele_map_->mutable_junctions().emplace_back(ele_junction);
     curr_xml_junction = common::XmlNextSiblingElement(curr_xml_junction);
   }
   return *this;
@@ -133,7 +140,7 @@ MapXmlParser& MapXmlParser::RoadElement() {
     element::Road ele_road;
     status = road_parser.Parse(curr_xml_road, &ele_road);
     CheckStatus(status);
-    ele_map_->roads.emplace_back(ele_road);
+    ele_map_->mutable_roads().emplace_back(ele_road);
     curr_xml_road = common::XmlNextSiblingElement(curr_xml_road);
   }
   return *this;

@@ -54,18 +54,18 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
   ASSERT_TRUE(xml_root != nullptr);
   auto ele_map = std::make_shared<opendrive::element::Map>();
   auto ret = parser->ParseMap(xml_root, ele_map);
-  auto ele_planview = ele_map->roads.front().plan_view;
-  ASSERT_EQ(ele_planview.geometrys.size(), 5);
-  ASSERT_EQ(5, ele_planview.geometrys.size());
-  auto geometry_info1 = ele_planview.geometrys.at(0);
+  auto ele_planview = ele_map->roads().front().plan_view();
+  ASSERT_EQ(ele_planview.geometrys().size(), 5);
+  ASSERT_EQ(5, ele_planview.geometrys().size());
+  auto geometry_info1 = ele_planview.geometrys().at(0);
   auto geometry_info2 = std::dynamic_pointer_cast<element::GeometrySpiral>(
-      ele_planview.geometrys.at(1));
+      ele_planview.mutable_geometrys().at(1));
   auto geometry_info3 = std::dynamic_pointer_cast<element::GeometryArc>(
-      ele_planview.geometrys.at(2));
+      ele_planview.mutable_geometrys().at(2));
   auto geometry_info4 = std::dynamic_pointer_cast<element::GeometryPoly3>(
-      ele_planview.geometrys.at(3));
+      ele_planview.mutable_geometrys().at(3));
   auto geometry_info5 = std::dynamic_pointer_cast<element::GeometryParamPoly3>(
-      ele_planview.geometrys.at(4));
+      ele_planview.mutable_geometrys().at(4));
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info1->s());
   ASSERT_DOUBLE_EQ(1.5601319999999987e+02, geometry_info1->x());
   ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y());

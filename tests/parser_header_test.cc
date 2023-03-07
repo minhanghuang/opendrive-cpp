@@ -53,7 +53,7 @@ TEST_F(TestHeaderParser, TestHeader) {
   auto ele_map = std::make_shared<opendrive::element::Map>();
   auto ret = parser->ParseMap(xml, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
-  auto header = ele_map->header;
+  auto header = ele_map->header();
   ASSERT_TRUE("1" == header.rev_major());
   ASSERT_TRUE("4" == header.rev_minor());
   ASSERT_TRUE("1" == header.version());

@@ -30,15 +30,18 @@ opendrive::Status RoadXmlParser::Parse(const tinyxml2::XMLElement* xml_road,
 RoadXmlParser& RoadXmlParser::Attributes() {
   if (!IsValid()) return *this;
   std::string rule;
-  common::XmlQueryStringAttribute(xml_road_, "name",
-                                  ele_road_->attributes.name);
-  common::XmlQueryEnumAttribute(xml_road_, "rule", ele_road_->attributes.rule,
+  common::XmlQueryStringAttribute(
+      xml_road_, "name", ele_road_->mutable_attribute().mutable_name());
+  common::XmlQueryEnumAttribute(xml_road_, "rule",
+                                ele_road_->mutable_attribute().mutable_rule(),
                                 ROAD_RULE_CHOICES);
-  common::XmlQueryDoubleAttribute(xml_road_, "length",
-                                  ele_road_->attributes.length);
-  common::XmlQueryIntAttribute(xml_road_, "id", ele_road_->attributes.id);
-  common::XmlQueryIntAttribute(xml_road_, "junction",
-                               ele_road_->attributes.junction);
+  common::XmlQueryDoubleAttribute(
+      xml_road_, "length", ele_road_->mutable_attribute().mutable_length());
+  common::XmlQueryIntAttribute(xml_road_, "id",
+                               ele_road_->mutable_attribute().mutable_id());
+  common::XmlQueryIntAttribute(
+      xml_road_, "junction",
+      ele_road_->mutable_attribute().mutable_junction_id());
   return *this;
 }
 
@@ -54,33 +57,47 @@ RoadXmlParser& RoadXmlParser::LinkElement() {
         xml_link->FirstChildElement(xml_link_ment.c_str());
     if (link_type_ele) {
       if ("predecessor" == xml_link_ment) {
-        common::XmlQueryIntAttribute(link_type_ele, "elementId",
-                                     ele_road_->link.predecessor.id);
+        common::XmlQueryIntAttribute(
+            link_type_ele, "elementId",
+            ele_road_->mutable_link().mutable_predecessor().mutable_id());
         common::XmlQueryDoubleAttribute(link_type_ele, "elementS",
-                                        ele_road_->link.predecessor.s);
-        common::XmlQueryEnumAttribute(link_type_ele, "elementType",
-                                      ele_road_->link.predecessor.type,
-                                      ROAD_LINK_TYPE_CHOICES);
+                                        ele_road_->mutable_link()
+                                            .mutable_predecessor()
+                                            .mutable_start_position());
+        common::XmlQueryEnumAttribute(
+            link_type_ele, "elementType",
+            ele_road_->mutable_link().mutable_predecessor().mutable_type(),
+            ROAD_LINK_TYPE_CHOICES);
         common::XmlQueryEnumAttribute(link_type_ele, "contactPoint",
-                                      ele_road_->link.predecessor.contact_point,
+                                      ele_road_->mutable_link()
+                                          .mutable_predecessor()
+                                          .mutable_contact_point(),
                                       CONTACT_POINT_TYPE_CHOICES);
-        common::XmlQueryEnumAttribute(link_type_ele, "elementDir",
-                                      ele_road_->link.predecessor.dir,
-                                      DIR_CHOICES);
+        common::XmlQueryEnumAttribute(
+            link_type_ele, "elementDir",
+            ele_road_->mutable_link().mutable_predecessor().mutable_dir(),
+            DIR_CHOICES);
       } else if ("successor" == xml_link_ment) {
-        common::XmlQueryIntAttribute(link_type_ele, "elementId",
-                                     ele_road_->link.successor.id);
+        common::XmlQueryIntAttribute(
+            link_type_ele, "elementId",
+            ele_road_->mutable_link().mutable_successor().mutable_id());
         common::XmlQueryDoubleAttribute(link_type_ele, "elementS",
-                                        ele_road_->link.successor.s);
-        common::XmlQueryEnumAttribute(link_type_ele, "elementType",
-                                      ele_road_->link.successor.type,
-                                      ROAD_LINK_TYPE_CHOICES);
+                                        ele_road_->mutable_link()
+                                            .mutable_successor()
+                                            .mutable_start_position());
+        common::XmlQueryEnumAttribute(
+            link_type_ele, "elementType",
+            ele_road_->mutable_link().mutable_successor().mutable_type(),
+            ROAD_LINK_TYPE_CHOICES);
         common::XmlQueryEnumAttribute(link_type_ele, "contactPoint",
-                                      ele_road_->link.successor.contact_point,
+                                      ele_road_->mutable_link()
+                                          .mutable_successor()
+                                          .mutable_contact_point(),
                                       CONTACT_POINT_TYPE_CHOICES);
-        common::XmlQueryEnumAttribute(link_type_ele, "elementDir",
-                                      ele_road_->link.successor.dir,
-                                      DIR_CHOICES);
+        common::XmlQueryEnumAttribute(
+            link_type_ele, "elementDir",
+            ele_road_->mutable_link().mutable_successor().mutable_dir(),
+            DIR_CHOICES);
       }
     }
   }
@@ -94,19 +111,22 @@ RoadXmlParser& RoadXmlParser::TypeElement() {
       xml_road_->FirstChildElement("type");
   while (curr_xml_type) {
     element::RoadTypeInfo ele_road_type;
-    common::XmlQueryDoubleAttribute(curr_xml_type, "s", ele_road_type.s);
-    common::XmlQueryEnumAttribute(curr_xml_type, "type", ele_road_type.type,
-                                  ROAD_TYPE_CHOICES);
+    common::XmlQueryDoubleAttribute(curr_xml_type, "s",
+                                    ele_road_type.mutable_start_position());
+    common::XmlQueryEnumAttribute(
+        curr_xml_type, "type", ele_road_type.mutable_type(), ROAD_TYPE_CHOICES);
     common::XmlQueryStringAttribute(curr_xml_type, "country",
-                                    ele_road_type.country);
+                                    ele_road_type.mutable_country());
     const tinyxml2::XMLElement* speed_ele =
         curr_xml_type->FirstChildElement("speed");
     if (speed_ele) {
-      common::XmlQueryFloatAttribute(speed_ele, "max", ele_road_type.max_speed);
-      common::XmlQueryEnumAttribute(speed_ele, "unit", ele_road_type.speed_unit,
+      common::XmlQueryFloatAttribute(speed_ele, "max",
+                                     ele_road_type.mutable_max_speed());
+      common::XmlQueryEnumAttribute(speed_ele, "unit",
+                                    ele_road_type.mutable_speed_unit(),
                                     SPEEDUNIT_CHOICES);
     }
-    ele_road_->type_info.emplace_back(ele_road_type);
+    ele_road_->mutable_type_info().emplace_back(ele_road_type);
     curr_xml_type = common::XmlNextSiblingElement(curr_xml_type);
   }
   return *this;
@@ -251,7 +271,8 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
                  "Parse <geometry> Element Exception.");
       return *this;
     }
-    ele_road_->plan_view.geometrys.emplace_back(geometry_base_ptr);
+    ele_road_->mutable_plan_view().mutable_geometrys().emplace_back(
+        geometry_base_ptr);
     curr_ele_geometry = common::XmlNextSiblingElement(curr_ele_geometry);
   }
   return *this;
@@ -277,7 +298,7 @@ RoadXmlParser& RoadXmlParser::LanesElement() {
     common::XmlQueryDoubleAttribute(curr_xml_offset, "b", offset.mutable_b());
     common::XmlQueryDoubleAttribute(curr_xml_offset, "c", offset.mutable_c());
     common::XmlQueryDoubleAttribute(curr_xml_offset, "d", offset.mutable_d());
-    ele_road_->lanes.lane_offsets.emplace_back(offset);
+    ele_road_->mutable_lanes().mutable_lane_offsets().emplace_back(offset);
     curr_xml_offset = common::XmlNextSiblingElement(curr_xml_offset);
   }
 
@@ -298,7 +319,8 @@ RoadXmlParser& RoadXmlParser::LanesElement() {
     lane_section.set_id(section_idx++);
     status = section_parser.Parse(curr_xml_section, &lane_section);
     CheckStatus(status);
-    ele_road_->lanes.lane_sections.emplace_back(lane_section);
+    ele_road_->mutable_lanes().mutable_lane_sections().emplace_back(
+        lane_section);
     curr_xml_section = common::XmlNextSiblingElement(curr_xml_section);
   }
   return *this;
@@ -307,10 +329,11 @@ RoadXmlParser& RoadXmlParser::LanesElement() {
 RoadXmlParser& RoadXmlParser::GenerateRoad() {
   if (!IsValid()) return *this;
   /// update section end posotion
-  for (auto it = ele_road_->lanes.lane_sections.begin();
-       it != ele_road_->lanes.lane_sections.end(); ++it) {
-    if (it + 1 == ele_road_->lanes.lane_sections.end()) {  // 最后一个section
-      it->set_end_position(ele_road_->attributes.length);
+  for (auto it = ele_road_->mutable_lanes().mutable_lane_sections().begin();
+       it != ele_road_->mutable_lanes().mutable_lane_sections().end(); ++it) {
+    if (it + 1 ==
+        ele_road_->lanes().lane_sections().end()) {  // 最后一个section
+      it->set_end_position(ele_road_->mutable_attribute().length());
     } else {
       it->set_end_position((it + 1)->start_position());
     }

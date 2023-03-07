@@ -55,23 +55,23 @@ TEST_F(TestJunctionParser, TestJunction) {
   auto ele_map = std::make_shared<opendrive::element::Map>();
   auto ret = parser->ParseMap(xml, ele_map);
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
-  auto junction = ele_map->junctions.front();
-  ASSERT_EQ(1, junction.attributes.id);
-  ASSERT_EQ("", junction.attributes.name);
-  ASSERT_EQ(JunctionType::DEFAULT, junction.attributes.type);
-  ASSERT_EQ(12, junction.connections.size());
-  auto connection_0 = junction.connections.at(0);
-  ASSERT_EQ(0, connection_0.id);
-  ASSERT_EQ(6, connection_0.incoming_road);
-  ASSERT_EQ(2, connection_0.connecting_road);
-  ASSERT_EQ(ContactPointType::START, connection_0.contact_point);
-  ASSERT_EQ(3, connection_0.lane_links.size());
-  auto lane_link_0_0 = connection_0.lane_links.at(0);
-  ASSERT_EQ(1, lane_link_0_0.from);
-  ASSERT_EQ(-1, lane_link_0_0.to);
-  auto lane_link_0_1 = connection_0.lane_links.at(1);
-  ASSERT_EQ(2, lane_link_0_1.from);
-  ASSERT_EQ(-2, lane_link_0_1.to);
+  auto junction = ele_map->junctions().front();
+  ASSERT_EQ(1, junction.attribute().id());
+  ASSERT_EQ("", junction.attribute().name());
+  ASSERT_EQ(JunctionType::DEFAULT, junction.attribute().type());
+  ASSERT_EQ(12, junction.connections().size());
+  auto connection_0 = junction.connections().at(0);
+  ASSERT_EQ(0, connection_0.id());
+  ASSERT_EQ(6, connection_0.incoming_road());
+  ASSERT_EQ(2, connection_0.connecting_road());
+  ASSERT_EQ(ContactPointType::START, connection_0.contact_point());
+  ASSERT_EQ(3, connection_0.lane_links().size());
+  auto lane_link_0_0 = connection_0.lane_links().at(0);
+  ASSERT_EQ(1, lane_link_0_0.from());
+  ASSERT_EQ(-1, lane_link_0_0.to());
+  auto lane_link_0_1 = connection_0.lane_links().at(1);
+  ASSERT_EQ(2, lane_link_0_1.from());
+  ASSERT_EQ(-2, lane_link_0_1.to());
 }
 
 int main(int argc, char* argv[]) {
