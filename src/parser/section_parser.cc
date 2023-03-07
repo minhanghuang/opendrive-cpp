@@ -55,7 +55,7 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLanesEle() {
   /// sort left lanes
   std::sort(ele_section_->left.lanes.begin(), ele_section_->left.lanes.end(),
             [](const element::Lane& l1, const element::Lane& l2) {
-              return l1.attributes.id() < l2.attributes.id();
+              return l1.attribute().id() < l2.attribute().id();
             });
   return *this;
 }
@@ -78,13 +78,15 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneAttributes(
   std::string lane_type;
   std::string lane_level;
   common::XmlQueryIntAttribute(xml_lane, "id",
-                               ele_lane.attributes.mutable_id());
+                               ele_lane.mutable_attribute().mutable_id());
   common::XmlQueryStringAttribute(xml_lane, "type", lane_type);
   common::XmlQueryStringAttribute(xml_lane, "level", lane_level);
-  common::XmlQueryEnumAttribute(
-      xml_lane, "type", ele_lane.attributes.mutable_type(), LANE_TYPE_CHOICES);
-  common::XmlQueryEnumAttribute(
-      xml_lane, "level", ele_lane.attributes.mutable_level(), BOOLEAN_CHOICES);
+  common::XmlQueryEnumAttribute(xml_lane, "type",
+                                ele_lane.mutable_attribute().mutable_type(),
+                                LANE_TYPE_CHOICES);
+  common::XmlQueryEnumAttribute(xml_lane, "level",
+                                ele_lane.mutable_attribute().mutable_level(),
+                                BOOLEAN_CHOICES);
   return *this;
 }
 
@@ -100,7 +102,7 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneLinkEle(
     while (curr_xml_lane_link_predecessor) {
       id = 0;
       common::XmlQueryIntAttribute(curr_xml_lane_link_predecessor, "id", id);
-      ele_lane.link.predecessors.emplace_back(id);
+      ele_lane.mutable_link().mutable_predecessors().emplace_back(id);
       curr_xml_lane_link_predecessor =
           common::XmlNextSiblingElement(curr_xml_lane_link_predecessor);
     }
@@ -109,7 +111,7 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneLinkEle(
     while (curr_xml_lane_link_successor) {
       id = 0;
       common::XmlQueryIntAttribute(curr_xml_lane_link_successor, "id", id);
-      ele_lane.link.successors.emplace_back(id);
+      ele_lane.mutable_link().mutable_successors().emplace_back(id);
       curr_xml_lane_link_successor =
           common::XmlNextSiblingElement(curr_xml_lane_link_successor);
     }
@@ -135,10 +137,10 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneWidthEle(
                                     lane_width.mutable_c());
     common::XmlQueryDoubleAttribute(curr_xml_width, "d",
                                     lane_width.mutable_d());
-    ele_lane.widths.emplace_back(lane_width);
+    ele_lane.mutable_widths().emplace_back(lane_width);
     curr_xml_width = common::XmlNextSiblingElement(curr_xml_width);
   }
-  common::VectorSortPoloy3(ele_lane.widths);
+  common::VectorSortPoloy3(ele_lane.mutable_widths());
   return *this;
 }
 
@@ -159,10 +161,10 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneBorderEle(
                                     lane_border.mutable_c());
     common::XmlQueryDoubleAttribute(curr_xml_border, "d",
                                     lane_border.mutable_d());
-    ele_lane.borders.emplace_back(lane_border);
+    ele_lane.mutable_borders().emplace_back(lane_border);
     curr_xml_border = common::XmlNextSiblingElement(curr_xml_border);
   }
-  common::VectorSortPoloy3(ele_lane.borders);
+  common::VectorSortPoloy3(ele_lane.mutable_borders());
   return *this;
 }
 
@@ -196,10 +198,10 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneRoadMarkEle(
     common::XmlQueryEnumAttribute(curr_xml_mark, "laneChange",
                                   road_mark.mutable_lane_change(),
                                   ROAD_MARK_LANE_CHANGE_CHOICES);
-    ele_lane.road_marks.emplace_back(road_mark);
+    ele_lane.mutable_road_marks().emplace_back(road_mark);
     curr_xml_mark = common::XmlNextSiblingElement(curr_xml_mark);
   }
-  common::VectorSortPoloy3(ele_lane.road_marks);
+  common::VectorSortPoloy3(ele_lane.mutable_road_marks());
   return *this;
 }
 
@@ -210,14 +212,16 @@ RoadLanesSectionXmlParser& RoadLanesSectionXmlParser::ParseLaneSpeedEle(
       xml_lane->FirstChildElement("speed");
   while (curr_xml_speed) {
     element::LaneSpeed lane_speed;
-    common::XmlQueryDoubleAttribute(curr_xml_speed, "sOffset", lane_speed.s);
-    common::XmlQueryFloatAttribute(curr_xml_speed, "max", lane_speed.max);
-    common::XmlQueryEnumAttribute(curr_xml_speed, "unit", lane_speed.unit,
-                                  SPEEDUNIT_CHOICES);
-    ele_lane.max_speeds.emplace_back(lane_speed);
+    common::XmlQueryDoubleAttribute(curr_xml_speed, "sOffset",
+                                    lane_speed.mutable_s());
+    common::XmlQueryFloatAttribute(curr_xml_speed, "max",
+                                   lane_speed.mutable_max());
+    common::XmlQueryEnumAttribute(curr_xml_speed, "unit",
+                                  lane_speed.mutable_unit(), SPEEDUNIT_CHOICES);
+    ele_lane.mutable_max_speeds().emplace_back(lane_speed);
     curr_xml_speed = common::XmlNextSiblingElement(curr_xml_speed);
   }
-  common::VectorSortPoloy3(ele_lane.max_speeds);
+  common::VectorSortPoloy3(ele_lane.mutable_max_speeds());
   return *this;
 }
 

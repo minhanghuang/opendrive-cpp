@@ -289,9 +289,9 @@ class GeometryParamPoly3 final : public Geometry {
   const double dv_;
 };
 
-class LaneAttributes {
+class LaneAttribute {
  public:
-  LaneAttributes()
+  LaneAttribute()
       : id_(std::numeric_limits<Id>::max()),
         type_(LaneType::DRIVING),
         level_(Boolean::UNKNOWN) {}
@@ -398,16 +398,39 @@ typedef std::vector<LaneWidth> LaneWidths;
 struct LaneBorder : public OffsetPoly3 {};
 typedef std::vector<LaneBorder> LaneBorders;
 
-struct LaneLink {
-  Ids predecessors;
-  Ids successors;
+class LaneLink {
+ public:
+  LaneLink() {}
+  void set_predecessors(const Ids& v) { predecessors_ = v; }
+  void set_successors(const Ids& v) { successors_ = v; }
+  Ids& mutable_predecessors() { return predecessors_; }
+  Ids& mutable_successors() { return successors_; }
+  const Ids& predecessors() const { return predecessors_; }
+  const Ids& successors() const { return successors_; }
+
+ private:
+  Ids predecessors_;
+  Ids successors_;
 };
 typedef std::vector<LaneLink> LaneLinks;
 
-struct LaneSpeed {
-  double s = 0.;
-  float max = 0.;
-  SpeedUnit unit = SpeedUnit::MS;
+class LaneSpeed {
+ public:
+  LaneSpeed() : s_(0), max_(0), unit_(SpeedUnit::MS) {}
+  void set_s(double d) { s_ = d; }
+  void set_max(float f) { max_ = f; }
+  void set_unit(SpeedUnit i) { unit_ = i; }
+  double& mutable_s() { return s_; }
+  float& mutable_max() { return max_; }
+  SpeedUnit& mutable_unit() { return unit_; }
+  double s() const { return s_; }
+  float max() const { return max_; }
+  SpeedUnit unit() const { return unit_; }
+
+ private:
+  double s_;
+  float max_;
+  SpeedUnit unit_;
 };
 typedef std::vector<LaneSpeed> LaneSpeeds;
 
@@ -441,9 +464,27 @@ class Lane {
     }
     return 0.;
   }
+  void set_attribute(const LaneAttribute& c) { attr_ = c; }
+  void set_link(const LaneLink& c) { link_ = c; }
+  void set_widths(const LaneWidths& c) { widths_ = c; }
+  void set_borders(const LaneBorders& c) { borders_ = c; }
+  void set_road_marks(const RoadMarks& c) { road_marks_ = c; }
+  void set_max_speeds(const LaneSpeeds& c) { max_speeds_ = c; }
+  LaneAttribute& mutable_attribute() { return attr_; }
+  LaneLink& mutable_link() { return link_; }
+  LaneWidths& mutable_widths() { return widths_; }
+  LaneBorders& mutable_borders() { return borders_; }
+  RoadMarks& mutable_road_marks() { return road_marks_; }
+  LaneSpeeds& mutable_max_speeds() { return max_speeds_; }
+  const LaneAttribute& attribute() const { return attr_; }
+  const LaneLink& link() const { return link_; }
+  const LaneWidths& widths() const { return widths_; }
+  const LaneBorders& borders() const { return borders_; }
+  const RoadMarks& road_marks() const { return road_marks_; }
+  const LaneSpeeds& max_speeds() const { return max_speeds_; }
 
  private:
-  LaneAttributes attrs_;
+  LaneAttribute attr_;
   LaneLink link_;
   LaneWidths widths_;
   LaneBorders borders_;
