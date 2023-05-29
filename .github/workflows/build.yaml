@@ -33,15 +33,19 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           apt update
-          apt install -y libtinyxml2-dev python3-dev git pkg-config g++ cmake
+          apt install -y python3-dev git pkg-config g++ cmake
       - name: Build
         run: |
-          bash -c "cd //opendrive-cpp && python3 scripts/install.py && source install/setup.bash && ./scripts/build.sh"
+          bash -c "cd /workspace/opendrive-cpp && python3 scripts/install.py && source install/setup.bash && ./scripts/build.sh"
       - name: Cache
         uses: actions/upload-artifact@v2
         with:
           name: cache
-          path: /workspace/opendrive-cpp
+          path: |
+            /workspace/opendrive-cpp/build/
+            /workspace/opendrive-cpp/scripts/
+            /workspace/opendrive-cpp/install/
+            /workspace/opendrive-cpp/tests/data/
 
   test-amd-ubuntu:
     needs: build-amd-ubuntu
