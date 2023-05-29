@@ -2,9 +2,11 @@ name: ubuntu build
 run-name: build runner on ubuntu 🚀
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+  push:
+    branches:
       - dev
     paths:
       - 'cmake/*'
@@ -36,7 +38,28 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           apt update
-          apt install -y libtinyxml2-dev sudo build-essential bash git wget pkg-config g++ cmake autoconf automake googletest
+          apt install -y libtinyxml2-dev python3-dev git pkg-config g++ cmake
       - name: Build
         run: |
-          bash -c "cd /workspace/opendrive-cpp && ./scripts/build.sh"
+          bash -c "cd /workspace/opendrive-cpp && python3 scripts/install.py && source install/setup.bash && ./scripts/build.sh"
+      - name: Cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: cache
+          path: /workspace/opendrive-cpp
+
+  test-amd-ubuntu:
+    needs: build-amd-ubuntu
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ubuntu:20.04
+      options: --volume ${{ github.workspace }}:/workspace/opendrive-cpp
+    steps:
+      - name: Cache
+        uses: actions/download-artifact@v2
+        with:
+          name: cache
+      - name: Test
+        run: |
+          bash -c "cd /workspace/opendrive-cpp && source install/setup.bash && chmod +x scripts/run_tests.sh && ./scripts/run_tests.sh"
+

@@ -2,9 +2,6 @@
 
 current_path=$(cd $(dirname $0) && pwd)
 
-export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/base/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/base/lib
-
 function test() {
   cmake -B build -DBUILD_SHARED_LIBS=ON -DBUILD_OPENDRIVECPP_TEST=ON -DCMAKE_BUILD_TYPE=Debug .
   cmake --build build -j6
