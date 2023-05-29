@@ -6,8 +6,6 @@ on:
     branches:
       - main
   push:
-    branches:
-      - dev
     paths:
       - 'cmake/*'
       - 'include/*'
@@ -17,22 +15,19 @@ on:
       - 'scripts/*'
       - '.github/workflows/build.yaml'
 
-env:
-  PROJECT_NAME: "opendrive-cpp"
-
 jobs:
   build-amd-ubuntu:
     runs-on: ubuntu-latest
     container:
       image: docker://ubuntu:20.04
-      options: --volume ${{ github.workspace }}:/app/$PROJECT_NAME
+      options: --volume ${{ github.workspace }}:/workspace/opendrive-cpp
     steps:
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: List files in the repository
         run: |
-          ls /app/$PROJECT_NAME
+          ls /workspace/opendrive-cpp
       - name: Install dependence
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -41,19 +36,19 @@ jobs:
           apt install -y libtinyxml2-dev python3-dev git pkg-config g++ cmake
       - name: Build
         run: |
-          bash -c "cd /app/$PROJECT_NAME && python3 scripts/install.py && source install/setup.bash && ./scripts/build.sh"
+          bash -c "cd //opendrive-cpp && python3 scripts/install.py && source install/setup.bash && ./scripts/build.sh"
       - name: Cache
         uses: actions/upload-artifact@v2
         with:
           name: cache
-          path: /app/$PROJECT_NAME
+          path: /workspace/opendrive-cpp
 
   test-amd-ubuntu:
     needs: build-amd-ubuntu
     runs-on: ubuntu-latest
     container:
       image: docker://ubuntu:20.04
-      options: --volume ${{ github.workspace }}:/app/$PROJECT_NAME
+      options: --volume ${{ github.workspace }}:/workspace/opendrive-cpp
     steps:
       - name: Cache
         uses: actions/download-artifact@v2
@@ -61,5 +56,5 @@ jobs:
           name: cache
       - name: Test
         run: |
-          bash -c "cd /app/$PROJECT_NAME && source install/setup.bash && chmod +x scripts/run_tests.sh && chmod +x -R build/tests && ./scripts/run_tests.sh"
+          bash -c "cd /workspace/opendrive-cpp && source install/setup.bash && chmod +x scripts/run_tests.sh && chmod +x -R build/tests && ./scripts/run_tests.sh"
 
