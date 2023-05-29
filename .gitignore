@@ -12,7 +12,8 @@
 
 build/
 cmake-build-debug/
-thirdparty/
+third_party/
+install/
 build_thirdparty.sh
 compile_commands.json
 

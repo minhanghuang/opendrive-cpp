@@ -1,5 +1,7 @@
 # opendrive-cpp
 
+[![Build Status](https://github.com/minhanghuang/opendrive-cpp/actions/workflows/ubuntu-build.yaml/badge.svg?branch=dev)](https://github.com/minhanghuang/opendrive-cpp/actions/workflows/ubuntu-build.yaml)
+
 ## #1 Dependency
 
 [tinyxml2](https://github.com/leethomason/tinyxml2/tree/master)
