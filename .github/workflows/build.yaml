@@ -58,7 +58,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cache
+      - name: Set file permissions
+        run: chmod -R 755 /workspace/opendrive-cpp
       - name: Test
         run: |
-          bash -c "cd /workspace/opendrive-cpp && source install/setup.bash && chmod +x scripts/run_tests.sh && chmod +x -R build/tests && ./scripts/run_tests.sh"
+          bash -c "cd /workspace/opendrive-cpp && source install/setup.bash && ./scripts/run_tests.sh"
 
