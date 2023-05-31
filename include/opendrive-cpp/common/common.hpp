@@ -228,7 +228,7 @@ static tinyxml2::XMLError XmlQueryDoubleAttribute(
 template <typename T>
 static tinyxml2::XMLError XmlQueryEnumAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name, T& value,
-    const std::unordered_map<T, std::string>& choices) {
+    const std::map<T, std::string>& choices) {
   std::string var;
   tinyxml2::XMLError ret = XmlQueryStringAttribute(xml_node, name, var);
   if (tinyxml2::XMLError::XML_SUCCESS != ret) {

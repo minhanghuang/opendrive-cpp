@@ -5,7 +5,7 @@ DEPENDENCES = {
     # "": [link, branch, cmake options]
     "setup": ["https://github.com/minhanghuang/setup.git", "", ""],
     "googletest": ["https://github.com/google/googletest.git", "", "-DCMAKE_CXX_STANDARD=14"],
-    # "tinyxml2": ["https://github.com/leethomason/tinyxml2.git", "", ""],
+    "tinyxml2": ["https://github.com/leethomason/tinyxml2.git", "", ""],
 }
 
 
