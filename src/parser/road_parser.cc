@@ -253,7 +253,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
       common::XmlQueryDoubleAttribute(ele_geometry_type, "dV", dv);
       common::XmlQueryEnumAttribute(
           ele_geometry_type, "pRange", p_range,
-          std::unordered_map<element::GeometryParamPoly3::PRange, std::string>{
+          std::map<element::GeometryParamPoly3::PRange, std::string>{
               std::make_pair(element::GeometryParamPoly3::PRange::ARCLENGTH,
                              "arcLength"),
               std::make_pair(element::GeometryParamPoly3::PRange::NORMALIZED,

@@ -33,6 +33,7 @@ link_directories(
 file(GLOB OPENDRIVE_CPP_SRCS
   "src/*.cc"
   "src/parser/*.cc"
+  "src/common/*.cc"
   "src/common/spiral/*.cc"
 )
 
