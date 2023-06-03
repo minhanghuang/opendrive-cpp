@@ -57,10 +57,10 @@ TEST_F(TestRoadTypeParser, TestRoadType) {
   ASSERT_TRUE(opendrive::ErrorCode::OK == ret.error_code);
   auto ele_roadtype = ele_map->roads().front().type_info().front();
   ASSERT_DOUBLE_EQ(0.0000000000000000e+0, ele_roadtype.start_position());
-  ASSERT_TRUE(RoadType::TOWN == ele_roadtype.type());
+  ASSERT_TRUE(RoadType::kTown == ele_roadtype.type());
   ASSERT_TRUE(ele_roadtype.country().empty());
   ASSERT_DOUBLE_EQ(25, ele_roadtype.max_speed());
-  ASSERT_TRUE(SpeedUnit::MPH == ele_roadtype.speed_unit());
+  ASSERT_TRUE(SpeedUnit::kMph == ele_roadtype.speed_unit());
 }
 
 int main(int argc, char* argv[]) {

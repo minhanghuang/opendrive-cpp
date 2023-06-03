@@ -58,17 +58,17 @@ TEST_F(TestRoadLinkParser, TestRoadLink) {
   auto ele_roadlink = ele_map->roads().front().link();
   ASSERT_TRUE(11 == ele_roadlink.predecessor().id());
   ASSERT_DOUBLE_EQ(-1, ele_roadlink.predecessor().start_position());
-  ASSERT_TRUE(RoadLinkType::ROAD == ele_roadlink.predecessor().type());
-  ASSERT_TRUE(ContactPointType::START ==
+  ASSERT_TRUE(RoadLinkType::kRoad == ele_roadlink.predecessor().type());
+  ASSERT_TRUE(ContactPointType::kStart ==
               ele_roadlink.predecessor().contact_point());
-  ASSERT_TRUE(Dir::PLUS == ele_roadlink.predecessor().dir());
+  ASSERT_TRUE(Dir::kPlus == ele_roadlink.predecessor().dir());
   ASSERT_TRUE(43 == ele_roadlink.successor().id());
   ASSERT_DOUBLE_EQ(1.0000000000000000e+00,
                    ele_roadlink.successor().start_position());
-  ASSERT_TRUE(RoadLinkType::JUNCTION == ele_roadlink.successor().type());
-  ASSERT_TRUE(ContactPointType::UNKNOWN ==
+  ASSERT_TRUE(RoadLinkType::kJunction == ele_roadlink.successor().type());
+  ASSERT_TRUE(ContactPointType::kUnknown ==
               ele_roadlink.successor().contact_point());
-  ASSERT_TRUE(Dir::UNKNOWN == ele_roadlink.successor().dir());
+  ASSERT_TRUE(Dir::kUnknown == ele_roadlink.successor().dir());
 }
 
 int main(int argc, char* argv[]) {
