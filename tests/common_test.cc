@@ -76,7 +76,7 @@ TEST_F(TestCommon, TestVectorSort) {
   lane_offsets.emplace_back(l5);
   lane_offsets.emplace_back(l3);
   lane_offsets.emplace_back(l4);
-  common::VectorSortPoloy3(lane_offsets);
+  common::VectorSortPoloy3(&lane_offsets);
   std::vector<double> e_v{11, 13, 15, 16, 19};
   for (int i = 0; i < lane_offsets.size(); i++) {
     ASSERT_DOUBLE_EQ(e_v.at(i), lane_offsets.at(i).s());
@@ -173,37 +173,38 @@ TEST_F(TestCommon, TestXml) {
   auto parser = GetParser();
   const tinyxml2::XMLElement* xml = GetXml()->RootElement();
   auto header_node = xml->FirstChildElement("header");
-  auto header_ptr = std::make_shared<opendrive::element::Header>();
+  auto header = std::make_shared<opendrive::element::Header>();
   ASSERT_TRUE(header_node != nullptr);
+  double temp_d;
   opendrive::common::XmlQueryStringAttribute(header_node, "name",
-                                             header_ptr->mutable_name());
+                                             header->mutable_name());
   opendrive::common::XmlQueryStringAttribute(header_node, "revMinor",
-                                             header_ptr->mutable_rev_minor());
-  opendrive::common::XmlQueryDoubleAttribute(header_node, "north",
-                                             header_ptr->mutable_north());
-  ASSERT_TRUE("4" == header_ptr->rev_minor());
-  ASSERT_TRUE("zhichun Rd" == header_ptr->name());
-  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header_ptr->north());
+                                             header->mutable_rev_minor());
+  opendrive::common::XmlQueryDoubleAttribute(header_node, "north", &temp_d);
+  header->set_north(temp_d);
+  ASSERT_TRUE("4" == header->rev_minor());
+  ASSERT_TRUE("zhichun Rd" == header->name());
+  ASSERT_DOUBLE_EQ(2.8349990809409476e+1, header->north());
 
   /// not found
   ASSERT_EQ(opendrive::common::XmlQueryStringAttribute(
-                header_node, "aaa", header_ptr->mutable_rev_minor()),
+                header_node, "aaa", header->mutable_rev_minor()),
             tinyxml2::XMLError::XML_NO_ATTRIBUTE);
 
   /// default
-  header_ptr->set_rev_minor("99");
-  header_ptr->set_name("qwert");
-  header_ptr->set_north(-99.99);
+  header->set_rev_minor("99");
+  header->set_name("qwert");
+  temp_d = -99.99;
 
   opendrive::common::XmlQueryStringAttribute(header_node, "name__",
-                                             header_ptr->mutable_name());
+                                             header->mutable_name());
   opendrive::common::XmlQueryStringAttribute(header_node, "revMinor___",
-                                             header_ptr->mutable_rev_minor());
-  opendrive::common::XmlQueryDoubleAttribute(header_node, "north___",
-                                             header_ptr->mutable_north());
-  ASSERT_TRUE("99" == header_ptr->rev_minor());
-  ASSERT_TRUE("qwert" == header_ptr->name());
-  ASSERT_DOUBLE_EQ(-99.99, header_ptr->north());
+                                             header->mutable_rev_minor());
+  opendrive::common::XmlQueryDoubleAttribute(header_node, "north___", &temp_d);
+  header->set_north(temp_d);
+  ASSERT_TRUE("99" == header->rev_minor());
+  ASSERT_TRUE("qwert" == header->name());
+  ASSERT_DOUBLE_EQ(-99.99, header->north());
 }
 
 TEST_F(TestCommon, TestXml2) {
@@ -214,7 +215,7 @@ TEST_F(TestCommon, TestXml2) {
   ASSERT_TRUE(road_ele != nullptr);
   ASSERT_TRUE(road_ptr->attribute().rule() == RoadRule::RHT);
   auto ret = opendrive::common::XmlQueryEnumAttribute(
-      road_ele, "rule", road_ptr->mutable_attribute().mutable_rule(),
+      road_ele, "rule", road_ptr->mutable_attribute()->mutable_rule(),
       opendrive::ROAD_RULE_CHOICES);
   ASSERT_TRUE(road_ptr->attribute().rule() == RoadRule::RHT);
 }

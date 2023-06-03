@@ -117,7 +117,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_roadmarks1.s());
   ASSERT_EQ(RoadMarkType::NONE, lane_section1_roadmarks1.type());
   ASSERT_EQ(RoadMarkColor::WHITE, lane_section1_roadmarks1.color());
-  ASSERT_EQ(RoadMarkWeight::UNKNOWN, lane_section1_roadmarks1.weigth());
+  ASSERT_EQ(RoadMarkWeight::UNKNOWN, lane_section1_roadmarks1.weight());
   ASSERT_EQ(RoadMarkLaneChange::NONE, lane_section1_roadmarks1.lane_change());
   ASSERT_EQ("standard", lane_section1_roadmarks1.material());
   ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_roadmarks1.width());
@@ -135,7 +135,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_center_roadmarks1.s());
   ASSERT_EQ(RoadMarkType::BROKEN, lane_section1_center_roadmarks1.type());
   ASSERT_EQ(RoadMarkColor::YELLOW, lane_section1_center_roadmarks1.color());
-  ASSERT_EQ(RoadMarkWeight::UNKNOWN, lane_section1_center_roadmarks1.weigth());
+  ASSERT_EQ(RoadMarkWeight::UNKNOWN, lane_section1_center_roadmarks1.weight());
   ASSERT_EQ(RoadMarkLaneChange::NONE,
             lane_section1_center_roadmarks1.lane_change());
   ASSERT_EQ("standard", lane_section1_center_roadmarks1.material());
@@ -174,7 +174,7 @@ TEST_F(TestRoadLanesParser, TestRoadLanes) {
   ASSERT_DOUBLE_EQ(1.0000000000000000e+0, lane_section1_roadmarks21.s());
   ASSERT_EQ(RoadMarkType::NONE, lane_section1_roadmarks21.type());
   ASSERT_EQ(RoadMarkColor::WHITE, lane_section1_roadmarks21.color());
-  ASSERT_EQ(RoadMarkWeight::UNKNOWN, lane_section1_roadmarks21.weigth());
+  ASSERT_EQ(RoadMarkWeight::UNKNOWN, lane_section1_roadmarks21.weight());
   ASSERT_EQ(RoadMarkLaneChange::NONE, lane_section1_roadmarks21.lane_change());
   ASSERT_EQ("standard", lane_section1_roadmarks21.material());
   ASSERT_DOUBLE_EQ(3.0000000000000000e+0, lane_section1_roadmarks21.width());
