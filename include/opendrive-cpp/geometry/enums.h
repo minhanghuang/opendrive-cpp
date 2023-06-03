@@ -5,129 +5,130 @@
 
 namespace opendrive {
 
-enum class Boolean : std::uint8_t { FALSE = 0, TRUE, UNKNOWN };
+enum class Boolean : std::uint8_t { kFalse = 0, kTrue, kUnknown };
 
 enum class GeometryType : std::uint8_t {
-  ARC,
-  LINE,
-  SPIRAL,
-  POLY3,
-  PARAMPOLY3,
+  kArc,
+  kLine,
+  kSpiral,
+  kPoly3,
+  kParamPoly3,
 };
 
 enum class LaneType : std::uint8_t {
-  SHOULDER = 0,  // Describes a soft border at the edge of the road.
-  BORDER,   // Describes a hard border at the edge of the road. It has the same
-            // height as the drivable lane.
-  DRIVING,  // Describes a "normal" drivable road that is not one of the other
-            // types.
-  STOP,     // Hard shoulder on motorways for emergency stops
-  NONE,  // Describes the space on the outermost edge of the road and does not
-         // have actual content Its only purpose is for applications to register
-         // that ASAM OpenDRIVE is still present in case the (human) driver
-         // leaves the road.
-  RESTRICTED,  // Describes a lane on which cars should not drive. The lane has
-               // the same height as drivable lanes. Typically, the lane is
-               // separated with lines and often contains dotted lines as well.
-  PARKING,     // Describes a lane with parking spaces.
-  MEDIAN,      // Describes a lane that sits between driving lanes that lead in
-           // opposite directions. It is typically used to separate traffic in
-           // towns on large roads.
-  BIKING,    // Describes a lane that is reserved for cyclists.
-  SIDEWALK,  // Describes a lane on which pedestrians can walk.
-  CURB,   // Describes curb stones. Curb stones have a different height than the
+  kSholder = 0,  // Describes a soft border at the edge of the road.
+  kBorder,   // Describes a hard border at the edge of the road. It has the same
+             // height as the drivable lane.
+  kDriving,  // Describes a "normal" drivable road that is not one of the other
+             // types.
+  kStop,     // Hard shoulder on motorways for emergency stops
+  kNone,  // Describes the space on the outermost edge of the road and does not
+          // have actual content Its only purpose is for applications to
+          // register that ASAM OpenDRIVE is still present in case the (human)
+          // driver leaves the road.
+  kRestricted,  // Describes a lane on which cars should not drive. The lane has
+                // the same height as drivable lanes. Typically, the lane is
+                // separated with lines and often contains dotted lines as well.
+  kParking,     // Describes a lane with parking spaces.
+  kMedian,      // Describes a lane that sits between driving lanes that lead in
+            // opposite directions. It is typically used to separate traffic in
+            // towns on large roads.
+  kBiking,    // Describes a lane that is reserved for cyclists.
+  kSidewalk,  // Describes a lane on which pedestrians can walk.
+  kCurb,  // Describes curb stones. Curb stones have a different height than the
           // adjacent drivable lanes.
-  EXIT,   // Describes a lane that is used for sections that are parallel to the
+  kExit,  // Describes a lane that is used for sections that are parallel to the
           // main road. It is mainly used for deceleration lanes.
-  ENTRY,  // Describes a lane type that is used for sections that are parallel
-          // to the main road. It is mainly used for acceleration lanes.
-  ONRAMP,   // A ramp leading to a motorway from rural or urban roads.
-  OFFRAMP,  //  A ramp leading away from a motorway and onto rural urban roads.
-  CONNECTINGRAMP,  //  A ramp that connects two motorways, for example, motorway
-                   //  junctions.
-  BIDIRECTIONAL,
-  SPECIAL1,
-  SPECIAL2,
-  SPECIAL3,
-  ROADWORKS,
-  TRAM,
-  RAIL,
-  BUS,
-  TAXI,
-  HOV,
-  MWYENTRY,
-  MWYEXIT
+  kEntry,   // Describes a lane type that is used for sections that are parallel
+            // to the main road. It is mainly used for acceleration lanes.
+  kOnramp,  // A ramp leading to a motorway from rural or urban roads.
+  kOfframp,  //  A ramp leading away from a motorway and onto rural urban roads.
+  kConnectingramp,  //  A ramp that connects two motorways, for example,
+                    //  motorway junctions.
+  kBidirectional,
+  kSpecial1,
+  kSpecial2,
+  kSpecial3,
+  kRoadworks,
+  kTram,
+  kRail,
+  kBus,
+  kTaxi,
+  kHov,
+  kMwyentry,
+  kMwyexit
 };
 
 enum class RoadMarkType : std::uint8_t {
-  NONE = 0,
-  SOLID,
-  BROKEN,
-  SOLIDSOLID,
-  SOLIDBROKEN,
-  BROKENSOLID,
-  BROKENBROKEN,
-  BOTTSDOTS,
-  GRASS,
-  CURB,
-  CUSTOM,
-  EDGE
+  kUnknown = 0,
+  kNone,
+  kSolid,
+  kBroken,
+  kSolidsolid,
+  kSolidbroken,
+  kBrokensolid,
+  kBrokenbroken,
+  kBottsdots,
+  kGrass,
+  kCurb,
+  kCustom,
+  kEdge
 };
 
 enum class RoadMarkColor : std::uint8_t {
-  STANDARD = 0,
-  BLUE,
-  GREEN,
-  RED,
-  WHITE,
-  YELLOW,
-  ORANGE
+  kStandard = 0,
+  kBlue,
+  kGreen,
+  kRed,
+  kWhite,
+  kYellow,
+  kOrange
 };
 
-enum class RoadMarkWeight : std::uint8_t { UNKNOWN = 0, STANDARD, BOLD };
+enum class RoadMarkWeight : std::uint8_t { kUnknown = 0, kStandard, kBold };
 
 enum class RoadMarkLaneChange : std::uint8_t {
-  UNKNOWN,
-  NONE,
-  INCREASE,
-  DECREASE,
-  BOTH,
+  kUnknown = 0,
+  kNone,
+  kIncrease,
+  kDecrease,
+  kBoth,
 };
 
-enum class RoadRule { RHT, LHT };
+enum class RoadRule { kRht, kLht };
 
 enum class RoadType : std::uint8_t {
-  RURAL = 0,
-  MOTORWAY,
-  TOWN,
-  LOWSPEED,
-  PEDESTRIAN,
-  BICYCLE,
-  TOWNEXPRESSWAY,
-  TOWNCOLLECTOR,
-  TOWNARTERIAL,
-  TOWNPRIVATE,
-  TOWNLOCAL,
-  TOWNPLAYSTREET
+  kRural = 0,
+  kMotorway,
+  kTown,
+  kLowspeed,
+  kPedestrian,
+  kBicycle,
+  kTownexpressway,
+  kTowncollector,
+  kTownarterial,
+  kTownprivate,
+  kTownlocal,
+  kTownplaystreet,
 };
 
-enum class RoadLinkType { ROAD = 0, JUNCTION };
+enum class RoadLinkType { kRoad = 0, kJunction };
 
 enum class SpeedUnit {
-  MS = 0,  // m/s
-  MPH,     // mph
-  KMH      // km/h
+  kMs = 0,  // m/s
+  kMph,     // mph
+  kKmh      // km/h
 };
 
-enum class LaneDirection { UNKNOWN = 0, LEFT, CENTER, RIGHT };
+enum class LaneDirection { kUnknown = 0, kLeft, kCenter, kRight };
 
-enum class JunctionType { DEFAULT, DIRECT, VIRTUAL };
+enum class JunctionType { kDefault, kDirect, kVirtual };
 
-enum class JunctionConnectionType { UNKNOWN = 0, DEFAULT, VIRTUAL };
+enum class JunctionConnectionType { kUnknown = 0, kDefault, kVirtual };
 
-enum class ContactPointType { UNKNOWN = 0, START, END };
+enum class ContactPointType { kUnknown = 0, kStart, kEnd };
 
-enum class Dir { UNKNOWN = 0, PLUS, MINUS };
+enum class Dir { kUnknown = 0, kPlus, kMinus };
 
 }  // namespace opendrive
 

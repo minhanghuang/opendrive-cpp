@@ -20,11 +20,11 @@
 namespace opendrive {
 namespace element {
 
-typedef int Id;
-typedef Id Idx;
-typedef std::vector<Id> Ids;
-typedef std::string IdStr;
-typedef std::string Name;
+using Id = int;
+using Idx = Id;
+using Ids = std::vector<Id>;
+using IdStr = std::string;
+using Name = std::string;
 
 class Point {
   REGISTER_MEMBER_BASIC_TYPE(double, x, 0);
@@ -66,10 +66,10 @@ class Geometry {
   REGISTER_MEMBER_COMPLEX_TYPE(GeometryType, type);
 
  public:
-  typedef std::shared_ptr<Geometry> Ptr;
-  typedef std::shared_ptr<Geometry const> ConstPtr;
-  typedef std::vector<Ptr> Ptrs;
-  typedef std::vector<ConstPtr> ConstPtrs;
+  using Ptr = std::shared_ptr<Geometry>;
+  using ConstPtr = std::shared_ptr<Geometry const>;
+  using Ptrs = std::vector<Ptr>;
+  using ConstPtrs = std::vector<ConstPtr>;
   Geometry(double _s, double _x, double _y, double _hdg, double _length,
            GeometryType _type)
       : s_(_s),
@@ -247,8 +247,8 @@ class LaneAttribute {
  public:
   LaneAttribute()
       : id_(std::numeric_limits<Id>::max()),
-        type_(LaneType::DRIVING),
-        level_(Boolean::UNKNOWN) {}
+        type_(LaneType::kDriving),
+        level_(Boolean::kUnknown) {}
 };
 
 class OffsetPoly3 {
@@ -281,21 +281,21 @@ class RoadMark {
  public:
   RoadMark()
       : s_(0),
-        type_(RoadMarkType::NONE),
-        color_(RoadMarkColor::STANDARD),
-        weight_(RoadMarkWeight::UNKNOWN),
-        lane_change_(RoadMarkLaneChange::UNKNOWN),
+        type_(RoadMarkType::kNone),
+        color_(RoadMarkColor::kStandard),
+        weight_(RoadMarkWeight::kUnknown),
+        lane_change_(RoadMarkLaneChange::kUnknown),
         width_(0),
         height_(0),
         material_("standard") {}
 };
-typedef std::vector<RoadMark> RoadMarks;
+using RoadMarks = std::vector<RoadMark>;
 
 class LaneWidth : public OffsetPoly3 {};
-typedef std::vector<LaneWidth> LaneWidths;
+using LaneWidths = std::vector<LaneWidth>;
 
 class LaneBorder : public OffsetPoly3 {};
-typedef std::vector<LaneBorder> LaneBorders;
+using LaneBorders = std::vector<LaneBorder>;
 
 class LaneLink {
   REGISTER_MEMBER_COMPLEX_TYPE(Ids, predecessors);
@@ -304,7 +304,7 @@ class LaneLink {
  public:
   LaneLink() {}
 };
-typedef std::vector<LaneLink> LaneLinks;
+using LaneLinks = std::vector<LaneLink>;
 
 class LaneSpeed {
   REGISTER_MEMBER_BASIC_TYPE(double, s, 0);
@@ -312,9 +312,9 @@ class LaneSpeed {
   REGISTER_MEMBER_COMPLEX_TYPE(SpeedUnit, unit);
 
  public:
-  LaneSpeed() : s_(0), max_(0), unit_(SpeedUnit::MS) {}
+  LaneSpeed() : s_(0), max_(0), unit_(SpeedUnit::kMs) {}
 };
-typedef std::vector<LaneSpeed> LaneSpeeds;
+using LaneSpeeds = std::vector<LaneSpeed>;
 
 class Lane {
   REGISTER_MEMBER_COMPLEX_TYPE(LaneAttribute, attribute);
@@ -363,7 +363,7 @@ class LanesInfo {
 };
 
 class LaneOffset : public OffsetPoly3 {};
-typedef std::vector<LaneOffset> LaneOffsets;
+using LaneOffsets = std::vector<LaneOffset>;
 
 class LaneSection {
   REGISTER_MEMBER_BASIC_TYPE(Id, id, -1);
@@ -376,7 +376,7 @@ class LaneSection {
  public:
   LaneSection() : id_(-1), start_position_(0), end_position_(0) {}
 };
-typedef std::vector<LaneSection> LaneSections;
+using LaneSections = std::vector<LaneSection>;
 
 class Lanes {
   REGISTER_MEMBER_COMPLEX_TYPE(LaneOffsets, lane_offsets);
@@ -402,7 +402,7 @@ class RoadAttribute {
         id_(-1),
         junction_id_(-1),
         length_(0),
-        rule_(RoadRule::RHT) {}
+        rule_(RoadRule::kRht) {}
 };
 
 class RoadLinkInfo {
@@ -418,9 +418,9 @@ class RoadLinkInfo {
   RoadLinkInfo()
       : id_(-1),
         start_position_(-1),
-        type_(RoadLinkType::ROAD),
-        contact_point_(ContactPointType::UNKNOWN),
-        dir_(Dir::UNKNOWN) {}
+        type_(RoadLinkType::kRoad),
+        contact_point_(ContactPointType::kUnknown),
+        dir_(Dir::kUnknown) {}
 };
 
 class RoadLink {
@@ -441,10 +441,10 @@ class RoadTypeInfo {
  public:
   RoadTypeInfo()
       : start_position_(0),
-        type_(RoadType::TOWN),
+        type_(RoadType::kTown),
         country_(""),
         max_speed_(0),
-        speed_unit_(SpeedUnit::MS) {}
+        speed_unit_(SpeedUnit::kMs) {}
 };
 
 class RoadPlanView {
@@ -479,11 +479,11 @@ class JunctionAttribute {
  public:
   JunctionAttribute()
       : id_(-1),
-        type_(JunctionType::DEFAULT),
+        type_(JunctionType::kDefault),
         main_road_(-1),
         start_position_(-1),
         end_position_(-1),
-        dir_(Dir::UNKNOWN) {}
+        dir_(Dir::kUnknown) {}
 };
 
 class JunctionLaneLink {
@@ -493,7 +493,7 @@ class JunctionLaneLink {
  public:
   JunctionLaneLink() : from_(-1), to_(-1) {}
 };
-typedef std::vector<JunctionLaneLink> JunctionLaneLinks;
+using JunctionLaneLinks = std::vector<JunctionLaneLink>;
 
 class JunctionConnection {
   REGISTER_MEMBER_BASIC_TYPE(Id, id, -1);
@@ -507,13 +507,13 @@ class JunctionConnection {
  public:
   JunctionConnection()
       : id_(-1),
-        type_(JunctionConnectionType::UNKNOWN),
+        type_(JunctionConnectionType::kUnknown),
         incoming_road_(-1),
         connecting_road_(-1),
         linked_road_(-1),
-        contact_point_(ContactPointType::UNKNOWN) {}
+        contact_point_(ContactPointType::kUnknown) {}
 };
-typedef std::vector<JunctionConnection> JunctionConnections;
+using JunctionConnections = std::vector<JunctionConnection>;
 
 class Junction {
   REGISTER_MEMBER_COMPLEX_TYPE(JunctionAttribute, attribute);
@@ -529,8 +529,8 @@ class Map {
   REGISTER_MEMBER_COMPLEX_TYPE(std::vector<Junction>, junctions);
 
  public:
-  typedef std::shared_ptr<Map> Ptr;
-  typedef std::shared_ptr<Map const> ConstPtr;
+  using Ptr = std::shared_ptr<Map>;
+  using ConstPtr = std::shared_ptr<Map const>;
   Map() {}
 };
 

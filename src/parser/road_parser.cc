@@ -178,7 +178,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
     y = 0.;
     hdg = 0.;
     length = 0.;
-    type = GeometryType::LINE;
+    type = GeometryType::kLine;
     common::XmlQueryDoubleAttribute(curr_ele_geometry, "s", &s);
     common::XmlQueryDoubleAttribute(curr_ele_geometry, "x", &x);
     common::XmlQueryDoubleAttribute(curr_ele_geometry, "y", &y);
@@ -190,7 +190,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
     if (ele_geometry_type) {
       std::shared_ptr<element::GeometryLine> geometry_ptr =
           std::make_shared<element::GeometryLine>(s, x, y, hdg, length,
-                                                  GeometryType::LINE);
+                                                  GeometryType::kLine);
       geometry_base_ptr =
           std::dynamic_pointer_cast<element::Geometry>(geometry_ptr);
     }
@@ -201,7 +201,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
                                       &curvature);
       std::shared_ptr<element::GeometryArc> geometry_ptr =
           std::make_shared<element::GeometryArc>(s, x, y, hdg, length,
-                                                 GeometryType::ARC, curvature);
+                                                 GeometryType::kArc, curvature);
       geometry_base_ptr =
           std::dynamic_pointer_cast<element::Geometry>(geometry_ptr);
     }
@@ -214,7 +214,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
       common::XmlQueryDoubleAttribute(ele_geometry_type, "curvEnd", &curve_end);
       std::shared_ptr<element::GeometrySpiral> geometry_ptr =
           std::make_shared<element::GeometrySpiral>(s, x, y, hdg, length,
-                                                    GeometryType::SPIRAL,
+                                                    GeometryType::kSpiral,
                                                     curve_start, curve_end);
       geometry_base_ptr =
           std::dynamic_pointer_cast<element::Geometry>(geometry_ptr);
@@ -232,7 +232,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
 
       std::shared_ptr<element::GeometryPoly3> geometry_ptr =
           std::make_shared<element::GeometryPoly3>(
-              s, x, y, hdg, length, GeometryType::POLY3, a, b, c, d);
+              s, x, y, hdg, length, GeometryType::kPoly3, a, b, c, d);
       geometry_base_ptr =
           std::dynamic_pointer_cast<element::Geometry>(geometry_ptr);
     }
@@ -265,7 +265,7 @@ RoadXmlParser& RoadXmlParser::PlanViewElement() {
           });
       std::shared_ptr<element::GeometryParamPoly3> geometry_ptr =
           std::make_shared<element::GeometryParamPoly3>(
-              s, x, y, hdg, length, GeometryType::PARAMPOLY3, au, bu, cu, du,
+              s, x, y, hdg, length, GeometryType::kParamPoly3, au, bu, cu, du,
               av, bv, cv, dv, p_range);
       geometry_base_ptr =
           std::dynamic_pointer_cast<element::Geometry>(geometry_ptr);

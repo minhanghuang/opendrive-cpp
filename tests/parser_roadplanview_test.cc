@@ -71,14 +71,14 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
   ASSERT_DOUBLE_EQ(1.1999995231614086e+02, geometry_info1->y());
   ASSERT_DOUBLE_EQ(3.1415926535848282e+00, geometry_info1->hdg());
   ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info1->length());
-  ASSERT_EQ(GeometryType::LINE, geometry_info1->type());
+  ASSERT_EQ(GeometryType::kLine, geometry_info1->type());
 
   ASSERT_DOUBLE_EQ(5.1604964355176435e+00, geometry_info2->s());
   ASSERT_DOUBLE_EQ(1.5085270356448223e+02, geometry_info2->x());
   ASSERT_DOUBLE_EQ(1.1999995231616649e+02, geometry_info2->y());
   ASSERT_DOUBLE_EQ(3.1415926535798597e+00, geometry_info2->hdg());
   ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info2->length());
-  ASSERT_EQ(GeometryType::SPIRAL, geometry_info2->type());
+  ASSERT_EQ(GeometryType::kSpiral, geometry_info2->type());
   ASSERT_DOUBLE_EQ(-0.0000000000000000e+00, geometry_info2->curve_start());
   ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info2->curve_end());
 
@@ -87,7 +87,7 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
   ASSERT_DOUBLE_EQ(1.2006020151444957e+02, geometry_info3->y());
   ASSERT_DOUBLE_EQ(3.0547870980255456e+00, geometry_info3->hdg());
   ASSERT_DOUBLE_EQ(1.1186223687745517e+01, geometry_info3->length());
-  ASSERT_EQ(GeometryType::ARC, geometry_info3->type());
+  ASSERT_EQ(GeometryType::kArc, geometry_info3->type());
   ASSERT_DOUBLE_EQ(-8.3333333333333329e-02, geometry_info3->curvature());
 
   ASSERT_DOUBLE_EQ(1.8430053456596493e+01, geometry_info4->s());
@@ -95,7 +95,7 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
   ASSERT_DOUBLE_EQ(7.9753610549006124e+00, geometry_info4->y());
   ASSERT_DOUBLE_EQ(-3.8812339311141031e-02, geometry_info4->hdg());
   ASSERT_DOUBLE_EQ(2.0833333333333330e+00, geometry_info4->length());
-  ASSERT_EQ(GeometryType::POLY3, geometry_info4->type());
+  ASSERT_EQ(GeometryType::kPoly3, geometry_info4->type());
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->a());
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info4->b());
   ASSERT_DOUBLE_EQ(7.8270095403552599e-03, geometry_info4->c());
@@ -106,7 +106,7 @@ TEST_F(TestRoadPlanViewParser, TestRoadPlanView) {
   ASSERT_DOUBLE_EQ(1.2755802030419328e+02, geometry_info5->y());
   ASSERT_DOUBLE_EQ(2.0357962351612984e+00, geometry_info5->hdg());
   ASSERT_DOUBLE_EQ(8.7616810347544899e-02, geometry_info5->length());
-  ASSERT_EQ(GeometryType::PARAMPOLY3, geometry_info5->type());
+  ASSERT_EQ(GeometryType::kParamPoly3, geometry_info5->type());
   ASSERT_EQ(element::GeometryParamPoly3::PRange::ARCLENGTH,
             geometry_info5->p_range());
   ASSERT_DOUBLE_EQ(0.0000000000000000e+00, geometry_info5->au());

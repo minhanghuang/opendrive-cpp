@@ -56,7 +56,7 @@ void TestCommon::TearDown() {}
 void TestCommon::SetUp() {}
 
 TEST_F(TestCommon, TestFormatChoices) {
-  opendrive::LaneType type = opendrive::LaneType::DRIVING;
+  opendrive::LaneType type = opendrive::LaneType::kDriving;
   ASSERT_EQ("driving",
             common::FormatChoices(opendrive::LANE_TYPE_CHOICES, type));
 }
@@ -132,15 +132,15 @@ TEST_F(TestCommon, TestLeftValue) {
 TEST_F(TestCommon, TestLeftPtr) {
   std::vector<element::Geometry::Ptr> geometrys;
   auto g1 = std::make_shared<element::GeometryLine>(11, 2, 3, 4, 5,
-                                                    GeometryType::LINE);
+                                                    GeometryType::kLine);
   auto g2 = std::make_shared<element::GeometryLine>(13, 2, 3, 4, 5,
-                                                    GeometryType::LINE);
+                                                    GeometryType::kLine);
   auto g3 = std::make_shared<element::GeometryLine>(15, 2, 3, 4, 5,
-                                                    GeometryType::LINE);
+                                                    GeometryType::kLine);
   auto g4 = std::make_shared<element::GeometryLine>(18, 2, 3, 4, 5,
-                                                    GeometryType::LINE);
+                                                    GeometryType::kLine);
   auto g5 = std::make_shared<element::GeometryLine>(19, 2, 3, 4, 5,
-                                                    GeometryType::LINE);
+                                                    GeometryType::kLine);
   geometrys.emplace_back(g1);
   geometrys.emplace_back(g2);
   geometrys.emplace_back(g3);
@@ -213,11 +213,11 @@ TEST_F(TestCommon, TestXml2) {
   auto road_ele = xml->FirstChildElement("road");
   auto road_ptr = std::make_shared<opendrive::element::Road>();
   ASSERT_TRUE(road_ele != nullptr);
-  ASSERT_TRUE(road_ptr->attribute().rule() == RoadRule::RHT);
+  ASSERT_TRUE(road_ptr->attribute().rule() == RoadRule::kRht);
   auto ret = opendrive::common::XmlQueryEnumAttribute(
       road_ele, "rule", road_ptr->mutable_attribute()->mutable_rule(),
       opendrive::ROAD_RULE_CHOICES);
-  ASSERT_TRUE(road_ptr->attribute().rule() == RoadRule::RHT);
+  ASSERT_TRUE(road_ptr->attribute().rule() == RoadRule::kRht);
 }
 
 int main(int argc, char* argv[]) {
