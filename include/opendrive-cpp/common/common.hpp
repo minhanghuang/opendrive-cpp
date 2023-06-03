@@ -62,8 +62,8 @@ static T GetOffsetPoint(const T& point, double lateral_offset) {
   const double x = -std::sin(point.heading());
   const double y = std::cos(point.heading());
   T offset_point = point;
-  offset_point.mutable_x() += lateral_offset * x;
-  offset_point.mutable_y() += lateral_offset * y;
+  offset_point.set_x(offset_point.x() + lateral_offset * x);
+  offset_point.set_y(offset_point.y() + lateral_offset * y);
   return offset_point;
 }
 
@@ -75,8 +75,8 @@ static T GetOffsetPoint(const T& point, double lateral_offset) {
  * @param asc 升序/降序
  */
 template <typename T>
-static void VectorSortPoloy3(std::vector<T>& items, bool asc = true) {
-  std::sort(items.begin(), items.end(), [asc](const T& t1, const T& t2) {
+static void VectorSortPoloy3(std::vector<T>* items, bool asc = true) {
+  std::sort(items->begin(), items->end(), [asc](const T& t1, const T& t2) {
     return asc ? t1.s() < t2.s() : t1.s() > t2.s();
   });
 }
@@ -196,48 +196,47 @@ static tinyxml2::XMLError XmlQueryBoolAttribute(
 
 static tinyxml2::XMLError XmlQueryStringAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name,
-    std::string& value) {
+    std::string* value) {
   const char* val = xml_node->Attribute(name.c_str());
   if (nullptr == val) {
     return tinyxml2::XML_NO_ATTRIBUTE;
   }
-  value = val;
+  *value = val;
   return tinyxml2::XML_SUCCESS;
 }
 
 static tinyxml2::XMLError XmlQueryIntAttribute(
-    const tinyxml2::XMLElement* xml_node, const std::string& name, int& value) {
-  tinyxml2::XMLError ret = xml_node->QueryIntAttribute(name.c_str(), &value);
+    const tinyxml2::XMLElement* xml_node, const std::string& name, int* value) {
+  tinyxml2::XMLError ret = xml_node->QueryIntAttribute(name.c_str(), value);
   return ret;
 }
 
 static tinyxml2::XMLError XmlQueryFloatAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name,
-    float& value) {
-  tinyxml2::XMLError ret = xml_node->QueryFloatAttribute(name.c_str(), &value);
+    float* value) {
+  tinyxml2::XMLError ret = xml_node->QueryFloatAttribute(name.c_str(), value);
   return ret;
 }
 
 static tinyxml2::XMLError XmlQueryDoubleAttribute(
     const tinyxml2::XMLElement* xml_node, const std::string& name,
-    double& value) {
-  tinyxml2::XMLError ret = xml_node->QueryDoubleAttribute(name.c_str(), &value);
-  return ret;
+    double* value) {
+  return xml_node->QueryDoubleAttribute(name.c_str(), value);
 }
 
 template <typename T>
 static tinyxml2::XMLError XmlQueryEnumAttribute(
-    const tinyxml2::XMLElement* xml_node, const std::string& name, T& value,
+    const tinyxml2::XMLElement* xml_node, const std::string& name, T* value,
     const std::map<T, std::string>& choices) {
   std::string var;
-  tinyxml2::XMLError ret = XmlQueryStringAttribute(xml_node, name, var);
+  tinyxml2::XMLError ret = XmlQueryStringAttribute(xml_node, name, &var);
   if (tinyxml2::XMLError::XML_SUCCESS != ret) {
     return ret;
   }
   ret = tinyxml2::XMLError::XML_ERROR_PARSING_TEXT;
   for (const auto& choice : choices) {
     if (StrEquals(choice.second, var)) {
-      value = choice.first;
+      *value = choice.first;
       ret = tinyxml2::XMLError::XML_SUCCESS;
       break;
     }
